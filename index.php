@@ -6,7 +6,7 @@
  *
  */
 
-require_once 'silex.phar';
+require_once 'silex/vendor/.composer/autoload.php';
 
 # Create new app
 $app = new Silex\Application();
