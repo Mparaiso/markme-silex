@@ -27,7 +27,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 interface ControllerResolverInterface
 {
-    
 
 
 
@@ -45,10 +44,8 @@ interface ControllerResolverInterface
 
 
 
-    function getController(Request $request);
 
-    
-
+function getController(Request $request);
 
 
 
@@ -59,5 +56,8 @@ interface ControllerResolverInterface
 
 
 
-    function getArguments(Request $request, $controller);
+
+
+
+function getArguments(Request $request, $controller);
 }

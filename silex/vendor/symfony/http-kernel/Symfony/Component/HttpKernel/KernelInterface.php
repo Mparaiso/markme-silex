@@ -27,81 +27,73 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 
 interface KernelInterface extends HttpKernelInterface, \Serializable
 {
-    
 
 
 
 
 
 
-    function registerBundles();
 
-    
+function registerBundles();
 
 
 
 
 
 
-    function registerContainerConfiguration(LoaderInterface $loader);
 
-    
 
+function registerContainerConfiguration(LoaderInterface $loader);
 
 
 
-    function boot();
 
-    
 
 
+function boot();
 
 
 
 
-    function shutdown();
 
-    
 
 
 
+function shutdown();
 
 
 
-    function getBundles();
 
-    
 
 
 
 
+function getBundles();
 
 
 
 
-    function isClassInActiveBundle($class);
 
-    
 
 
 
 
 
+function isClassInActiveBundle($class);
 
 
 
 
 
 
-    function getBundle($name, $first = true);
 
-    
 
 
 
 
 
 
+function getBundle($name, $first = true);
 
 
 
@@ -123,77 +115,85 @@ interface KernelInterface extends HttpKernelInterface, \Serializable
 
 
 
-    function locateResource($name, $dir = null, $first = true);
 
-    
 
 
 
 
 
 
-    function getName();
 
-    
+function locateResource($name, $dir = null, $first = true);
 
 
 
 
 
 
-    function getEnvironment();
 
-    
 
+function getName();
 
 
 
 
 
-    function isDebug();
 
-    
 
 
+function getEnvironment();
 
 
 
 
-    function getRootDir();
 
-    
 
 
 
+function isDebug();
 
 
 
-    function getContainer();
 
-    
 
 
 
 
+function getRootDir();
 
 
-    function getStartTime();
 
-    
 
 
 
 
 
+function getContainer();
 
-    function getCacheDir();
 
-    
 
 
 
 
 
 
-    function getLogDir();
+function getStartTime();
+
+
+
+
+
+
+
+
+function getCacheDir();
+
+
+
+
+
+
+
+
+function getLogDir();
 }

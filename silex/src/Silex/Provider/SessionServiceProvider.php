@@ -14,7 +14,8 @@ namespace Silex\Provider;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
-use Symfony\Component\HttpFoundation\Session\Storage\NativeFileSessionStorage;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -25,42 +26,48 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class SessionServiceProvider implements ServiceProviderInterface
 {
-    private $app;
+private $app;
 
-    public function register(Application $app)
-    {
-        $this->app = $app;
+public function register(Application $app)
+{
+$this->app = $app;
 
-        $app['session'] = $app->share(function () use ($app) {
-            return new Session($app['session.storage']);
-        });
+$app['session'] = $app->share(function () use ($app) {
+return new Session($app['session.storage']);
+});
 
-        $app['session.storage'] = $app->share(function () use ($app) {
-            return new NativeFileSessionStorage(
-                isset($app['session.storage.save_path']) ? $app['session.storage.save_path'] : null,
-                $app['session.storage.options']
-            );
-        });
+$app['session.storage.handler'] = $app->share(function () use ($app) {
+return new NativeFileSessionHandler(
+isset($app['session.storage.save_path']) ? $app['session.storage.save_path'] : null
+);
+});
 
-        $app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'onKernelRequest'), 128);
+$app['session.storage'] = $app->share(function () use ($app) {
+return new NativeSessionStorage(
+$app['session.storage.options'],
+$app['session.storage.handler']
+);
+});
 
-        if (!isset($app['session.storage.options'])) {
-            $app['session.storage.options'] = array();
-        }
+$app['dispatcher']->addListener(KernelEvents::REQUEST, array($this, 'onKernelRequest'), 128);
 
-        if (!isset($app['session.default_locale'])) {
-            $app['session.default_locale'] = 'en';
-        }
-    }
+if (!isset($app['session.storage.options'])) {
+$app['session.storage.options'] = array();
+}
 
-    public function onKernelRequest($event)
-    {
-        $request = $event->getRequest();
-        $request->setSession($this->app['session']);
+if (!isset($app['session.default_locale'])) {
+$app['session.default_locale'] = 'en';
+}
+}
 
-        
-        if ($request->hasPreviousSession()) {
-            $request->getSession()->start();
-        }
-    }
+public function onKernelRequest($event)
+{
+$request = $event->getRequest();
+$request->setSession($this->app['session']);
+
+
+ if ($request->hasPreviousSession()) {
+$request->getSession()->start();
+}
+}
 }

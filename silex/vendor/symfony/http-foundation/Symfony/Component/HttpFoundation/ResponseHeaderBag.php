@@ -20,151 +20,125 @@ namespace Symfony\Component\HttpFoundation;
 
 class ResponseHeaderBag extends HeaderBag
 {
-    const COOKIES_FLAT           = 'flat';
-    const COOKIES_ARRAY          = 'array';
+const COOKIES_FLAT = 'flat';
+const COOKIES_ARRAY = 'array';
 
-    const DISPOSITION_ATTACHMENT = 'attachment';
-    const DISPOSITION_INLINE     = 'inline';
+const DISPOSITION_ATTACHMENT = 'attachment';
+const DISPOSITION_INLINE = 'inline';
 
-    
 
 
-    protected $computedCacheControl = array();
 
-    
+protected $computedCacheControl = array();
 
 
-    protected $cookies              = array();
 
-    
 
+protected $cookies = array();
 
 
 
 
 
-    public function __construct(array $headers = array())
-    {
-        parent::__construct($headers);
 
-        if (!isset($this->headers['cache-control'])) {
-            $this->set('cache-control', '');
-        }
-    }
 
-    
 
+public function __construct(array $headers = array())
+{
+parent::__construct($headers);
 
-    public function __toString()
-    {
-        $cookies = '';
-        foreach ($this->getCookies() as $cookie) {
-            $cookies .= 'Set-Cookie: '.$cookie."\r\n";
-        }
+if (!isset($this->headers['cache-control'])) {
+$this->set('cache-control', '');
+}
+}
 
-        return parent::__toString().$cookies;
-    }
 
-    
 
 
+public function __toString()
+{
+$cookies = '';
+foreach ($this->getCookies() as $cookie) {
+$cookies .= 'Set-Cookie: '.$cookie."\r\n";
+}
 
+return parent::__toString().$cookies;
+}
 
-    public function replace(array $headers = array())
-    {
-        parent::replace($headers);
 
-        if (!isset($this->headers['cache-control'])) {
-            $this->set('cache-control', '');
-        }
-    }
 
-    
 
 
 
+public function replace(array $headers = array())
+{
+parent::replace($headers);
 
-    public function set($key, $values, $replace = true)
-    {
-        parent::set($key, $values, $replace);
+if (!isset($this->headers['cache-control'])) {
+$this->set('cache-control', '');
+}
+}
 
-        
-        if (in_array(strtr(strtolower($key), '_', '-'), array('cache-control', 'etag', 'last-modified', 'expires'))) {
-            $computed = $this->computeCacheControlValue();
-            $this->headers['cache-control'] = array($computed);
-            $this->computedCacheControl = $this->parseCacheControl($computed);
-        }
-    }
 
-    
 
 
 
 
-    public function remove($key)
-    {
-        parent::remove($key);
+public function set($key, $values, $replace = true)
+{
+parent::set($key, $values, $replace);
 
-        if ('cache-control' === strtr(strtolower($key), '_', '-')) {
-            $this->computedCacheControl = array();
-        }
-    }
 
-    
+ if (in_array(strtr(strtolower($key), '_', '-'), array('cache-control', 'etag', 'last-modified', 'expires'))) {
+$computed = $this->computeCacheControlValue();
+$this->headers['cache-control'] = array($computed);
+$this->computedCacheControl = $this->parseCacheControl($computed);
+}
+}
 
 
-    public function hasCacheControlDirective($key)
-    {
-        return array_key_exists($key, $this->computedCacheControl);
-    }
 
-    
 
 
-    public function getCacheControlDirective($key)
-    {
-        return array_key_exists($key, $this->computedCacheControl) ? $this->computedCacheControl[$key] : null;
-    }
 
-    
+public function remove($key)
+{
+parent::remove($key);
 
+if ('cache-control' === strtr(strtolower($key), '_', '-')) {
+$this->computedCacheControl = array();
+}
+}
 
 
 
 
+public function hasCacheControlDirective($key)
+{
+return array_key_exists($key, $this->computedCacheControl);
+}
 
-    public function setCookie(Cookie $cookie)
-    {
-        $this->cookies[$cookie->getDomain()][$cookie->getPath()][$cookie->getName()] = $cookie;
-    }
 
-    
 
 
+public function getCacheControlDirective($key)
+{
+return array_key_exists($key, $this->computedCacheControl) ? $this->computedCacheControl[$key] : null;
+}
 
 
 
 
 
 
-    public function removeCookie($name, $path = '/', $domain = null)
-    {
-        if (null === $path) {
-            $path = '/';
-        }
 
-        unset($this->cookies[$domain][$path][$name]);
 
-        if (empty($this->cookies[$domain][$path])) {
-            unset($this->cookies[$domain][$path]);
+public function setCookie(Cookie $cookie)
+{
+$this->cookies[$cookie->getDomain()][$cookie->getPath()][$cookie->getName()] = $cookie;
+}
 
-            if (empty($this->cookies[$domain])) {
-                unset($this->cookies[$domain]);
-            }
-        }
-    }
 
-    
 
 
 
@@ -173,31 +147,25 @@ class ResponseHeaderBag extends HeaderBag
 
 
 
+public function removeCookie($name, $path = '/', $domain = null)
+{
+if (null === $path) {
+$path = '/';
+}
 
+unset($this->cookies[$domain][$path][$name]);
 
-    public function getCookies($format = self::COOKIES_FLAT)
-    {
-        if (!in_array($format, array(self::COOKIES_FLAT, self::COOKIES_ARRAY))) {
-            throw new \InvalidArgumentException(sprintf('Format "%s" invalid (%s).', $format, implode(', ', array(self::COOKIES_FLAT, self::COOKIES_ARRAY))));
-        }
+if (empty($this->cookies[$domain][$path])) {
+unset($this->cookies[$domain][$path]);
 
-        if (self::COOKIES_ARRAY === $format) {
-            return $this->cookies;
-        }
+if (empty($this->cookies[$domain])) {
+unset($this->cookies[$domain]);
+}
+}
+}
 
-        $flattenedCookies = array();
-        foreach ($this->cookies as $path) {
-            foreach ($path as $cookies) {
-                foreach ($cookies as $cookie) {
-                    $flattenedCookies[] = $cookie;
-                }
-            }
-        }
 
-        return $flattenedCookies;
-    }
 
-    
 
 
 
@@ -206,15 +174,28 @@ class ResponseHeaderBag extends HeaderBag
 
 
 
-    public function clearCookie($name, $path = '/', $domain = null)
-    {
-        $this->setCookie(new Cookie($name, null, 1, $path, $domain));
-    }
 
-    
+public function getCookies($format = self::COOKIES_FLAT)
+{
+if (!in_array($format, array(self::COOKIES_FLAT, self::COOKIES_ARRAY))) {
+throw new \InvalidArgumentException(sprintf('Format "%s" invalid (%s).', $format, implode(', ', array(self::COOKIES_FLAT, self::COOKIES_ARRAY))));
+}
 
+if (self::COOKIES_ARRAY === $format) {
+return $this->cookies;
+}
 
+$flattenedCookies = array();
+foreach ($this->cookies as $path) {
+foreach ($path as $cookies) {
+foreach ($cookies as $cookie) {
+$flattenedCookies[] = $cookie;
+}
+}
+}
 
+return $flattenedCookies;
+}
 
 
 
@@ -225,41 +206,18 @@ class ResponseHeaderBag extends HeaderBag
 
 
 
-    public function makeDisposition($disposition, $filename, $filenameFallback = '')
-    {
-        if (!in_array($disposition, array(self::DISPOSITION_ATTACHMENT, self::DISPOSITION_INLINE))) {
-            throw new \InvalidArgumentException(sprintf('The disposition must be either "%s" or "%s".', self::DISPOSITION_ATTACHMENT, self::DISPOSITION_INLINE));
-        }
+public function clearCookie($name, $path = '/', $domain = null)
+{
+$this->setCookie(new Cookie($name, null, 1, $path, $domain));
+}
 
-        if (!$filenameFallback) {
-            $filenameFallback = $filename;
-        }
 
-        
-        if (!preg_match('/^[\x20-\x7e]*$/', $filenameFallback)) {
-            throw new \InvalidArgumentException('The filename fallback must only contain ASCII characters.');
-        }
 
-        
-        if (false !== strpos($filenameFallback, '%')) {
-            throw new \InvalidArgumentException('The filename fallback cannot contain the "%" character.');
-        }
 
-        
-        if (preg_match('#[/\\\\]#', $filename) || preg_match('#[/\\\\]#', $filenameFallback)) {
-            throw new \InvalidArgumentException('The filename and the fallback cannot contain the "/" and "\\" characters.');
-        }
 
-        $output = sprintf('%s; filename="%s"', $disposition, str_replace(array('\\', '"'), array('\\\\', '\\"'), $filenameFallback));
 
-        if ($filename != $filenameFallback) {
-            $output .= sprintf("; filename*=utf-8''%s", str_replace(array("'", '(', ')', '*'), array('%27', '%28', '%29', '%2A'), urlencode($filename)));
-        }
 
-        return $output;
-    }
 
-    
 
 
 
@@ -267,27 +225,69 @@ class ResponseHeaderBag extends HeaderBag
 
 
 
-    protected function computeCacheControlValue()
-    {
-        if (!$this->cacheControl && !$this->has('ETag') && !$this->has('Last-Modified') && !$this->has('Expires')) {
-            return 'no-cache';
-        }
+public function makeDisposition($disposition, $filename, $filenameFallback = '')
+{
+if (!in_array($disposition, array(self::DISPOSITION_ATTACHMENT, self::DISPOSITION_INLINE))) {
+throw new \InvalidArgumentException(sprintf('The disposition must be either "%s" or "%s".', self::DISPOSITION_ATTACHMENT, self::DISPOSITION_INLINE));
+}
 
-        if (!$this->cacheControl) {
-            
-            return 'private, must-revalidate';
-        }
+if (!$filenameFallback) {
+$filenameFallback = $filename;
+}
 
-        $header = $this->getCacheControlHeader();
-        if (isset($this->cacheControl['public']) || isset($this->cacheControl['private'])) {
-            return $header;
-        }
 
-        
-        if (!isset($this->cacheControl['s-maxage'])) {
-            return $header.', private';
-        }
+ if (!preg_match('/^[\x20-\x7e]*$/', $filenameFallback)) {
+throw new \InvalidArgumentException('The filename fallback must only contain ASCII characters.');
+}
 
-        return $header;
-    }
+
+ if (false !== strpos($filenameFallback, '%')) {
+throw new \InvalidArgumentException('The filename fallback cannot contain the "%" character.');
+}
+
+
+ if (preg_match('#[/\\\\]#', $filename) || preg_match('#[/\\\\]#', $filenameFallback)) {
+throw new \InvalidArgumentException('The filename and the fallback cannot contain the "/" and "\\" characters.');
+}
+
+$output = sprintf('%s; filename="%s"', $disposition, str_replace(array('\\', '"'), array('\\\\', '\\"'), $filenameFallback));
+
+if ($filename != $filenameFallback) {
+$output .= sprintf("; filename*=utf-8''%s", str_replace(array("'", '(', ')', '*'), array('%27', '%28', '%29', '%2A'), urlencode($filename)));
+}
+
+return $output;
+}
+
+
+
+
+
+
+
+
+
+protected function computeCacheControlValue()
+{
+if (!$this->cacheControl && !$this->has('ETag') && !$this->has('Last-Modified') && !$this->has('Expires')) {
+return 'no-cache';
+}
+
+if (!$this->cacheControl) {
+
+ return 'private, must-revalidate';
+}
+
+$header = $this->getCacheControlHeader();
+if (isset($this->cacheControl['public']) || isset($this->cacheControl['private'])) {
+return $header;
+}
+
+
+ if (!isset($this->cacheControl['s-maxage'])) {
+return $header.', private';
+}
+
+return $header;
+}
 }

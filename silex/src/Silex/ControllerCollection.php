@@ -27,9 +27,7 @@ use Silex\Controller;
 
 class ControllerCollection
 {
-    protected $controllers = array();
-
-    
+protected $controllers = array();
 
 
 
@@ -39,29 +37,16 @@ class ControllerCollection
 
 
 
-    public function match($pattern, $to)
-    {
-        $route = new Route($pattern, array('_controller' => $to));
-        $controller = new Controller($route);
-        $this->add($controller);
-
-        return $controller;
-    }
-
-    
 
 
+public function match($pattern, $to)
+{
+$route = new Route($pattern, array('_controller' => $to));
+$controller = new Controller($route);
+$this->add($controller);
 
-
-
-
-
-    public function get($pattern, $to)
-    {
-        return $this->match($pattern, $to)->method('GET');
-    }
-
-    
+return $controller;
+}
 
 
 
@@ -69,25 +54,12 @@ class ControllerCollection
 
 
 
-    public function post($pattern, $to)
-    {
-        return $this->match($pattern, $to)->method('POST');
-    }
-
-    
 
 
-
-
-
-
-
-    public function put($pattern, $to)
-    {
-        return $this->match($pattern, $to)->method('PUT');
-    }
-
-    
+public function get($pattern, $to)
+{
+return $this->match($pattern, $to)->method('GET');
+}
 
 
 
@@ -95,40 +67,68 @@ class ControllerCollection
 
 
 
-    public function delete($pattern, $to)
-    {
-        return $this->match($pattern, $to)->method('DELETE');
-    }
-
-    
 
 
-
-
-    public function add(Controller $controller)
-    {
-        $this->controllers[] = $controller;
-    }
-
-    
+public function post($pattern, $to)
+{
+return $this->match($pattern, $to)->method('POST');
+}
 
 
 
 
-    public function flush($prefix = '')
-    {
-        $routes = new RouteCollection();
 
-        foreach ($this->controllers as $controller) {
-            if (!$controller->getRouteName()) {
-                $controller->bindDefaultRouteName($prefix);
-            }
-            $routes->add($controller->getRouteName(), $controller->getRoute());
-            $controller->freeze();
-        }
 
-        $this->controllers = array();
 
-        return $routes;
-    }
+
+
+public function put($pattern, $to)
+{
+return $this->match($pattern, $to)->method('PUT');
+}
+
+
+
+
+
+
+
+
+
+public function delete($pattern, $to)
+{
+return $this->match($pattern, $to)->method('DELETE');
+}
+
+
+
+
+
+
+public function add(Controller $controller)
+{
+$this->controllers[] = $controller;
+}
+
+
+
+
+
+
+public function flush($prefix = '')
+{
+$routes = new RouteCollection();
+
+foreach ($this->controllers as $controller) {
+if (!$controller->getRouteName()) {
+$controller->bindDefaultRouteName($prefix);
+}
+$routes->add($controller->getRouteName(), $controller->getRoute());
+$controller->freeze();
+}
+
+$this->controllers = array();
+
+return $routes;
+}
 }

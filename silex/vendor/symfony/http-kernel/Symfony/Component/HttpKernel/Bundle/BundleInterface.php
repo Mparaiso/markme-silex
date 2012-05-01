@@ -22,68 +22,19 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 interface BundleInterface
 {
-    
 
 
 
 
-    function boot();
 
-    
-
-
-
-
-    function shutdown();
-
-    
+function boot();
 
 
 
 
 
 
-
-
-    function build(ContainerBuilder $container);
-
-    
-
-
-
-
-
-
-    function getContainerExtension();
-
-    
-
-
-
-
-
-
-    function getParent();
-
-    
-
-
-
-
-
-
-    function getName();
-
-    
-
-
-
-
-
-
-    function getNamespace();
-
-    
+function shutdown();
 
 
 
@@ -92,5 +43,54 @@ interface BundleInterface
 
 
 
-    function getPath();
+
+
+function build(ContainerBuilder $container);
+
+
+
+
+
+
+
+
+function getContainerExtension();
+
+
+
+
+
+
+
+
+function getParent();
+
+
+
+
+
+
+
+
+function getName();
+
+
+
+
+
+
+
+
+function getNamespace();
+
+
+
+
+
+
+
+
+
+
+function getPath();
 }

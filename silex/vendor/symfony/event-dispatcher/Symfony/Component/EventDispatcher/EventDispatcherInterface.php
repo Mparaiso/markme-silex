@@ -22,7 +22,6 @@ namespace Symfony\Component\EventDispatcher;
 
 interface EventDispatcherInterface
 {
-    
 
 
 
@@ -33,21 +32,10 @@ interface EventDispatcherInterface
 
 
 
-    function dispatch($eventName, Event $event = null);
-
-    
 
 
 
-
-
-
-
-
-
-    function addListener($eventName, $listener, $priority = 0);
-
-    
+function dispatch($eventName, Event $event = null);
 
 
 
@@ -55,24 +43,11 @@ interface EventDispatcherInterface
 
 
 
-    function addSubscriber(EventSubscriberInterface $subscriber);
-
-    
 
 
 
 
-
-    function removeListener($eventName, $listener);
-
-    
-
-
-
-
-    function removeSubscriber(EventSubscriberInterface $subscriber);
-
-    
+function addListener($eventName, $listener, $priority = 0);
 
 
 
@@ -80,15 +55,42 @@ interface EventDispatcherInterface
 
 
 
-    function getListeners($eventName = null);
-
-    
 
 
 
 
+function addSubscriber(EventSubscriberInterface $subscriber);
 
 
 
-    function hasListeners($eventName = null);
+
+
+
+
+function removeListener($eventName, $listener);
+
+
+
+
+
+
+function removeSubscriber(EventSubscriberInterface $subscriber);
+
+
+
+
+
+
+
+
+function getListeners($eventName = null);
+
+
+
+
+
+
+
+
+function hasListeners($eventName = null);
 }

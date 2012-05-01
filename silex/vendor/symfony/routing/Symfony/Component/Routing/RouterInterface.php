@@ -23,10 +23,10 @@ use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
 interface RouterInterface extends UrlMatcherInterface, UrlGeneratorInterface
 {
-    
 
 
 
 
-    function getRouteCollection();
+
+function getRouteCollection();
 }

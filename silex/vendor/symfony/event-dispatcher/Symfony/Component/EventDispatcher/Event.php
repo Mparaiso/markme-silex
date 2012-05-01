@@ -29,35 +29,20 @@ namespace Symfony\Component\EventDispatcher;
 
 class Event
 {
-    
 
 
-    private $propagationStopped = false;
 
-    
-
-
-    private $dispatcher;
-
-    
-
-
-    private $name;
-
-    
+private $propagationStopped = false;
 
 
 
 
+private $dispatcher;
 
 
 
-    public function isPropagationStopped()
-    {
-        return $this->propagationStopped;
-    }
 
-    
+private $name;
 
 
 
@@ -66,56 +51,71 @@ class Event
 
 
 
-    public function stopPropagation()
-    {
-        $this->propagationStopped = true;
-    }
 
-    
-
-
-
-
-
-
-    public function setDispatcher(EventDispatcher $dispatcher)
-    {
-        $this->dispatcher = $dispatcher;
-    }
-
-    
+public function isPropagationStopped()
+{
+return $this->propagationStopped;
+}
 
 
 
 
 
 
-    public function getDispatcher()
-    {
-        return $this->dispatcher;
-    }
-
-    
 
 
 
 
-
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    
+public function stopPropagation()
+{
+$this->propagationStopped = true;
+}
 
 
 
 
 
 
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
+
+
+public function setDispatcher(EventDispatcher $dispatcher)
+{
+$this->dispatcher = $dispatcher;
+}
+
+
+
+
+
+
+
+
+public function getDispatcher()
+{
+return $this->dispatcher;
+}
+
+
+
+
+
+
+
+
+public function getName()
+{
+return $this->name;
+}
+
+
+
+
+
+
+
+
+public function setName($name)
+{
+$this->name = $name;
+}
 }

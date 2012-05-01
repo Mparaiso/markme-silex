@@ -18,7 +18,6 @@ namespace Symfony\Component\HttpFoundation\File\MimeType;
 
 interface MimeTypeGuesserInterface
 {
-    
 
 
 
@@ -28,5 +27,6 @@ interface MimeTypeGuesserInterface
 
 
 
-    function guess($path);
+
+function guess($path);
 }

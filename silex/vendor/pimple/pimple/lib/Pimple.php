@@ -32,21 +32,19 @@
 
 class Pimple implements ArrayAccess
 {
-    private $values;
+private $values;
 
-    
 
 
 
 
 
 
-    function __construct (array $values = array())
-    {
-        $this->values = $values;
-    }
 
-    
+function __construct (array $values = array())
+{
+$this->values = $values;
+}
 
 
 
@@ -58,13 +56,12 @@ class Pimple implements ArrayAccess
 
 
 
-    function offsetSet($id, $value)
-    {
-        $this->values[$id] = $value;
-    }
 
-    
 
+function offsetSet($id, $value)
+{
+$this->values[$id] = $value;
+}
 
 
 
@@ -72,89 +69,122 @@ class Pimple implements ArrayAccess
 
 
 
-    function offsetGet($id)
-    {
-        if (!array_key_exists($id, $this->values)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
-        }
 
-        return $this->values[$id] instanceof Closure ? $this->values[$id]($this) : $this->values[$id];
-    }
 
-    
 
+function offsetGet($id)
+{
+if (!array_key_exists($id, $this->values)) {
+throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+}
 
+return $this->values[$id] instanceof Closure ? $this->values[$id]($this) : $this->values[$id];
+}
 
 
 
 
-    function offsetExists($id)
-    {
-        return isset($this->values[$id]);
-    }
 
-    
 
 
 
+function offsetExists($id)
+{
+return isset($this->values[$id]);
+}
 
-    function offsetUnset($id)
-    {
-        unset($this->values[$id]);
-    }
 
-    
 
 
 
 
+function offsetUnset($id)
+{
+unset($this->values[$id]);
+}
 
 
 
-    function share(Closure $callable)
-    {
-        return function ($c) use ($callable) {
-            static $object;
 
-            if (is_null($object)) {
-                $object = $callable($c);
-            }
 
-            return $object;
-        };
-    }
 
-    
 
 
 
+function share(Closure $callable)
+{
+return function ($c) use ($callable) {
+static $object;
 
+if (is_null($object)) {
+$object = $callable($c);
+}
 
+return $object;
+};
+}
 
 
 
-    function protect(Closure $callable)
-    {
-        return function ($c) use ($callable) {
-            return $callable;
-        };
-    }
 
-    
 
 
 
 
 
 
+function protect(Closure $callable)
+{
+return function ($c) use ($callable) {
+return $callable;
+};
+}
 
 
-    function raw($id)
-    {
-        if (!array_key_exists($id, $this->values)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
-        }
 
-        return $this->values[$id];
-    }
+
+
+
+
+
+
+
+function raw($id)
+{
+if (!array_key_exists($id, $this->values)) {
+throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+}
+
+return $this->values[$id];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function extend($id, Closure $callable)
+{
+if (!array_key_exists($id, $this->values)) {
+throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+}
+
+$factory = $this->values[$id];
+
+if (!($factory instanceof Closure)) {
+throw new InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
+}
+
+return $this->values[$id] = function ($c) use ($callable, $factory) {
+return $callable($factory($c), $c);
+};
+}
 }

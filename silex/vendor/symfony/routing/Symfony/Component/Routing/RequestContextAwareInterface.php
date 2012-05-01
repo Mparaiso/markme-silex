@@ -16,21 +16,21 @@ namespace Symfony\Component\Routing;
 
 interface RequestContextAwareInterface
 {
-    
 
 
 
 
 
 
-    function setContext(RequestContext $context);
 
-    
-
+function setContext(RequestContext $context);
 
 
 
 
 
-    function getContext();
+
+
+
+function getContext();
 }

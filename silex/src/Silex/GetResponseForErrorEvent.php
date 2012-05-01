@@ -24,9 +24,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class GetResponseForErrorEvent extends GetResponseForExceptionEvent
 {
-    public function setStringResponse($response)
-    {
-        $converter = new StringResponseConverter();
-        $this->setResponse($converter->convert($response));
-    }
+public function setStringResponse($response)
+{
+$converter = new StringResponseConverter();
+$this->setResponse($converter->convert($response));
+}
 }

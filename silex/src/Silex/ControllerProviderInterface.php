@@ -18,12 +18,12 @@ namespace Silex;
 
 interface ControllerProviderInterface
 {
-    
 
 
 
 
 
 
-    function connect(Application $app);
+
+function connect(Application $app);
 }

@@ -20,9 +20,7 @@ namespace Symfony\Component\HttpFoundation;
 
 class RedirectResponse extends Response
 {
-    protected $targetUrl;
-
-    
+protected $targetUrl;
 
 
 
@@ -32,16 +30,19 @@ class RedirectResponse extends Response
 
 
 
-    public function __construct($url, $status = 302)
-    {
-        if (empty($url)) {
-            throw new \InvalidArgumentException('Cannot redirect to an empty URL.');
-        }
 
-        $this->targetUrl = $url;
 
-        parent::__construct(
-            sprintf('<!DOCTYPE html>
+
+public function __construct($url, $status = 302, $headers = array())
+{
+if (empty($url)) {
+throw new \InvalidArgumentException('Cannot redirect to an empty URL.');
+}
+
+$this->targetUrl = $url;
+
+parent::__construct(
+sprintf('<!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -53,22 +54,30 @@ class RedirectResponse extends Response
         Redirecting to <a href="%1$s">%1$s</a>.
     </body>
 </html>', htmlspecialchars($url, ENT_QUOTES, 'UTF-8')),
-            $status,
-            array('Location' => $url)
-        );
+$status,
+array_merge($headers, array('Location' => $url))
+);
 
-        if (!$this->isRedirect()) {
-            throw new \InvalidArgumentException(sprintf('The HTTP status code is not a redirect ("%s" given).', $status));
-        }
-    }
-
-    
+if (!$this->isRedirect()) {
+throw new \InvalidArgumentException(sprintf('The HTTP status code is not a redirect ("%s" given).', $status));
+}
+}
 
 
 
 
-    public function getTargetUrl()
-    {
-        return $this->targetUrl;
-    }
+static public function create($url = '', $status = 302, $headers = array())
+{
+return new static($url, $status, $headers);
+}
+
+
+
+
+
+
+public function getTargetUrl()
+{
+return $this->targetUrl;
+}
 }

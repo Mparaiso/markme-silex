@@ -20,84 +20,84 @@ namespace Symfony\Component\Routing\Annotation;
 
 class Route
 {
-    private $pattern;
-    private $name;
-    private $requirements;
-    private $options;
-    private $defaults;
-
-    
+private $pattern;
+private $name;
+private $requirements;
+private $options;
+private $defaults;
 
 
 
 
-    public function __construct(array $data)
-    {
-        $this->requirements = array();
-        $this->options = array();
-        $this->defaults = array();
 
-        if (isset($data['value'])) {
-            $data['pattern'] = $data['value'];
-            unset($data['value']);
-        }
 
-        foreach ($data as $key => $value) {
-            $method = 'set'.$key;
-            if (!method_exists($this, $method)) {
-                throw new \BadMethodCallException(sprintf("Unknown property '%s' on annotation '%s'.", $key, get_class($this)));
-            }
-            $this->$method($value);
-        }
-    }
+public function __construct(array $data)
+{
+$this->requirements = array();
+$this->options = array();
+$this->defaults = array();
 
-    public function setPattern($pattern)
-    {
-        $this->pattern = $pattern;
-    }
+if (isset($data['value'])) {
+$data['pattern'] = $data['value'];
+unset($data['value']);
+}
 
-    public function getPattern()
-    {
-        return $this->pattern;
-    }
+foreach ($data as $key => $value) {
+$method = 'set'.$key;
+if (!method_exists($this, $method)) {
+throw new \BadMethodCallException(sprintf("Unknown property '%s' on annotation '%s'.", $key, get_class($this)));
+}
+$this->$method($value);
+}
+}
 
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
+public function setPattern($pattern)
+{
+$this->pattern = $pattern;
+}
 
-    public function getName()
-    {
-        return $this->name;
-    }
+public function getPattern()
+{
+return $this->pattern;
+}
 
-    public function setRequirements($requirements)
-    {
-        $this->requirements = $requirements;
-    }
+public function setName($name)
+{
+$this->name = $name;
+}
 
-    public function getRequirements()
-    {
-        return $this->requirements;
-    }
+public function getName()
+{
+return $this->name;
+}
 
-    public function setOptions($options)
-    {
-        $this->options = $options;
-    }
+public function setRequirements($requirements)
+{
+$this->requirements = $requirements;
+}
 
-    public function getOptions()
-    {
-        return $this->options;
-    }
+public function getRequirements()
+{
+return $this->requirements;
+}
 
-    public function setDefaults($defaults)
-    {
-        $this->defaults = $defaults;
-    }
+public function setOptions($options)
+{
+$this->options = $options;
+}
 
-    public function getDefaults()
-    {
-        return $this->defaults;
-    }
+public function getOptions()
+{
+return $this->options;
+}
+
+public function setDefaults($defaults)
+{
+$this->defaults = $defaults;
+}
+
+public function getDefaults()
+{
+return $this->defaults;
+}
 }

@@ -26,7 +26,6 @@ namespace Symfony\Component\EventDispatcher;
 
 interface EventSubscriberInterface
 {
-    
 
 
 
@@ -46,5 +45,6 @@ interface EventSubscriberInterface
 
 
 
-    static function getSubscribedEvents();
+
+static function getSubscribedEvents();
 }

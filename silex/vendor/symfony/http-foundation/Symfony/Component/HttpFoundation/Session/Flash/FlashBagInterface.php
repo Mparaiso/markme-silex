@@ -20,32 +20,13 @@ use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 
 interface FlashBagInterface extends SessionBagInterface
 {
-    
-
-
-
-
-
-    function set($type, $message);
-
-    
 
 
 
 
 
 
-
-    function peek($type, $default = null);
-
-    
-
-
-
-
-    function peekAll();
-
-    
+function add($type, $message);
 
 
 
@@ -53,33 +34,60 @@ interface FlashBagInterface extends SessionBagInterface
 
 
 
-    function get($type, $default = null);
-
-    
-
-
-
-
-    function all();
-
-    
-
-
-    function setAll(array $messages);
-
-    
+function set($type, $message);
 
 
 
 
 
 
-    function has($type);
-
-    
 
 
 
+function peek($type, array $default = array());
 
-    function keys();
+
+
+
+
+
+function peekAll();
+
+
+
+
+
+
+
+
+
+function get($type, array $default = array());
+
+
+
+
+
+
+function all();
+
+
+
+
+function setAll(array $messages);
+
+
+
+
+
+
+
+
+function has($type);
+
+
+
+
+
+
+function keys();
 }

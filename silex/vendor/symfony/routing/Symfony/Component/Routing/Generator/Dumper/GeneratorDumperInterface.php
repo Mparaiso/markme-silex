@@ -22,7 +22,6 @@ use Symfony\Component\Routing\RouteCollection;
 
 interface GeneratorDumperInterface
 {
-    
 
 
 
@@ -34,12 +33,13 @@ interface GeneratorDumperInterface
 
 
 
-    function dump(array $options = array());
 
-    
-
+function dump(array $options = array());
 
 
 
-    function getRoutes();
+
+
+
+function getRoutes();
 }

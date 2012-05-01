@@ -24,57 +24,31 @@ use Symfony\Component\EventDispatcher\Event;
 
 class KernelEvent extends Event
 {
-    
-
-
-
-    private $kernel;
-
-    
-
-
-
-    private $request;
-
-    
 
 
 
 
-    private $requestType;
+private $kernel;
 
-    public function __construct(HttpKernelInterface $kernel, Request $request, $requestType)
-    {
-        $this->kernel = $kernel;
-        $this->request = $request;
-        $this->requestType = $requestType;
-    }
 
-    
+
+
+
+private $request;
 
 
 
 
 
 
-    public function getKernel()
-    {
-        return $this->kernel;
-    }
+private $requestType;
 
-    
-
-
-
-
-
-
-    public function getRequest()
-    {
-        return $this->request;
-    }
-
-    
+public function __construct(HttpKernelInterface $kernel, Request $request, $requestType)
+{
+$this->kernel = $kernel;
+$this->request = $request;
+$this->requestType = $requestType;
+}
 
 
 
@@ -82,8 +56,34 @@ class KernelEvent extends Event
 
 
 
-    public function getRequestType()
-    {
-        return $this->requestType;
-    }
+
+public function getKernel()
+{
+return $this->kernel;
+}
+
+
+
+
+
+
+
+
+public function getRequest()
+{
+return $this->request;
+}
+
+
+
+
+
+
+
+
+
+public function getRequestType()
+{
+return $this->requestType;
+}
 }

@@ -33,17 +33,16 @@ use Symfony\Component\BrowserKit\Client;
 
 abstract class Client
 {
-    protected $history;
-    protected $cookieJar;
-    protected $server;
-    protected $request;
-    protected $response;
-    protected $crawler;
-    protected $insulated;
-    protected $redirect;
-    protected $followRedirects;
+protected $history;
+protected $cookieJar;
+protected $server;
+protected $request;
+protected $response;
+protected $crawler;
+protected $insulated;
+protected $redirect;
+protected $followRedirects;
 
-    
 
 
 
@@ -52,29 +51,27 @@ abstract class Client
 
 
 
-    public function __construct(array $server = array(), History $history = null, CookieJar $cookieJar = null)
-    {
-        $this->setServerParameters($server);
-        $this->history = null === $history ? new History() : $history;
-        $this->cookieJar = null === $cookieJar ? new CookieJar() : $cookieJar;
-        $this->insulated = false;
-        $this->followRedirects = true;
-    }
 
-    
+public function __construct(array $server = array(), History $history = null, CookieJar $cookieJar = null)
+{
+$this->setServerParameters($server);
+$this->history = null === $history ? new History() : $history;
+$this->cookieJar = null === $cookieJar ? new CookieJar() : $cookieJar;
+$this->insulated = false;
+$this->followRedirects = true;
+}
 
 
 
 
 
 
-    public function followRedirects($followRedirect = true)
-    {
-        $this->followRedirects = (Boolean) $followRedirect;
-    }
 
-    
 
+public function followRedirects($followRedirect = true)
+{
+$this->followRedirects = (Boolean) $followRedirect;
+}
 
 
 
@@ -82,154 +79,136 @@ abstract class Client
 
 
 
-    public function insulate($insulated = true)
-    {
-        if (!class_exists('Symfony\\Component\\Process\\Process')) {
-            
-            throw new \RuntimeException('Unable to isolate requests as the Symfony Process Component is not installed.');
-            
-        }
 
-        $this->insulated = (Boolean) $insulated;
-    }
 
-    
 
+public function insulate($insulated = true)
+{
+if (!class_exists('Symfony\\Component\\Process\\Process')) {
 
+ throw new \RuntimeException('Unable to isolate requests as the Symfony Process Component is not installed.');
 
+ }
 
+$this->insulated = (Boolean) $insulated;
+}
 
 
-    public function setServerParameters(array $server)
-    {
-        $this->server = array_merge(array(
-            'HTTP_HOST'       => 'localhost',
-            'HTTP_USER_AGENT' => 'Symfony2 BrowserKit',
-        ), $server);
-    }
 
-    
 
 
 
 
 
-    public function setServerParameter($key, $value)
-    {
-        $this->server[$key] = $value;
-    }
+public function setServerParameters(array $server)
+{
+$this->server = array_merge(array(
+'HTTP_HOST' => 'localhost',
+'HTTP_USER_AGENT' => 'Symfony2 BrowserKit',
+), $server);
+}
 
-    
 
 
 
 
 
 
+public function setServerParameter($key, $value)
+{
+$this->server[$key] = $value;
+}
 
-    public function getServerParameter($key, $default = '')
-    {
-        return (isset($this->server[$key])) ? $this->server[$key] : $default;
-    }
 
-    
 
 
 
 
 
 
-    public function getHistory()
-    {
-        return $this->history;
-    }
 
-    
+public function getServerParameter($key, $default = '')
+{
+return (isset($this->server[$key])) ? $this->server[$key] : $default;
+}
 
 
 
 
 
 
-    public function getCookieJar()
-    {
-        return $this->cookieJar;
-    }
 
-    
 
+public function getHistory()
+{
+return $this->history;
+}
 
 
 
 
 
-    public function getCrawler()
-    {
-        return $this->crawler;
-    }
 
-    
 
 
+public function getCookieJar()
+{
+return $this->cookieJar;
+}
 
 
 
 
-    public function getResponse()
-    {
-        return $this->response;
-    }
 
-    
 
 
 
+public function getCrawler()
+{
+return $this->crawler;
+}
 
 
 
-    public function getRequest()
-    {
-        return $this->request;
-    }
 
-    
 
 
 
 
+public function getResponse()
+{
+return $this->response;
+}
 
 
-    public function click(Link $link)
-    {
-        if ($link instanceof Form) {
-            return $this->submit($link);
-        }
 
-        return $this->request($link->getMethod(), $link->getUri());
-    }
 
-    
 
 
 
 
+public function getRequest()
+{
+return $this->request;
+}
 
 
 
 
 
-    public function submit(Form $form, array $values = array())
-    {
-        $form->setValues($values);
 
-        return $this->request($form->getMethod(), $form->getUri(), $form->getPhpValues(), $form->getPhpFiles());
-    }
 
-    
 
 
 
+public function click(Link $link)
+{
+if ($link instanceof Form) {
+return $this->submit($link);
+}
 
+return $this->request($link->getMethod(), $link->getUri());
+}
 
 
 
@@ -240,45 +219,22 @@ abstract class Client
 
 
 
-    public function request($method, $uri, array $parameters = array(), array $files = array(), array $server = array(), $content = null, $changeHistory = true)
-    {
-        $uri = $this->getAbsoluteUri($uri);
 
-        $server = array_merge($this->server, $server);
-        if (!$this->history->isEmpty()) {
-            $server['HTTP_REFERER'] = $this->history->current()->getUri();
-        }
-        $server['HTTP_HOST'] = parse_url($uri, PHP_URL_HOST);
-        $server['HTTPS'] = 'https' == parse_url($uri, PHP_URL_SCHEME);
+public function submit(Form $form, array $values = array())
+{
+$form->setValues($values);
 
-        $request = new Request($uri, $method, $parameters, $files, $this->cookieJar->allValues($uri), $server, $content);
+return $this->request($form->getMethod(), $form->getUri(), $form->getPhpValues(), $form->getPhpFiles());
+}
 
-        $this->request = $this->filterRequest($request);
 
-        if (true === $changeHistory) {
-            $this->history->add($request);
-        }
 
-        if ($this->insulated) {
-            $this->response = $this->doRequestInProcess($this->request);
-        } else {
-            $this->response = $this->doRequest($this->request);
-        }
 
-        $response = $this->filterResponse($this->response);
 
-        $this->cookieJar->updateFromResponse($response);
 
-        $this->redirect = $response->getHeader('Location');
 
-        if ($this->followRedirects && $this->redirect) {
-            return $this->crawler = $this->followRedirect();
-        }
 
-        return $this->crawler = $this->createCrawlerFromContent($request->getUri(), $response->getContent(), $response->getHeader('Content-Type'));
-    }
 
-    
 
 
 
@@ -286,68 +242,75 @@ abstract class Client
 
 
 
+public function request($method, $uri, array $parameters = array(), array $files = array(), array $server = array(), $content = null, $changeHistory = true)
+{
+$uri = $this->getAbsoluteUri($uri);
 
-    protected function doRequestInProcess($request)
-    {
-        
-        $process = new PhpProcess($this->getScript($request), null, array('TMPDIR' => sys_get_temp_dir(), 'TEMP' => sys_get_temp_dir()));
-        $process->run();
+$server = array_merge($this->server, $server);
+if (!$this->history->isEmpty()) {
+$server['HTTP_REFERER'] = $this->history->current()->getUri();
+}
+$server['HTTP_HOST'] = parse_url($uri, PHP_URL_HOST);
+$server['HTTPS'] = 'https' == parse_url($uri, PHP_URL_SCHEME);
 
-        if (!$process->isSuccessful() || !preg_match('/^O\:\d+\:/', $process->getOutput())) {
-            throw new \RuntimeException('OUTPUT: '.$process->getOutput().' ERROR OUTPUT: '.$process->getErrorOutput());
-        }
+$request = new Request($uri, $method, $parameters, $files, $this->cookieJar->allValues($uri), $server, $content);
 
-        return unserialize($process->getOutput());
-    }
+$this->request = $this->filterRequest($request);
 
-    
+if (true === $changeHistory) {
+$this->history->add($request);
+}
 
+if ($this->insulated) {
+$this->response = $this->doRequestInProcess($this->request);
+} else {
+$this->response = $this->doRequest($this->request);
+}
 
+$response = $this->filterResponse($this->response);
 
+$this->cookieJar->updateFromResponse($response);
 
+$this->redirect = $response->getHeader('Location');
 
+if ($this->followRedirects && $this->redirect) {
+return $this->crawler = $this->followRedirect();
+}
 
-    abstract protected function doRequest($request);
+return $this->crawler = $this->createCrawlerFromContent($request->getUri(), $response->getContent(), $response->getHeader('Content-Type'));
+}
 
-    
 
 
 
 
 
 
-    protected function getScript($request)
-    {
-        
-        throw new \LogicException('To insulate requests, you need to override the getScript() method.');
-        
-    }
 
-    
 
 
+protected function doRequestInProcess($request)
+{
 
+ $process = new PhpProcess($this->getScript($request), null, array('TMPDIR' => sys_get_temp_dir(), 'TEMP' => sys_get_temp_dir()));
+$process->run();
 
+if (!$process->isSuccessful() || !preg_match('/^O\:\d+\:/', $process->getOutput())) {
+throw new \RuntimeException('OUTPUT: '.$process->getOutput().' ERROR OUTPUT: '.$process->getErrorOutput());
+}
 
+return unserialize($process->getOutput());
+}
 
-    protected function filterRequest(Request $request)
-    {
-        return $request;
-    }
 
-    
 
 
 
 
 
 
-    protected function filterResponse($response)
-    {
-        return $response;
-    }
+abstract protected function doRequest($request);
 
-    
 
 
 
@@ -355,133 +318,178 @@ abstract class Client
 
 
 
+protected function getScript($request)
+{
 
-    protected function createCrawlerFromContent($uri, $content, $type)
-    {
-        $crawler = new Crawler(null, $uri);
-        $crawler->addContent($content, $type);
+ throw new \LogicException('To insulate requests, you need to override the getScript() method.');
 
-        return $crawler;
-    }
+ }
 
-    
 
 
 
 
 
 
-    public function back()
-    {
-        return $this->requestFromRequest($this->history->back(), false);
-    }
 
-    
+protected function filterRequest(Request $request)
+{
+return $request;
+}
 
 
 
 
 
 
-    public function forward()
-    {
-        return $this->requestFromRequest($this->history->forward(), false);
-    }
 
-    
 
+protected function filterResponse($response)
+{
+return $response;
+}
 
 
 
 
 
-    public function reload()
-    {
-        return $this->requestFromRequest($this->history->current(), false);
-    }
 
-    
 
 
 
 
 
 
+protected function createCrawlerFromContent($uri, $content, $type)
+{
+if (!class_exists('Symfony\Component\DomCrawler\Crawler')) {
+return null;
+}
 
+$crawler = new Crawler(null, $uri);
+$crawler->addContent($content, $type);
 
-    public function followRedirect()
-    {
-        if (empty($this->redirect)) {
-            throw new \LogicException('The request was not redirected.');
-        }
+return $crawler;
+}
 
-        return $this->request('get', $this->redirect);
-    }
 
-    
 
 
 
 
 
 
-    public function restart()
-    {
-        $this->cookieJar->clear();
-        $this->history->clear();
-    }
+public function back()
+{
+return $this->requestFromRequest($this->history->back(), false);
+}
 
-    
 
 
 
 
 
 
-    protected function getAbsoluteUri($uri)
-    {
-        
-        if (0 === strpos($uri, 'http')) {
-            return $uri;
-        }
 
-        if (!$this->history->isEmpty()) {
-            $currentUri = $this->history->current()->getUri();
-        } else {
-            $currentUri = sprintf('http%s://%s/',
-                isset($this->server['HTTPS']) ? 's' : '',
-                isset($this->server['HTTP_HOST']) ? $this->server['HTTP_HOST'] : 'localhost'
-            );
-        }
+public function forward()
+{
+return $this->requestFromRequest($this->history->forward(), false);
+}
 
-        
-        if (!$uri || '#' == $uri[0]) {
-            return preg_replace('/#.*?$/', '', $currentUri).$uri;
-        }
 
-        if ('/' !== $uri[0]) {
-            $path = parse_url($currentUri, PHP_URL_PATH);
 
-            if ('/' !== substr($path, -1)) {
-                $path = substr($path, 0, strrpos($path, '/') + 1);
-            }
 
-            $uri = $path.$uri;
-        }
 
-        return preg_replace('#^(.*?//[^/]+)\/.*$#', '$1', $currentUri).$uri;
-    }
 
-    
 
 
+public function reload()
+{
+return $this->requestFromRequest($this->history->current(), false);
+}
 
 
 
 
 
-    protected function requestFromRequest(Request $request, $changeHistory = true)
-    {
-        return $this->request($request->getMethod(), $request->getUri(), $request->getParameters(), array(), $request->getFiles(), $request->getServer(), $request->getContent(), $changeHistory);
-    }
+
+
+
+
+
+public function followRedirect()
+{
+if (empty($this->redirect)) {
+throw new \LogicException('The request was not redirected.');
+}
+
+return $this->request('get', $this->redirect);
+}
+
+
+
+
+
+
+
+
+public function restart()
+{
+$this->cookieJar->clear();
+$this->history->clear();
+}
+
+
+
+
+
+
+
+
+protected function getAbsoluteUri($uri)
+{
+
+ if (0 === strpos($uri, 'http')) {
+return $uri;
+}
+
+if (!$this->history->isEmpty()) {
+$currentUri = $this->history->current()->getUri();
+} else {
+$currentUri = sprintf('http%s://%s/',
+isset($this->server['HTTPS']) ? 's' : '',
+isset($this->server['HTTP_HOST']) ? $this->server['HTTP_HOST'] : 'localhost'
+);
+}
+
+
+ if (!$uri || '#' == $uri[0]) {
+return preg_replace('/#.*?$/', '', $currentUri).$uri;
+}
+
+if ('/' !== $uri[0]) {
+$path = parse_url($currentUri, PHP_URL_PATH);
+
+if ('/' !== substr($path, -1)) {
+$path = substr($path, 0, strrpos($path, '/') + 1);
+}
+
+$uri = $path.$uri;
+}
+
+return preg_replace('#^(.*?//[^/]+)\/.*$#', '$1', $currentUri).$uri;
+}
+
+
+
+
+
+
+
+
+
+protected function requestFromRequest(Request $request, $changeHistory = true)
+{
+return $this->request($request->getMethod(), $request->getUri(), $request->getParameters(), $request->getFiles(), $request->getServer(), $request->getContent(), $changeHistory);
+}
 }

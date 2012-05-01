@@ -24,7 +24,6 @@ use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 interface UrlMatcherInterface extends RequestContextAwareInterface
 {
-    
 
 
 
@@ -39,5 +38,6 @@ interface UrlMatcherInterface extends RequestContextAwareInterface
 
 
 
-    function match($pathinfo);
+
+function match($pathinfo);
 }

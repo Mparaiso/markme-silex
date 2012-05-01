@@ -12,6 +12,7 @@
 namespace Symfony\Component\HttpFoundation\Session\Storage;
 
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
+use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
 
 
 
@@ -23,27 +24,6 @@ use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 
 interface SessionStorageInterface
 {
-    
-
-
-
-
-
-
-
-
-    function start();
-
-    
-
-
-
-
-
-
-    function getId();
-
-    
 
 
 
@@ -53,30 +33,7 @@ interface SessionStorageInterface
 
 
 
-
-
-
-
-
-
-    function regenerate($destroy = false);
-
-    
-
-
-
-
-
-
-
-    function save();
-
-    
-
-
-    function clear();
-
-    
+function start();
 
 
 
@@ -85,12 +42,95 @@ interface SessionStorageInterface
 
 
 
-    function getBag($name);
-
-    
+function getId();
 
 
 
 
-    function registerBag(SessionBagInterface $bag);
+
+
+
+
+function setId($id);
+
+
+
+
+
+
+
+
+function getName();
+
+
+
+
+
+
+
+
+function setName($name);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function regenerate($destroy = false, $lifetime = null);
+
+
+
+
+
+
+
+
+
+function save();
+
+
+
+
+function clear();
+
+
+
+
+
+
+
+
+
+
+function getBag($name);
+
+
+
+
+
+
+function registerBag(SessionBagInterface $bag);
+
+
+
+
+function getMetadataBag();
 }

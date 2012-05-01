@@ -18,31 +18,31 @@ namespace Symfony\Component\HttpFoundation\Session;
 
 interface SessionBagInterface
 {
-    
 
 
 
 
-    function getName();
 
-    
-
-
-
-
-    function initialize(array &$array);
-
-    
+function getName();
 
 
 
 
-    function getStorageKey();
-
-    
 
 
+function initialize(array &$array);
 
 
-    function clear();
+
+
+
+
+function getStorageKey();
+
+
+
+
+
+
+function clear();
 }

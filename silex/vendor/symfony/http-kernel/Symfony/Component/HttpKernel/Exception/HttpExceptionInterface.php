@@ -18,17 +18,17 @@ namespace Symfony\Component\HttpKernel\Exception;
 
 interface HttpExceptionInterface
 {
-    
 
 
 
 
-    function getStatusCode();
 
-    
-
+function getStatusCode();
 
 
 
-    function getHeaders();
+
+
+
+function getHeaders();
 }

@@ -25,7 +25,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 interface TerminableInterface
 {
-    
 
 
 
@@ -35,5 +34,6 @@ interface TerminableInterface
 
 
 
-    function terminate(Request $request, Response $response);
+
+function terminate(Request $request, Response $response);
 }

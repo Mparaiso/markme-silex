@@ -20,16 +20,6 @@ use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 
 interface AttributeBagInterface extends SessionBagInterface
 {
-    
-
-
-
-
-
-
-    function has($name);
-
-    
 
 
 
@@ -37,36 +27,46 @@ interface AttributeBagInterface extends SessionBagInterface
 
 
 
-    function get($name, $default = null);
-
-    
-
-
-
-
-
-    function set($name, $value);
-
-    
-
-
-
-
-    function all();
-
-    
-
-
-
-
-    function replace(array $attributes);
-
-    
+function has($name);
 
 
 
 
 
 
-    function remove($name);
+
+
+
+function get($name, $default = null);
+
+
+
+
+
+
+
+function set($name, $value);
+
+
+
+
+
+
+function all();
+
+
+
+
+
+
+function replace(array $attributes);
+
+
+
+
+
+
+
+
+function remove($name);
 }

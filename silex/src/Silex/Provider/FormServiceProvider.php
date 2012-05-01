@@ -27,33 +27,33 @@ use Symfony\Component\Form\Extension\Csrf\CsrfExtension;
 
 class FormServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
-    {
-        $app['form.secret'] = md5(__DIR__);
+public function register(Application $app)
+{
+$app['form.secret'] = md5(__DIR__);
 
-        $app['form.factory'] = $app->share(function () use ($app) {
-            $extensions = array(
-                new CoreExtension(),
-                new CsrfExtension($app['form.csrf_provider']),
-            );
+$app['form.factory'] = $app->share(function () use ($app) {
+$extensions = array(
+new CoreExtension(),
+new CsrfExtension($app['form.csrf_provider']),
+);
 
-            if (isset($app['validator'])) {
-                $extensions[] = new FormValidatorExtension($app['validator']);
-            }
+if (isset($app['validator'])) {
+$extensions[] = new FormValidatorExtension($app['validator']);
+}
 
-            return new FormFactory($extensions);
-        });
+return new FormFactory($extensions);
+});
 
-        $app['form.csrf_provider'] = $app->share(function () use ($app) {
-            if (isset($app['session'])) {
-                return new SessionCsrfProvider($app['session'], $app['form.secret']);
-            }
+$app['form.csrf_provider'] = $app->share(function () use ($app) {
+if (isset($app['session'])) {
+return new SessionCsrfProvider($app['session'], $app['form.secret']);
+}
 
-            return new DefaultCsrfProvider($app['form.secret']);
-        });
+return new DefaultCsrfProvider($app['form.secret']);
+});
 
-        if (isset($app['form.class_path'])) {
-            $app['autoloader']->registerNamespace('Symfony\\Component\\Form', $app['form.class_path']);
-        }
-    }
+if (isset($app['form.class_path'])) {
+$app['autoloader']->registerNamespace('Symfony\\Component\\Form', $app['form.class_path']);
+}
+}
 }

@@ -20,15 +20,14 @@ namespace Symfony\Component\HttpFoundation;
 
 class Cookie
 {
-    protected $name;
-    protected $value;
-    protected $domain;
-    protected $expire;
-    protected $path;
-    protected $secure;
-    protected $httpOnly;
+protected $name;
+protected $value;
+protected $domain;
+protected $expire;
+protected $path;
+protected $secure;
+protected $httpOnly;
 
-    
 
 
 
@@ -41,163 +40,164 @@ class Cookie
 
 
 
-    public function __construct($name, $value = null, $expire = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true)
-    {
-        
-        if (preg_match("/[=,; \t\r\n\013\014]/", $name)) {
-            throw new \InvalidArgumentException(sprintf('The cookie name "%s" contains invalid characters.', $name));
-        }
 
-        if (empty($name)) {
-            throw new \InvalidArgumentException('The cookie name cannot be empty.');
-        }
+public function __construct($name, $value = null, $expire = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true)
+{
 
-        
-        if ($expire instanceof \DateTime) {
-            $expire = $expire->format('U');
-        } elseif (!is_numeric($expire)) {
-            $expire = strtotime($expire);
+ if (preg_match("/[=,; \t\r\n\013\014]/", $name)) {
+throw new \InvalidArgumentException(sprintf('The cookie name "%s" contains invalid characters.', $name));
+}
 
-            if (false === $expire || -1 === $expire) {
-                throw new \InvalidArgumentException('The cookie expiration time is not valid.');
-            }
-        }
+if (empty($name)) {
+throw new \InvalidArgumentException('The cookie name cannot be empty.');
+}
 
-        $this->name = $name;
-        $this->value = $value;
-        $this->domain = $domain;
-        $this->expire = $expire;
-        $this->path = empty($path) ? '/' : $path;
-        $this->secure = (Boolean) $secure;
-        $this->httpOnly = (Boolean) $httpOnly;
-    }
 
-    public function __toString()
-    {
-        $str = urlencode($this->getName()).'=';
+ if ($expire instanceof \DateTime) {
+$expire = $expire->format('U');
+} elseif (!is_numeric($expire)) {
+$expire = strtotime($expire);
 
-        if ('' === (string) $this->getValue()) {
-            $str .= 'deleted; expires='.gmdate("D, d-M-Y H:i:s T", time() - 31536001);
-        } else {
-            $str .= urlencode($this->getValue());
+if (false === $expire || -1 === $expire) {
+throw new \InvalidArgumentException('The cookie expiration time is not valid.');
+}
+}
 
-            if ($this->getExpiresTime() !== 0) {
-                $str .= '; expires='.gmdate("D, d-M-Y H:i:s T", $this->getExpiresTime());
-            }
-        }
+$this->name = $name;
+$this->value = $value;
+$this->domain = $domain;
+$this->expire = $expire;
+$this->path = empty($path) ? '/' : $path;
+$this->secure = (Boolean) $secure;
+$this->httpOnly = (Boolean) $httpOnly;
+}
 
-        if ('/' !== $this->path) {
-            $str .= '; path='.$this->path;
-        }
+public function __toString()
+{
+$str = urlencode($this->getName()).'=';
 
-        if (null !== $this->getDomain()) {
-            $str .= '; domain='.$this->getDomain();
-        }
+if ('' === (string) $this->getValue()) {
+$str .= 'deleted; expires='.gmdate("D, d-M-Y H:i:s T", time() - 31536001);
+} else {
+$str .= urlencode($this->getValue());
 
-        if (true === $this->isSecure()) {
-            $str .= '; secure';
-        }
+if ($this->getExpiresTime() !== 0) {
+$str .= '; expires='.gmdate("D, d-M-Y H:i:s T", $this->getExpiresTime());
+}
+}
 
-        if (true === $this->isHttpOnly()) {
-            $str .= '; httponly';
-        }
+if ('/' !== $this->path) {
+$str .= '; path='.$this->path;
+}
 
-        return $str;
-    }
+if (null !== $this->getDomain()) {
+$str .= '; domain='.$this->getDomain();
+}
 
-    
+if (true === $this->isSecure()) {
+$str .= '; secure';
+}
 
+if (true === $this->isHttpOnly()) {
+$str .= '; httponly';
+}
 
+return $str;
+}
 
 
 
 
-    public function getName()
-    {
-        return $this->name;
-    }
 
-    
 
 
 
+public function getName()
+{
+return $this->name;
+}
 
 
 
-    public function getValue()
-    {
-        return $this->value;
-    }
 
-    
 
 
 
 
+public function getValue()
+{
+return $this->value;
+}
 
 
-    public function getDomain()
-    {
-        return $this->domain;
-    }
 
-    
 
 
 
 
 
+public function getDomain()
+{
+return $this->domain;
+}
 
-    public function getExpiresTime()
-    {
-        return $this->expire;
-    }
 
-    
 
 
 
 
 
 
-    public function getPath()
-    {
-        return $this->path;
-    }
+public function getExpiresTime()
+{
+return $this->expire;
+}
 
-    
 
 
 
 
 
 
-    public function isSecure()
-    {
-        return $this->secure;
-    }
 
-    
+public function getPath()
+{
+return $this->path;
+}
 
 
 
 
 
 
-    public function isHttpOnly()
-    {
-        return $this->httpOnly;
-    }
 
-    
 
+public function isSecure()
+{
+return $this->secure;
+}
 
 
 
 
 
-    public function isCleared()
-    {
-        return $this->expire < time();
-    }
+
+
+
+public function isHttpOnly()
+{
+return $this->httpOnly;
+}
+
+
+
+
+
+
+
+
+public function isCleared()
+{
+return $this->expire < time();
+}
 }

@@ -23,7 +23,6 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 interface UrlGeneratorInterface extends RequestContextAwareInterface
 {
-    
 
 
 
@@ -39,5 +38,6 @@ interface UrlGeneratorInterface extends RequestContextAwareInterface
 
 
 
-    function generate($name, $parameters = array(), $absolute = false);
+
+function generate($name, $parameters = array(), $absolute = false);
 }

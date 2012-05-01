@@ -24,16 +24,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 interface StoreInterface
 {
-    
-
-
-
-
-
-
-    function lookup(Request $request);
-
-    
 
 
 
@@ -41,45 +31,55 @@ interface StoreInterface
 
 
 
-
-
-
-    function write(Request $request, Response $response);
-
-    
-
-
-
-
-    function invalidate(Request $request);
-
-    
+function lookup(Request $request);
 
 
 
 
 
 
-    function lock(Request $request);
-
-    
-
-
-
-
-    function unlock(Request $request);
-
-    
 
 
 
 
 
 
-    function purge($url);
-
-    
+function write(Request $request, Response $response);
 
 
-    function cleanup();
+
+
+
+
+function invalidate(Request $request);
+
+
+
+
+
+
+
+
+function lock(Request $request);
+
+
+
+
+
+
+function unlock(Request $request);
+
+
+
+
+
+
+
+
+function purge($url);
+
+
+
+
+function cleanup();
 }

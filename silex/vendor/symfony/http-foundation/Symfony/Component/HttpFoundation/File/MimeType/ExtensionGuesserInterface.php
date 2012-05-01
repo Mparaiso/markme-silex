@@ -16,11 +16,11 @@ namespace Symfony\Component\HttpFoundation\File\MimeType;
 
 interface ExtensionGuesserInterface
 {
-    
 
 
 
 
 
-    function guess($mimeType);
+
+function guess($mimeType);
 }

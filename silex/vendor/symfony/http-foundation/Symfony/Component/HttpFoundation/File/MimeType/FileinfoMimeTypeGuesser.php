@@ -21,39 +21,39 @@ use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 
 class FileinfoMimeTypeGuesser implements MimeTypeGuesserInterface
 {
-    
 
 
 
 
-    static public function isSupported()
-    {
-        return function_exists('finfo_open');
-    }
 
-    
-
+static public function isSupported()
+{
+return function_exists('finfo_open');
+}
 
 
 
-    public function guess($path)
-    {
-        if (!is_file($path)) {
-            throw new FileNotFoundException($path);
-        }
 
-        if (!is_readable($path)) {
-            throw new AccessDeniedException($path);
-        }
 
-        if (!self::isSupported()) {
-            return null;
-        }
 
-        if (!$finfo = new \finfo(FILEINFO_MIME_TYPE)) {
-            return null;
-        }
+public function guess($path)
+{
+if (!is_file($path)) {
+throw new FileNotFoundException($path);
+}
 
-        return $finfo->file($path);
-    }
+if (!is_readable($path)) {
+throw new AccessDeniedException($path);
+}
+
+if (!self::isSupported()) {
+return null;
+}
+
+if (!$finfo = new \finfo(FILEINFO_MIME_TYPE)) {
+return null;
+}
+
+return $finfo->file($path);
+}
 }

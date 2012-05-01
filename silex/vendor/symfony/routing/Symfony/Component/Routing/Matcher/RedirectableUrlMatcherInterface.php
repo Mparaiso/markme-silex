@@ -20,7 +20,6 @@ namespace Symfony\Component\Routing\Matcher;
 
 interface RedirectableUrlMatcherInterface
 {
-    
 
 
 
@@ -31,5 +30,6 @@ interface RedirectableUrlMatcherInterface
 
 
 
-    function redirect($path, $route, $scheme = null);
+
+function redirect($path, $route, $scheme = null);
 }

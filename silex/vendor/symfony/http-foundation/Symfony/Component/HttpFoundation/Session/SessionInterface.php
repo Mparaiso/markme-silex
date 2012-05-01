@@ -18,7 +18,6 @@ namespace Symfony\Component\HttpFoundation\Session;
 
 interface SessionInterface
 {
-    
 
 
 
@@ -27,9 +26,8 @@ interface SessionInterface
 
 
 
-    function start();
 
-    
+function start();
 
 
 
@@ -38,42 +36,38 @@ interface SessionInterface
 
 
 
+function getId();
 
-    function invalidate();
 
-    
 
 
 
 
 
 
+function setId($id);
 
 
 
-    function migrate($destroy = false);
 
-    
 
 
 
 
+function getName();
 
 
-    function save();
 
-    
 
 
 
 
 
+function setName($name);
 
 
 
-    function has($name);
 
-    
 
 
 
@@ -83,49 +77,123 @@ interface SessionInterface
 
 
 
-    function get($name, $default = null);
 
-    
 
 
+function invalidate($lifetime = null);
 
 
 
 
 
-    function set($name, $value);
 
-    
 
 
 
 
 
 
-    function all();
 
-    
 
 
+function migrate($destroy = false, $lifetime = null);
 
 
-    function replace(array $attributes);
 
-    
 
 
 
 
 
+function save();
 
 
 
-    function remove($name);
 
-    
 
 
 
 
-    function clear();
+
+
+function has($name);
+
+
+
+
+
+
+
+
+
+
+
+function get($name, $default = null);
+
+
+
+
+
+
+
+
+
+function set($name, $value);
+
+
+
+
+
+
+
+
+function all();
+
+
+
+
+
+
+function replace(array $attributes);
+
+
+
+
+
+
+
+
+
+
+function remove($name);
+
+
+
+
+
+
+function clear();
+
+
+
+
+
+
+function registerBag(SessionBagInterface $bag);
+
+
+
+
+
+
+
+
+function getBag($name);
+
+
+
+
+
+
+function getMetadataBag();
 }

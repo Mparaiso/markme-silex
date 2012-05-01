@@ -23,10 +23,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 interface HttpKernelInterface
 {
-    const MASTER_REQUEST = 1;
-    const SUB_REQUEST = 2;
-
-    
+const MASTER_REQUEST = 1;
+const SUB_REQUEST = 2;
 
 
 
@@ -43,5 +41,7 @@ interface HttpKernelInterface
 
 
 
-    function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true);
+
+
+function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true);
 }

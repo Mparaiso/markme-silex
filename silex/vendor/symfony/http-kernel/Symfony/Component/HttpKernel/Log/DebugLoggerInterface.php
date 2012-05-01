@@ -18,7 +18,6 @@ namespace Symfony\Component\HttpKernel\Log;
 
 interface DebugLoggerInterface
 {
-    
 
 
 
@@ -27,12 +26,13 @@ interface DebugLoggerInterface
 
 
 
-    function getLogs();
 
-    
-
+function getLogs();
 
 
 
-    function countErrors();
+
+
+
+function countErrors();
 }

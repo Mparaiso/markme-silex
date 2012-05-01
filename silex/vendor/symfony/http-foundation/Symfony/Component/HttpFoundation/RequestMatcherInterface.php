@@ -20,7 +20,6 @@ namespace Symfony\Component\HttpFoundation;
 
 interface RequestMatcherInterface
 {
-    
 
 
 
@@ -29,5 +28,6 @@ interface RequestMatcherInterface
 
 
 
-    function matches(Request $request);
+
+function matches(Request $request);
 }

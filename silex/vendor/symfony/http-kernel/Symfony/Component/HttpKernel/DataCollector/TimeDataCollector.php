@@ -23,87 +23,87 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TimeDataCollector extends DataCollector
 {
-    protected $kernel;
+protected $kernel;
 
-    public function __construct(KernelInterface $kernel = null)
-    {
-        $this->kernel = $kernel;
-    }
-
-    
-
-
-    public function collect(Request $request, Response $response, \Exception $exception = null)
-    {
-        $this->data = array(
-            'start_time' => (null !== $this->kernel ? $this->kernel->getStartTime() : $_SERVER['REQUEST_TIME']) * 1000,
-            'events'     => array(),
-        );
-    }
-
-    
+public function __construct(KernelInterface $kernel = null)
+{
+$this->kernel = $kernel;
+}
 
 
 
 
-    public function setEvents(array $events)
-    {
-        foreach ($events as $event) {
-            $event->ensureStopped();
-        }
-
-        $this->data['events'] = $events;
-    }
-
-    
-
-
-
-
-    public function getEvents()
-    {
-        return $this->data['events'];
-    }
-
-    
-
-
-
-
-    public function getTotalTime()
-    {
-        $lastEvent = $this->data['events']['__section__'];
-
-        return $lastEvent->getOrigin() + $lastEvent->getTotalTime() - $this->data['start_time'];
-    }
-
-    
+public function collect(Request $request, Response $response, \Exception $exception = null)
+{
+$this->data = array(
+'start_time' => (null !== $this->kernel ? $this->kernel->getStartTime() : $_SERVER['REQUEST_TIME']) * 1000,
+'events' => array(),
+);
+}
 
 
 
 
 
 
-    public function getInitTime()
-    {
-        return $this->data['events']['__section__']->getOrigin() - $this->getStartTime();
-    }
+public function setEvents(array $events)
+{
+foreach ($events as $event) {
+$event->ensureStopped();
+}
 
-    
-
-
-
-
-    public function getStartTime()
-    {
-        return $this->data['start_time'];
-    }
-
-    
+$this->data['events'] = $events;
+}
 
 
-    public function getName()
-    {
-        return 'time';
-    }
+
+
+
+
+public function getEvents()
+{
+return $this->data['events'];
+}
+
+
+
+
+
+
+public function getTotalTime()
+{
+$lastEvent = $this->data['events']['__section__'];
+
+return $lastEvent->getOrigin() + $lastEvent->getTotalTime() - $this->data['start_time'];
+}
+
+
+
+
+
+
+
+
+public function getInitTime()
+{
+return $this->data['events']['__section__']->getOrigin() - $this->getStartTime();
+}
+
+
+
+
+
+
+public function getStartTime()
+{
+return $this->data['start_time'];
+}
+
+
+
+
+public function getName()
+{
+return 'time';
+}
 }

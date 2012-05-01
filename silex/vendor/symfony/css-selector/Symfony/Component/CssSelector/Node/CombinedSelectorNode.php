@@ -23,112 +23,112 @@ use Symfony\Component\CssSelector\Exception\ParseException;
 
 class CombinedSelectorNode implements NodeInterface
 {
-    static protected $methodMapping = array(
-        ' ' => 'descendant',
-        '>' => 'child',
-        '+' => 'direct_adjacent',
-        '~' => 'indirect_adjacent',
-    );
+static protected $methodMapping = array(
+' ' => 'descendant',
+'>' => 'child',
+'+' => 'direct_adjacent',
+'~' => 'indirect_adjacent',
+);
 
-    protected $selector;
-    protected $combinator;
-    protected $subselector;
-
-    
+protected $selector;
+protected $combinator;
+protected $subselector;
 
 
 
 
 
 
-    public function __construct($selector, $combinator, $subselector)
-    {
-        $this->selector = $selector;
-        $this->combinator = $combinator;
-        $this->subselector = $subselector;
-    }
-
-    
 
 
-    public function __toString()
-    {
-        $comb = $this->combinator == ' ' ? '<followed>' : $this->combinator;
-
-        return sprintf('%s[%s %s %s]', __CLASS__, $this->selector, $comb, $this->subselector);
-    }
-
-    
+public function __construct($selector, $combinator, $subselector)
+{
+$this->selector = $selector;
+$this->combinator = $combinator;
+$this->subselector = $subselector;
+}
 
 
 
-    public function toXpath()
-    {
-        if (!isset(self::$methodMapping[$this->combinator])) {
-            throw new ParseException(sprintf('Unknown combinator: %s', $this->combinator));
-        }
 
-        $method = '_xpath_'.self::$methodMapping[$this->combinator];
-        $path = $this->selector->toXpath();
+public function __toString()
+{
+$comb = $this->combinator == ' ' ? '<followed>' : $this->combinator;
 
-        return $this->$method($path, $this->subselector);
-    }
-
-    
+return sprintf('%s[%s %s %s]', __CLASS__, $this->selector, $comb, $this->subselector);
+}
 
 
 
 
 
-    protected function _xpath_descendant($xpath, $sub)
-    {
-        
-        $xpath->join('/descendant::', $sub->toXpath());
+public function toXpath()
+{
+if (!isset(self::$methodMapping[$this->combinator])) {
+throw new ParseException(sprintf('Unknown combinator: %s', $this->combinator));
+}
 
-        return $xpath;
-    }
+$method = '_xpath_'.self::$methodMapping[$this->combinator];
+$path = $this->selector->toXpath();
 
-    
-
-
-
-
-
-    protected function _xpath_child($xpath, $sub)
-    {
-        
-        $xpath->join('/', $sub->toXpath());
-
-        return $xpath;
-    }
-
-    
+return $this->$method($path, $this->subselector);
+}
 
 
 
 
 
-    protected function _xpath_direct_adjacent($xpath, $sub)
-    {
-        
-        $xpath->join('/following-sibling::', $sub->toXpath());
-        $xpath->addNameTest();
-        $xpath->addCondition('position() = 1');
 
-        return $xpath;
-    }
 
-    
+protected function _xpath_descendant($xpath, $sub)
+{
+
+ $xpath->join('/descendant::', $sub->toXpath());
+
+return $xpath;
+}
 
 
 
 
 
-    protected function _xpath_indirect_adjacent($xpath, $sub)
-    {
-        
-        $xpath->join('/following-sibling::', $sub->toXpath());
 
-        return $xpath;
-    }
+
+protected function _xpath_child($xpath, $sub)
+{
+
+ $xpath->join('/', $sub->toXpath());
+
+return $xpath;
+}
+
+
+
+
+
+
+
+protected function _xpath_direct_adjacent($xpath, $sub)
+{
+
+ $xpath->join('/following-sibling::', $sub->toXpath());
+$xpath->addNameTest();
+$xpath->addCondition('position() = 1');
+
+return $xpath;
+}
+
+
+
+
+
+
+
+protected function _xpath_indirect_adjacent($xpath, $sub)
+{
+
+ $xpath->join('/following-sibling::', $sub->toXpath());
+
+return $xpath;
+}
 }

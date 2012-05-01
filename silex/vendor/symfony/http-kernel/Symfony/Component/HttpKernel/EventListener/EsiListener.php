@@ -25,37 +25,36 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class EsiListener implements EventSubscriberInterface
 {
-    private $i;
-    private $esi;
-
-    
+private $esi;
 
 
 
 
-    public function __construct(Esi $esi = null)
-    {
-        $this->esi = $esi;
-    }
-
-    
 
 
+public function __construct(Esi $esi = null)
+{
+$this->esi = $esi;
+}
 
 
-    public function onKernelResponse(FilterResponseEvent $event)
-    {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType() || null === $this->esi) {
-            return;
-        }
 
-        $this->esi->addSurrogateControl($event->getResponse());
-    }
 
-    static public function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::RESPONSE => 'onKernelResponse',
-        );
-    }
+
+
+public function onKernelResponse(FilterResponseEvent $event)
+{
+if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType() || null === $this->esi) {
+return;
+}
+
+$this->esi->addSurrogateControl($event->getResponse());
+}
+
+static public function getSubscribedEvents()
+{
+return array(
+KernelEvents::RESPONSE => 'onKernelResponse',
+);
+}
 }

@@ -23,50 +23,50 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PostResponseEvent extends Event
 {
-    
-
-
-
-    private $kernel;
-
-    private $request;
-
-    private $response;
-
-    public function __construct(HttpKernelInterface $kernel, Request $request, Response $response)
-    {
-        $this->kernel = $kernel;
-        $this->request = $request;
-        $this->response = $response;
-    }
-
-    
 
 
 
 
-    public function getKernel()
-    {
-        return $this->kernel;
-    }
+private $kernel;
 
-    
+private $request;
 
+private $response;
 
-
-
-    public function getRequest()
-    {
-        return $this->request;
-    }
-
-    
+public function __construct(HttpKernelInterface $kernel, Request $request, Response $response)
+{
+$this->kernel = $kernel;
+$this->request = $request;
+$this->response = $response;
+}
 
 
 
 
-    public function getResponse()
-    {
-        return $this->response;
-    }
+
+
+public function getKernel()
+{
+return $this->kernel;
+}
+
+
+
+
+
+
+public function getRequest()
+{
+return $this->request;
+}
+
+
+
+
+
+
+public function getResponse()
+{
+return $this->response;
+}
 }

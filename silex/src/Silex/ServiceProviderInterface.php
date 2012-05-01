@@ -18,10 +18,10 @@ namespace Silex;
 
 interface ServiceProviderInterface
 {
-    
 
 
 
 
-    function register(Application $app);
+
+function register(Application $app);
 }

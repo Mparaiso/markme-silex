@@ -24,7 +24,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 interface DataCollectorInterface
 {
-    
 
 
 
@@ -33,14 +32,15 @@ interface DataCollectorInterface
 
 
 
-    function collect(Request $request, Response $response, \Exception $exception = null);
 
-    
-
+function collect(Request $request, Response $response, \Exception $exception = null);
 
 
 
 
 
-    function getName();
+
+
+
+function getName();
 }

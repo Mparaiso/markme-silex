@@ -20,29 +20,27 @@ namespace Symfony\Component\BrowserKit;
 
 class Cookie
 {
-    
 
 
 
 
 
-    private static $dateFormats = array(
-        'D, d M Y H:i:s T',
-        'D, d-M-y H:i:s T',
-        'D, d-M-Y H:i:s T',
-        'D M j G:i:s Y',
-    );
 
-    protected $name;
-    protected $value;
-    protected $expires;
-    protected $path;
-    protected $domain;
-    protected $secure;
-    protected $httponly;
-    protected $rawValue;
+private static $dateFormats = array(
+'D, d M Y H:i:s T',
+'D, d-M-y H:i:s T',
+'D, d-M-Y H:i:s T',
+'D M j G:i:s Y',
+);
 
-    
+protected $name;
+protected $value;
+protected $expires;
+protected $path;
+protected $domain;
+protected $secure;
+protected $httponly;
+protected $rawValue;
 
 
 
@@ -56,60 +54,58 @@ class Cookie
 
 
 
-    public function __construct($name, $value, $expires = null, $path = null, $domain = '', $secure = false, $httponly = true, $encodedValue = false)
-    {
-        if ($encodedValue) {
-            $this->value    = urldecode($value);
-            $this->rawValue = $value;
-        } else {
-            $this->value    = $value;
-            $this->rawValue = urlencode($value);
-        }
-        $this->name     = $name;
-        $this->expires  = null === $expires ? null : (integer) $expires;
-        $this->path     = empty($path) ? '/' : $path;
-        $this->domain   = $domain;
-        $this->secure   = (Boolean) $secure;
-        $this->httponly = (Boolean) $httponly;
-    }
 
-    
 
+public function __construct($name, $value, $expires = null, $path = null, $domain = '', $secure = false, $httponly = true, $encodedValue = false)
+{
+if ($encodedValue) {
+$this->value = urldecode($value);
+$this->rawValue = $value;
+} else {
+$this->value = $value;
+$this->rawValue = urlencode($value);
+}
+$this->name = $name;
+$this->expires = null === $expires ? null : (integer) $expires;
+$this->path = empty($path) ? '/' : $path;
+$this->domain = $domain;
+$this->secure = (Boolean) $secure;
+$this->httponly = (Boolean) $httponly;
+}
 
 
 
 
 
-    public function __toString()
-    {
-        $cookie = sprintf('%s=%s', $this->name, $this->rawValue);
 
-        if (null !== $this->expires) {
-            $cookie .= '; expires='.substr(\DateTime::createFromFormat('U', $this->expires, new \DateTimeZone('GMT'))->format(self::$dateFormats[0]), 0, -5);
-        }
 
-        if ('' !== $this->domain) {
-            $cookie .= '; domain='.$this->domain;
-        }
 
-        if ('/' !== $this->path) {
-            $cookie .= '; path='.$this->path;
-        }
+public function __toString()
+{
+$cookie = sprintf('%s=%s', $this->name, $this->rawValue);
 
-        if ($this->secure) {
-            $cookie .= '; secure';
-        }
+if (null !== $this->expires) {
+$cookie .= '; expires='.substr(\DateTime::createFromFormat('U', $this->expires, new \DateTimeZone('GMT'))->format(self::$dateFormats[0]), 0, -5);
+}
 
-        if ($this->httponly) {
-            $cookie .= '; httponly';
-        }
+if ('' !== $this->domain) {
+$cookie .= '; domain='.$this->domain;
+}
 
-        return $cookie;
-    }
+if ('/' !== $this->path) {
+$cookie .= '; path='.$this->path;
+}
 
-    
+if ($this->secure) {
+$cookie .= '; secure';
+}
 
+if ($this->httponly) {
+$cookie .= '; httponly';
+}
 
+return $cookie;
+}
 
 
 
@@ -117,199 +113,203 @@ class Cookie
 
 
 
-    static public function fromString($cookie, $url = null)
-    {
-        $parts = explode(';', $cookie);
 
-        if (false === strpos($parts[0], '=')) {
-            throw new \InvalidArgumentException('The cookie string "%s" is not valid.');
-        }
 
-        list($name, $value) = explode('=', array_shift($parts), 2);
 
-        $values = array(
-            'name'     => trim($name),
-            'value'    => trim($value),
-            'expires'  => null,
-            'path'     => '/',
-            'domain'   => '',
-            'secure'   => false,
-            'httponly' => false,
-            'passedRawValue' => true,
-        );
 
-        if (null !== $url) {
-            if ((false === $urlParts = parse_url($url)) || !isset($urlParts['host']) || !isset($urlParts['path'])) {
-                throw new \InvalidArgumentException(sprintf('The URL "%s" is not valid.', $url));
-            }
-            $parts = array_merge($urlParts, $parts);
+static public function fromString($cookie, $url = null)
+{
+$parts = explode(';', $cookie);
 
-            $values['domain'] = $parts['host'];
-            $values['path'] = substr($parts['path'], 0, strrpos($parts['path'], '/'));
-        }
+if (false === strpos($parts[0], '=')) {
+throw new \InvalidArgumentException('The cookie string "%s" is not valid.');
+}
 
-        foreach ($parts as $part) {
-            $part = trim($part);
+list($name, $value) = explode('=', array_shift($parts), 2);
 
-            if ('secure' === strtolower($part)) {
-                
-                if (!$url || !isset($urlParts['scheme']) || 'https' != $urlParts['scheme']) {
-                    continue;
-                }
+$values = array(
+'name' => trim($name),
+'value' => trim($value),
+'expires' => null,
+'path' => '/',
+'domain' => '',
+'secure' => false,
+'httponly' => false,
+'passedRawValue' => true,
+);
 
-                $values['secure'] = true;
+if (null !== $url) {
+if ((false === $urlParts = parse_url($url)) || !isset($urlParts['host']) || !isset($urlParts['path'])) {
+throw new \InvalidArgumentException(sprintf('The URL "%s" is not valid.', $url));
+}
+$parts = array_merge($urlParts, $parts);
 
-                continue;
-            }
+$values['domain'] = $parts['host'];
+$values['path'] = substr($parts['path'], 0, strrpos($parts['path'], '/'));
+}
 
-            if ('httponly' === strtolower($part)) {
-                $values['httponly'] = true;
+foreach ($parts as $part) {
+$part = trim($part);
 
-                continue;
-            }
+if ('secure' === strtolower($part)) {
 
-            if (2 === count($elements = explode('=', $part, 2))) {
-                if ('expires' === strtolower($elements[0])) {
-                    $elements[1] = self::parseDate($elements[1]);
-                }
+ if (!$url || !isset($urlParts['scheme']) || 'https' != $urlParts['scheme']) {
+continue;
+}
 
-                $values[strtolower($elements[0])] = $elements[1];
-            }
-        }
+$values['secure'] = true;
 
-        return new static(
-            $values['name'],
-            $values['value'],
-            $values['expires'],
-            $values['path'],
-            $values['domain'],
-            $values['secure'],
-            $values['httponly'],
-            $values['passedRawValue']
-        );
-    }
+continue;
+}
 
-    private static function parseDate($dateValue)
-    {
-        
-        if (($length = strlen($dateValue)) > 1 && "'" === $dateValue[0] && "'" === $dateValue[$length-1]) {
-            $dateValue = substr($dateValue, 1, -1);
-        }
+if ('httponly' === strtolower($part)) {
+$values['httponly'] = true;
 
-        foreach (self::$dateFormats as $dateFormat) {
-            if (false !== $date = \DateTime::createFromFormat($dateFormat, $dateValue, new \DateTimeZone('GMT'))) {
-                return $date->getTimestamp();
-            }
-        }
+continue;
+}
 
-        throw new \InvalidArgumentException(sprintf('Could not parse date "%s".', $dateValue));
-    }
+if (2 === count($elements = explode('=', $part, 2))) {
+if ('expires' === strtolower($elements[0])) {
+$elements[1] = self::parseDate($elements[1]);
+}
 
-    
+$values[strtolower($elements[0])] = $elements[1];
+}
+}
 
+return new static(
+$values['name'],
+$values['value'],
+$values['expires'],
+$values['path'],
+$values['domain'],
+$values['secure'],
+$values['httponly'],
+$values['passedRawValue']
+);
+}
 
+private static function parseDate($dateValue)
+{
 
+ if (($length = strlen($dateValue)) > 1 && "'" === $dateValue[0] && "'" === $dateValue[$length-1]) {
+$dateValue = substr($dateValue, 1, -1);
+}
 
+foreach (self::$dateFormats as $dateFormat) {
+if (false !== $date = \DateTime::createFromFormat($dateFormat, $dateValue, new \DateTimeZone('GMT'))) {
+return $date->getTimestamp();
+}
+}
 
+throw new \InvalidArgumentException(sprintf('Could not parse date "%s".', $dateValue));
+}
 
-    public function getName()
-    {
-        return $this->name;
-    }
 
-    
 
 
 
 
 
 
-    public function getValue()
-    {
-        return $this->value;
-    }
+public function getName()
+{
+return $this->name;
+}
 
-    
 
 
 
 
 
 
-    public function getRawValue()
-    {
-        return $this->rawValue;
-    }
 
-    
+public function getValue()
+{
+return $this->value;
+}
 
 
 
 
 
 
-    public function getExpiresTime()
-    {
-        return $this->expires;
-    }
 
-    
 
+public function getRawValue()
+{
+return $this->rawValue;
+}
 
 
 
 
 
-    public function getPath()
-    {
-        return $this->path;
-    }
 
-    
 
 
+public function getExpiresTime()
+{
+return $this->expires;
+}
 
 
 
 
-    public function getDomain()
-    {
-        return $this->domain;
-    }
 
-    
 
 
 
+public function getPath()
+{
+return $this->path;
+}
 
 
 
-    public function isSecure()
-    {
-        return $this->secure;
-    }
 
-    
 
 
 
 
+public function getDomain()
+{
+return $this->domain;
+}
 
 
-    public function isHttpOnly()
-    {
-        return $this->httponly;
-    }
 
-    
 
 
 
 
 
+public function isSecure()
+{
+return $this->secure;
+}
 
-    public function isExpired()
-    {
-        return null !== $this->expires && 0 !== $this->expires && $this->expires < time();
-    }
+
+
+
+
+
+
+
+public function isHttpOnly()
+{
+return $this->httponly;
+}
+
+
+
+
+
+
+
+
+public function isExpired()
+{
+return null !== $this->expires && 0 !== $this->expires && $this->expires < time();
+}
 }

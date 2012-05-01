@@ -29,65 +29,65 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RouterListener implements EventSubscriberInterface
 {
-    private $urlMatcher;
-    private $logger;
+private $urlMatcher;
+private $logger;
 
-    public function __construct(UrlMatcherInterface $urlMatcher, LoggerInterface $logger = null)
-    {
-        $this->urlMatcher = $urlMatcher;
-        $this->logger = $logger;
-    }
+public function __construct(UrlMatcherInterface $urlMatcher, LoggerInterface $logger = null)
+{
+$this->urlMatcher = $urlMatcher;
+$this->logger = $logger;
+}
 
-    public function onKernelRequest(GetResponseEvent $event)
-    {
-        $request = $event->getRequest();
+public function onKernelRequest(GetResponseEvent $event)
+{
+$request = $event->getRequest();
 
-        if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
-            $this->urlMatcher->getContext()->fromRequest($request);
-        }
+if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
+$this->urlMatcher->getContext()->fromRequest($request);
+}
 
-        if ($request->attributes->has('_controller')) {
-            
-            return;
-        }
+if ($request->attributes->has('_controller')) {
 
-        
-        try {
-            $parameters = $this->urlMatcher->match($request->getPathInfo());
+ return;
+}
 
-            if (null !== $this->logger) {
-                $this->logger->info(sprintf('Matched route "%s" (parameters: %s)', $parameters['_route'], $this->parametersToString($parameters)));
-            }
 
-            $request->attributes->add($parameters);
-            unset($parameters['_route']);
-            unset($parameters['_controller']);
-            $request->attributes->set('_route_params', $parameters);
-        } catch (ResourceNotFoundException $e) {
-            $message = sprintf('No route found for "%s %s"', $request->getMethod(), $request->getPathInfo());
+ try {
+$parameters = $this->urlMatcher->match($request->getPathInfo());
 
-            throw new NotFoundHttpException($message, $e);
-        } catch (MethodNotAllowedException $e) {
-            $message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getPathInfo(), strtoupper(implode(', ', $e->getAllowedMethods())));
+if (null !== $this->logger) {
+$this->logger->info(sprintf('Matched route "%s" (parameters: %s)', $parameters['_route'], $this->parametersToString($parameters)));
+}
 
-            throw new MethodNotAllowedHttpException($e->getAllowedMethods(), $message, $e);
-        }
-    }
+$request->attributes->add($parameters);
+unset($parameters['_route']);
+unset($parameters['_controller']);
+$request->attributes->set('_route_params', $parameters);
+} catch (ResourceNotFoundException $e) {
+$message = sprintf('No route found for "%s %s"', $request->getMethod(), $request->getPathInfo());
 
-    private function parametersToString(array $parameters)
-    {
-        $pieces = array();
-        foreach ($parameters as $key => $val) {
-            $pieces[] = sprintf('"%s": "%s"', $key, (is_string($val) ? $val : json_encode($val)));
-        }
+throw new NotFoundHttpException($message, $e);
+} catch (MethodNotAllowedException $e) {
+$message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getPathInfo(), strtoupper(implode(', ', $e->getAllowedMethods())));
 
-        return implode(', ', $pieces);
-    }
+throw new MethodNotAllowedHttpException($e->getAllowedMethods(), $message, $e);
+}
+}
 
-    static public function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::REQUEST => array(array('onKernelRequest', 32)),
-        );
-    }
+private function parametersToString(array $parameters)
+{
+$pieces = array();
+foreach ($parameters as $key => $val) {
+$pieces[] = sprintf('"%s": "%s"', $key, (is_string($val) ? $val : json_encode($val)));
+}
+
+return implode(', ', $pieces);
+}
+
+static public function getSubscribedEvents()
+{
+return array(
+KernelEvents::REQUEST => array(array('onKernelRequest', 32)),
+);
+}
 }

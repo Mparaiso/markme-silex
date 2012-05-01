@@ -24,107 +24,107 @@ use Doctrine\Common\EventManager;
 
 class DoctrineServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
-    {
-        $app['db.default_options'] = array(
-            'driver'   => 'pdo_mysql',
-            'dbname'   => null,
-            'host'     => 'localhost',
-            'user'     => 'root',
-            'password' => null,
-        );
+public function register(Application $app)
+{
+$app['db.default_options'] = array(
+'driver' => 'pdo_mysql',
+'dbname' => null,
+'host' => 'localhost',
+'user' => 'root',
+'password' => null,
+);
 
-        $app['dbs.options.initializer'] = $app->protect(function () use ($app) {
-            static $initialized = false;
+$app['dbs.options.initializer'] = $app->protect(function () use ($app) {
+static $initialized = false;
 
-            if ($initialized) {
-                return;
-            }
+if ($initialized) {
+return;
+}
 
-            $initialized = true;
+$initialized = true;
 
-            if (!isset($app['dbs.options'])) {
-                $app['dbs.options'] = array('default' => isset($app['db.options']) ? $app['db.options'] : array());
-            }
+if (!isset($app['dbs.options'])) {
+$app['dbs.options'] = array('default' => isset($app['db.options']) ? $app['db.options'] : array());
+}
 
-            $tmp = $app['dbs.options'];
-            foreach ($tmp as $name => &$options) {
-                $options = array_replace($app['db.default_options'], $options);
+$tmp = $app['dbs.options'];
+foreach ($tmp as $name => &$options) {
+$options = array_replace($app['db.default_options'], $options);
 
-                if (!isset($app['dbs.default'])) {
-                    $app['dbs.default'] = $name;
-                }
-            }
-            $app['dbs.options'] = $tmp;
-        });
+if (!isset($app['dbs.default'])) {
+$app['dbs.default'] = $name;
+}
+}
+$app['dbs.options'] = $tmp;
+});
 
-        $app['dbs'] = $app->share(function () use ($app) {
-            $app['dbs.options.initializer']();
+$app['dbs'] = $app->share(function () use ($app) {
+$app['dbs.options.initializer']();
 
-            $dbs = new \Pimple();
-            foreach ($app['dbs.options'] as $name => $options) {
-                if ($app['dbs.default'] === $name) {
-                    
-                    $config = $app['db.config'];
-                    $manager = $app['db.event_manager'];
-                } else {
-                    $config = $app['dbs.config'][$name];
-                    $manager = $app['dbs.event_manager'][$name];
-                }
+$dbs = new \Pimple();
+foreach ($app['dbs.options'] as $name => $options) {
+if ($app['dbs.default'] === $name) {
 
-                $dbs[$name] = DriverManager::getConnection($options, $config, $manager);
-            }
+ $config = $app['db.config'];
+$manager = $app['db.event_manager'];
+} else {
+$config = $app['dbs.config'][$name];
+$manager = $app['dbs.event_manager'][$name];
+}
 
-            return $dbs;
-        });
+$dbs[$name] = DriverManager::getConnection($options, $config, $manager);
+}
 
-        $app['dbs.config'] = $app->share(function () use ($app) {
-            $app['dbs.options.initializer']();
+return $dbs;
+});
 
-            $configs = new \Pimple();
-            foreach ($app['dbs.options'] as $name => $options) {
-                $configs[$name] = new Configuration();
-            }
+$app['dbs.config'] = $app->share(function () use ($app) {
+$app['dbs.options.initializer']();
 
-            return $configs;
-        });
+$configs = new \Pimple();
+foreach ($app['dbs.options'] as $name => $options) {
+$configs[$name] = new Configuration();
+}
 
-        $app['dbs.event_manager'] = $app->share(function () use ($app) {
-            $app['dbs.options.initializer']();
+return $configs;
+});
 
-            $managers = new \Pimple();
-            foreach ($app['dbs.options'] as $name => $options) {
-                $managers[$name] = new EventManager();
-            }
+$app['dbs.event_manager'] = $app->share(function () use ($app) {
+$app['dbs.options.initializer']();
 
-            return $managers;
-        });
+$managers = new \Pimple();
+foreach ($app['dbs.options'] as $name => $options) {
+$managers[$name] = new EventManager();
+}
 
-        
-        $app['db'] = $app->share(function() use ($app) {
-            $dbs = $app['dbs'];
+return $managers;
+});
 
-            return $dbs[$app['dbs.default']];
-        });
 
-        $app['db.config'] = $app->share(function() use ($app) {
-            $dbs = $app['dbs.config'];
+ $app['db'] = $app->share(function() use ($app) {
+$dbs = $app['dbs'];
 
-            return $dbs[$app['dbs.default']];
-        });
+return $dbs[$app['dbs.default']];
+});
 
-        $app['db.event_manager'] = $app->share(function() use ($app) {
-            $dbs = $app['dbs.event_manager'];
+$app['db.config'] = $app->share(function() use ($app) {
+$dbs = $app['dbs.config'];
 
-            return $dbs[$app['dbs.default']];
-        });
+return $dbs[$app['dbs.default']];
+});
 
-        if (isset($app['db.dbal.class_path'])) {
-            $app['autoloader']->registerNamespace('Doctrine\\DBAL', $app['db.dbal.class_path']);
-        }
+$app['db.event_manager'] = $app->share(function() use ($app) {
+$dbs = $app['dbs.event_manager'];
 
-        if (isset($app['db.common.class_path'])) {
-            $app['autoloader']->registerNamespace('Doctrine\\Common', $app['db.common.class_path']);
-        }
-    }
+return $dbs[$app['dbs.default']];
+});
+
+if (isset($app['db.dbal.class_path'])) {
+$app['autoloader']->registerNamespace('Doctrine\\DBAL', $app['db.dbal.class_path']);
+}
+
+if (isset($app['db.common.class_path'])) {
+$app['autoloader']->registerNamespace('Doctrine\\Common', $app['db.common.class_path']);
+}
+}
 }

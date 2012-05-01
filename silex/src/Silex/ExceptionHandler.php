@@ -23,19 +23,19 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ExceptionHandler implements EventSubscriberInterface
 {
-    public function onSilexError(GetResponseForErrorEvent $event)
-    {
-        $app = $event->getKernel();
-        $handler = new DebugExceptionHandler($app['debug']);
+public function onSilexError(GetResponseForErrorEvent $event)
+{
+$app = $event->getKernel();
+$handler = new DebugExceptionHandler($app['debug']);
 
-        $event->setResponse($handler->createResponse($event->getException()));
-    }
-
-    
+$event->setResponse($handler->createResponse($event->getException()));
+}
 
 
-    static public function getSubscribedEvents()
-    {
-        return array(SilexEvents::ERROR => array('onSilexError', -255));
-    }
+
+
+static public function getSubscribedEvents()
+{
+return array(SilexEvents::ERROR => array('onSilexError', -255));
+}
 }

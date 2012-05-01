@@ -25,28 +25,28 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class StreamedResponseListener implements EventSubscriberInterface
 {
-    
 
 
 
 
-    public function onKernelResponse(FilterResponseEvent $event)
-    {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-            return;
-        }
 
-        $response = $event->getResponse();
+public function onKernelResponse(FilterResponseEvent $event)
+{
+if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
+return;
+}
 
-        if ($response instanceof StreamedResponse) {
-            $response->send();
-        }
-    }
+$response = $event->getResponse();
 
-    static public function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::RESPONSE => array('onKernelResponse', -1024),
-        );
-    }
+if ($response instanceof StreamedResponse) {
+$response->send();
+}
+}
+
+static public function getSubscribedEvents()
+{
+return array(
+KernelEvents::RESPONSE => array('onKernelResponse', -1024),
+);
+}
 }

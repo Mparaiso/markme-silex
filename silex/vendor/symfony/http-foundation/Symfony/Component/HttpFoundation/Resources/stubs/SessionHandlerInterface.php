@@ -22,37 +22,8 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 interface SessionHandlerInterface
 {
-    
 
 
 
@@ -64,19 +35,17 @@ interface SessionHandlerInterface
 
 
 
-    function open($savePath, $sessionName);
 
-    
+function open($savePath, $sessionName);
 
 
 
 
 
 
-    function close();
 
-    
 
+function close();
 
 
 
@@ -87,6 +56,7 @@ interface SessionHandlerInterface
 
 
 
+function read($sessionId);
 
 
 
@@ -96,10 +66,9 @@ interface SessionHandlerInterface
 
 
 
-    function read($sessionId);
 
-    
 
+function write($sessionId, $data);
 
 
 
@@ -112,44 +81,18 @@ interface SessionHandlerInterface
 
 
 
+function destroy($sessionId);
 
 
 
 
 
 
-    function write($sessionId, $data);
 
-    
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-    function destroy($sessionId);
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-    function gc($lifetime);
+function gc($lifetime);
 }

@@ -20,7 +20,6 @@ namespace Symfony\Component\HttpKernel;
 
 final class KernelEvents
 {
-    
 
 
 
@@ -33,9 +32,8 @@ final class KernelEvents
 
 
 
-    const REQUEST = 'kernel.request';
 
-    
+const REQUEST = 'kernel.request';
 
 
 
@@ -47,10 +45,9 @@ final class KernelEvents
 
 
 
-    const EXCEPTION = 'kernel.exception';
 
-    
 
+const EXCEPTION = 'kernel.exception';
 
 
 
@@ -62,11 +59,10 @@ final class KernelEvents
 
 
 
-    const VIEW = 'kernel.view';
 
-    
 
 
+const VIEW = 'kernel.view';
 
 
 
@@ -76,12 +72,11 @@ final class KernelEvents
 
 
 
-    const CONTROLLER = 'kernel.controller';
 
-    
 
 
 
+const CONTROLLER = 'kernel.controller';
 
 
 
@@ -90,16 +85,21 @@ final class KernelEvents
 
 
 
-    const RESPONSE = 'kernel.response';
 
-    
 
 
 
 
+const RESPONSE = 'kernel.response';
 
 
 
 
-    const TERMINATE = 'kernel.terminate';
+
+
+
+
+
+
+const TERMINATE = 'kernel.terminate';
 }

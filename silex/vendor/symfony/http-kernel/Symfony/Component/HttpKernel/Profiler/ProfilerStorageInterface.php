@@ -18,7 +18,6 @@ namespace Symfony\Component\HttpKernel\Profiler;
 
 interface ProfilerStorageInterface
 {
-    
 
 
 
@@ -28,10 +27,8 @@ interface ProfilerStorageInterface
 
 
 
-    function find($ip, $url, $limit, $method);
 
-    
-
+function find($ip, $url, $limit, $method);
 
 
 
@@ -39,19 +36,22 @@ interface ProfilerStorageInterface
 
 
 
-    function read($token);
-
-    
 
 
 
+function read($token);
 
 
 
-    function write(Profile $profile);
-
-    
 
 
-    function purge();
+
+
+
+function write(Profile $profile);
+
+
+
+
+function purge();
 }

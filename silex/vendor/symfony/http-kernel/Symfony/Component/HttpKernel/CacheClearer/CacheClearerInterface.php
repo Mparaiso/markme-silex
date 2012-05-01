@@ -18,10 +18,10 @@ namespace Symfony\Component\HttpKernel\CacheClearer;
 
 interface CacheClearerInterface
 {
-    
 
 
 
 
-    function clear($cacheDir);
+
+function clear($cacheDir);
 }

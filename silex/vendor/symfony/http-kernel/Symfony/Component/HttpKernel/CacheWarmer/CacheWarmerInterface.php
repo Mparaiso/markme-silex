@@ -18,7 +18,6 @@ namespace Symfony\Component\HttpKernel\CacheWarmer;
 
 interface CacheWarmerInterface extends WarmableInterface
 {
-    
 
 
 
@@ -28,5 +27,6 @@ interface CacheWarmerInterface extends WarmableInterface
 
 
 
-    function isOptional();
+
+function isOptional();
 }
