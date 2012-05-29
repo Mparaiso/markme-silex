@@ -6,7 +6,7 @@
  *
  */
 
-require_once 'silex/vendor/.composer/autoload.php';
+require_once 'vendor/autoload.php';
 
 # Create new app
 $app = new Silex\Application();
@@ -15,7 +15,7 @@ $app = new Silex\Application();
 $app['debug'] = true;
 
 # No name specified, so give instructions
-$app->get('/', function() use($app) {
+$app->get('/', function() {
     return 'Hello! To test this Silex app, put your name at the end of the URL in the address bar above! For example: '.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'John';
 });
 
