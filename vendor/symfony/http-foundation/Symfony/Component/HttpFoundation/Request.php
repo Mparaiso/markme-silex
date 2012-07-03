@@ -87,17 +87,17 @@ class Request
     protected $content;
 
     /**
-     * @var string
+     * @var array
      */
     protected $languages;
 
     /**
-     * @var string
+     * @var array
      */
     protected $charsets;
 
     /**
-     * @var string
+     * @var array
      */
     protected $acceptableContentTypes;
 
@@ -147,7 +147,7 @@ class Request
     protected $defaultLocale = 'en';
 
     /**
-     * @var string
+     * @var array
      */
     static protected $formats;
 
@@ -335,6 +335,8 @@ class Request
      * @param array $files      The FILES parameters
      * @param array $server     The SERVER parameters
      *
+     * @return Request The duplicated request
+     *
      * @api
      */
     public function duplicate(array $query = null, array $request = null, array $attributes = null, array $cookies = null, array $files = null, array $server = null)
@@ -405,7 +407,8 @@ class Request
     /**
      * Overrides the PHP global variables according to this request instance.
      *
-     * It overrides $_GET, $_POST, $_REQUEST, $_SERVER, $_COOKIE, and $_FILES.
+     * It overrides $_GET, $_POST, $_REQUEST, $_SERVER, $_COOKIE.
+     * $_FILES is never override, see rfc1867
      *
      * @api
      */
@@ -415,7 +418,6 @@ class Request
         $_POST = $this->request->all();
         $_SERVER = $this->server->all();
         $_COOKIE = $this->cookies->all();
-        // FIXME: populate $_FILES
 
         foreach ($this->headers->all() as $key => $value) {
             $key = strtoupper(str_replace('-', '_', $key));
@@ -426,9 +428,15 @@ class Request
             }
         }
 
-        // FIXME: should read variables_order and request_order
-        // to know which globals to merge and in which order
-        $_REQUEST = array_merge($_GET, $_POST);
+        $request = array('g' => $_GET, 'p' => $_POST, 'c' => $_COOKIE);
+
+        $requestOrder = ini_get('request_order') ?: ini_get('variable_order');
+        $requestOrder = preg_replace('#[^cgp]#', '', strtolower($requestOrder)) ?: 'gp';
+
+        $_REQUEST = array();
+        foreach (str_split($requestOrder) as $order) {
+            $_REQUEST = array_merge($_REQUEST, $request[$order]);
+        }
     }
 
     /**
@@ -456,6 +464,40 @@ class Request
     }
 
     /**
+     * Normalizes a query string.
+     *
+     * It builds a normalized query string, where keys/value pairs are alphabetized
+     * and have consistent escaping.
+     *
+     * @param string $qs Query string
+     *
+     * @return string|null A normalized query string for the Request
+     */
+    static public function normalizeQueryString($qs = null)
+    {
+        if (!$qs) {
+            return null;
+        }
+
+        $parts = array();
+        $order = array();
+
+        foreach (explode('&', $qs) as $segment) {
+            if (false === strpos($segment, '=')) {
+                $parts[] = $segment;
+                $order[] = $segment;
+            } else {
+                $tmp = explode('=', rawurldecode($segment), 2);
+                $parts[] = rawurlencode($tmp[0]).'='.rawurlencode($tmp[1]);
+                $order[] = $tmp[0];
+            }
+        }
+        array_multisort($order, SORT_ASC, $parts);
+
+        return implode('&', $parts);
+    }
+
+    /**
      * Gets a "parameter" value.
      *
      * This method is mainly useful for libraries that want to provide some flexibility.
@@ -470,9 +512,9 @@ class Request
      * It is better to explicity get request parameters from the appropriate
      * public property instead (query, request, attributes, ...).
      *
-     * @param string $key     the key
-     * @param mixed  $default the default value
-     * @param type   $deep    is parameter deep in multidimensional array
+     * @param string  $key     the key
+     * @param mixed   $default the default value
+     * @param Boolean $deep    is parameter deep in multidimensional array
      *
      * @return mixed
      */
@@ -546,9 +588,17 @@ class Request
             if ($this->server->has('HTTP_CLIENT_IP')) {
                 return $this->server->get('HTTP_CLIENT_IP');
             } elseif ($this->server->has('HTTP_X_FORWARDED_FOR')) {
-                $clientIp = explode(',', $this->server->get('HTTP_X_FORWARDED_FOR'), 2);
+                $clientIp = explode(',', $this->server->get('HTTP_X_FORWARDED_FOR'));
 
-                return isset($clientIp[0]) ? trim($clientIp[0]) : '';
+                foreach ($clientIp as $ipAddress) {
+                    $cleanIpAddress = trim($ipAddress);
+
+                    if (false !== filter_var($cleanIpAddress, FILTER_VALIDATE_IP)) {
+                        return $cleanIpAddress;
+                    }
+                }
+
+                return '';
             }
         }
 
@@ -685,6 +735,23 @@ class Request
     }
 
     /**
+     * Gets the user info.
+     *
+     * @return string A user name and, optionally, scheme-specific information about how to gain authorization to access the server
+     */
+    public function getUserInfo()
+    {
+        $userinfo = $this->getUser();
+
+        $pass = $this->getPassword();
+        if ('' != $pass) {
+           $userinfo .= ":$pass";
+        }
+
+        return $userinfo;
+    }
+
+    /**
      * Returns the HTTP host being requested.
      *
      * The port name will be appended to the host if it's non-standard.
@@ -722,6 +789,16 @@ class Request
     }
 
     /**
+     * Gets the scheme and HTTP host.
+     *
+     * @return string The schem and HTTP host
+     */
+    public function getSchemeAndHttpHost()
+    {
+        return $this->getScheme().'://'.(('' != $auth = $this->getUserInfo()) ? $auth.'@' : '').$this->getHttpHost();
+    }
+
+    /**
      * Generates a normalized URI for the Request.
      *
      * @return string A normalized URI for the Request
@@ -737,20 +814,7 @@ class Request
             $qs = '?'.$qs;
         }
 
-        $auth = '';
-        if ($user = $this->getUser()) {
-            $auth = $user;
-        }
-
-        if ($pass = $this->getPassword()) {
-           $auth .= ":$pass";
-        }
-
-        if ('' !== $auth) {
-           $auth .= '@';
-        }
-
-        return $this->getScheme().'://'.$auth.$this->getHttpHost().$this->getBaseUrl().$this->getPathInfo().$qs;
+        return $this->getSchemeAndHttpHost().$this->getBaseUrl().$this->getPathInfo().$qs;
     }
 
     /**
@@ -764,7 +828,7 @@ class Request
      */
     public function getUriForPath($path)
     {
-        return $this->getScheme().'://'.$this->getHttpHost().$this->getBaseUrl().$path;
+        return $this->getSchemeAndHttpHost().$this->getBaseUrl().$path;
     }
 
     /**
@@ -779,26 +843,7 @@ class Request
      */
     public function getQueryString()
     {
-        if (!$qs = $this->server->get('QUERY_STRING')) {
-            return null;
-        }
-
-        $parts = array();
-        $order = array();
-
-        foreach (explode('&', $qs) as $segment) {
-            if (false === strpos($segment, '=')) {
-                $parts[] = $segment;
-                $order[] = $segment;
-            } else {
-                $tmp = explode('=', rawurldecode($segment), 2);
-                $parts[] = rawurlencode($tmp[0]).'='.rawurlencode($tmp[1]);
-                $order[] = $tmp[0];
-            }
-        }
-        array_multisort($order, SORT_ASC, $parts);
-
-        return implode('&', $parts);
+        return static::normalizeQueryString($this->server->get('QUERY_STRING'));
     }
 
     /**
@@ -1086,6 +1131,9 @@ class Request
         return preg_split('/\s*,\s*/', $this->headers->get('if_none_match'), null, PREG_SPLIT_NO_EMPTY);
     }
 
+    /**
+     * @return Boolean
+     */
     public function isNoCache()
     {
         return $this->headers->hasCacheControlDirective('no-cache') || 'no-cache' == $this->headers->get('Pragma');
@@ -1261,7 +1309,7 @@ class Request
         } elseif ($this->server->has('REQUEST_URI')) {
             $requestUri = $this->server->get('REQUEST_URI');
             // HTTP proxy reqs setup request uri with scheme and host [and port] + the url path, only use url path
-            $schemeAndHttpHost = $this->getScheme().'://'.$this->getHttpHost();
+            $schemeAndHttpHost = $this->getSchemeAndHttpHost();
             if (strpos($requestUri, $schemeAndHttpHost) === 0) {
                 $requestUri = substr($requestUri, strlen($schemeAndHttpHost));
             }

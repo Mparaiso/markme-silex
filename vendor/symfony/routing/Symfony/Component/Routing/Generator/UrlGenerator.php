@@ -17,6 +17,7 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
+use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 /**
  * UrlGenerator generates a URL based on a set of routes.
@@ -28,6 +29,8 @@ use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 class UrlGenerator implements UrlGeneratorInterface
 {
     protected $context;
+    protected $strictParameters = true;
+    protected $logger;
     protected $decodedChars = array(
         // %2F is not valid in a URL, so we don't encode it (which is fine as the requirements explicitly allowed it)
         '%2F' => '/',
@@ -40,21 +43,19 @@ class UrlGenerator implements UrlGeneratorInterface
      *
      * @param RouteCollection $routes  A RouteCollection instance
      * @param RequestContext  $context The context
+     * @param LoggerInterface $logger  A logger instance
      *
      * @api
      */
-    public function __construct(RouteCollection $routes, RequestContext $context)
+    public function __construct(RouteCollection $routes, RequestContext $context, LoggerInterface $logger = null)
     {
         $this->routes = $routes;
         $this->context = $context;
+        $this->logger = $logger;
     }
 
     /**
-     * Sets the request context.
-     *
-     * @param RequestContext $context The context
-     *
-     * @api
+     * {@inheritdoc}
      */
     public function setContext(RequestContext $context)
     {
@@ -62,9 +63,7 @@ class UrlGenerator implements UrlGeneratorInterface
     }
 
     /**
-     * Gets the request context.
-     *
-     * @return RequestContext The context
+     * {@inheritdoc}
      */
     public function getContext()
     {
@@ -72,9 +71,27 @@ class UrlGenerator implements UrlGeneratorInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Enables or disables the exception on incorrect parameters.
      *
-     * @api
+     * @param Boolean $enabled
+     */
+    public function setStrictParameters($enabled)
+    {
+        $this->strictParameters = $enabled;
+    }
+
+    /**
+     * Gets the strict check of incorrect parameters.
+     *
+     * @return Boolean
+     */
+    public function getStrictParameters()
+    {
+        return $this->strictParameters;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function generate($name, $parameters = array(), $absolute = false)
     {
@@ -113,7 +130,16 @@ class UrlGenerator implements UrlGeneratorInterface
                     if (!$isEmpty = in_array($tparams[$token[3]], array(null, '', false), true)) {
                         // check requirement
                         if ($tparams[$token[3]] && !preg_match('#^'.$token[2].'$#', $tparams[$token[3]])) {
-                            throw new InvalidParameterException(sprintf('Parameter "%s" for route "%s" must match "%s" ("%s" given).', $token[3], $name, $token[2], $tparams[$token[3]]));
+                            $message = sprintf('Parameter "%s" for route "%s" must match "%s" ("%s" given).', $token[3], $name, $token[2], $tparams[$token[3]]);
+                            if ($this->strictParameters) {
+                                throw new InvalidParameterException($message);
+                            }
+
+                            if ($this->logger) {
+                                $this->logger->err($message);
+                            }
+
+                            return null;
                         }
                     }
 

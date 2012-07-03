@@ -21,11 +21,7 @@ class RouteCompiler implements RouteCompilerInterface
     const REGEX_DELIMITER = '#';
 
     /**
-     * Compiles the current route instance.
-     *
-     * @param Route $route A Route instance
-     *
-     * @return CompiledRoute A CompiledRoute instance
+     * {@inheritDoc}
      *
      * @throws \LogicException If a variable is referenced more than once
      */
@@ -109,7 +105,7 @@ class RouteCompiler implements RouteCompilerInterface
     private function computeRegexp(array $tokens, $index, $firstOptional)
     {
         $token = $tokens[$index];
-        if('text' === $token[0]) {
+        if ('text' === $token[0]) {
             // Text tokens
             return preg_quote($token[1], self::REGEX_DELIMITER);
         } else {

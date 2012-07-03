@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\HttpFoundation\Session;
 
+use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
+
 /**
  * Interface for the session.
  *
@@ -173,6 +175,13 @@ interface SessionInterface
      * @api
      */
     function clear();
+
+    /**
+     * Checks if the session was started.
+     *
+     * @return Boolean
+     */
+    function isStarted();
 
     /**
      * Registers a SessionBagInterface with the session.

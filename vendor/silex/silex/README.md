@@ -9,7 +9,7 @@ Silex is a simple web framework to develop simple websites based on
 
 ```php
 <?php
-require_once __DIR__.'/silex.phar';
+require_once __DIR__.'/../vendor/autoload.php';
 
 $app = new Silex\Application();
 
@@ -20,12 +20,21 @@ $app->get('/hello/{name}', function ($name) use ($app) {
 $app->run();
 ```
 
-Silex works with PHP 5.3.2 or later.
+Silex works with PHP 5.3.3 or later.
 
 ## Installation
 
-Installing Silex is as easy as it can get. Download the [`silex.phar`][2] file
-and you're done!
+The recommended way to install Silex is [through
+composer](http://getcomposer.org). Just create a `composer.json` file and
+run the `php composer.phar install` command to install it:
+
+    {
+        "require": {
+            "silex/silex": "1.0.*"
+        }
+    }
+
+Alternatively, you can download the [`silex.zip`][2] file and extract it.
 
 ## More Information
 
@@ -44,5 +53,5 @@ To run the test suite, you need [composer](http://getcomposer.org) and
 Silex is licensed under the MIT license.
 
 [1]: http://symfony.com
-[2]: http://silex.sensiolabs.org/get/silex.phar
+[2]: http://silex.sensiolabs.org/download
 [3]: http://silex.sensiolabs.org/documentation
