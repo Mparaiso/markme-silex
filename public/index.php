@@ -6,6 +6,8 @@
  *
  */
 
+use Silex\Application;
+
 require_once '../vendor/autoload.php';
 
 # Create new app
@@ -23,7 +25,12 @@ $app->get('/', function() {
 $app->get('/{name}', function($name) use($app) {
     return 'Hello, '.$app->escape($name).'!';
 });
-
+# info
+if($app['debug']===true):
+	$app->get('/info',function(Application $app){
+		return phpinfo();
+	});
+endif;
 # Run the app
 $app->run();
 ?>
