@@ -151,7 +151,7 @@ class UrlMatcher implements UrlMatcherInterface
      *
      * @param string $pathinfo The path
      * @param string $name     The route name
-     * @param string $route    The route
+     * @param Route  $route    The route
      *
      * @return array The first element represents the status, the second contains additional information
      */
@@ -166,10 +166,10 @@ class UrlMatcher implements UrlMatcherInterface
 
     /**
      * Get merged default parameters.
-     * 
+     *
      * @param array $params   The parameters
      * @param array $defaults The defaults
-     * 
+     *
      * @return array Merged default parameters
      */
     protected function mergeDefaults($params, $defaults)

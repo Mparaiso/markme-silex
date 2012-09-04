@@ -1,5 +1,7 @@
 {
+	"minimum-stability":"dev",
     "require": {
-        "silex/silex": "1.0.*"
+        "silex/silex": "1.*",
+        "doctrine/mongodb-odm":"1.*"
     }
 }

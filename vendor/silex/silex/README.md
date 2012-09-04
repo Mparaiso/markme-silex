@@ -29,6 +29,7 @@ composer](http://getcomposer.org). Just create a `composer.json` file and
 run the `php composer.phar install` command to install it:
 
     {
+        "minimum-stability": "dev",
         "require": {
             "silex/silex": "1.0.*"
         }
@@ -47,6 +48,10 @@ To run the test suite, you need [composer](http://getcomposer.org) and
 
     $ php composer.phar install --dev
     $ phpunit
+
+## Community
+
+Check out #silex-php on irc.freenode.net.
 
 ## License
 
