@@ -6,7 +6,7 @@
  *
  */
 
-require_once 'vendor/autoload.php';
+require_once '../vendor/autoload.php';
 
 # Create new app
 $app = new Silex\Application();
