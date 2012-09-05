@@ -9,7 +9,7 @@ ini_set("open_basedir", dirname(__DIR__));
 use Silex\Application;
 use Silex\Provider\MonologServiceProvider;
 
-require_once '../vendor/autoload.php';
+require_once dirname(__DIR__).'/vendor/autoload.php';
 
 # Create new app
 $app = new Silex\Application();
