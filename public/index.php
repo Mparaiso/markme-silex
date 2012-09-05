@@ -5,7 +5,6 @@
  *  View documentation at http://silex.sensiolabs.org/documentation
  *
  */
-ini_set("open_basedir", dirname(__DIR__));
 use Silex\Application;
 use Silex\Provider\MonologServiceProvider;
 
