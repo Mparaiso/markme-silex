@@ -1,5 +1,5 @@
 {
-    "hash": "b253d035aad1a23e4ba3de342d9e3140",
+    "hash": "80b61f93f97c2a60d897e75afe76e295",
     "packages": [
         {
             "package": "doctrine/common",
@@ -36,6 +36,18 @@
             "version": "dev-master",
             "source-reference": "43f678b345a46d8399d86305a3d6947b3d19cfca",
             "commit-date": "1345760269"
+        },
+        {
+            "package": "monolog/monolog",
+            "version": "dev-master",
+            "alias-pretty-version": "1.3.x-dev",
+            "alias-version": "1.3.9999999.9999999-dev"
+        },
+        {
+            "package": "monolog/monolog",
+            "version": "dev-master",
+            "source-reference": "1.2.1",
+            "commit-date": "1346241200"
         },
         {
             "package": "pimple/pimple",
@@ -106,8 +118,8 @@
         {
             "package": "symfony/http-kernel",
             "version": "dev-master",
-            "source-reference": "aeffdc93a69b65dad2f61c917f73c84b8e387ba4",
-            "commit-date": "1346143430"
+            "source-reference": "27e082967d9f417a0ad2f853ee4e37f6b752aa98",
+            "commit-date": "1345973524"
         },
         {
             "package": "symfony/routing",

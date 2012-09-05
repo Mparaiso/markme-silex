@@ -1,0 +1,7 @@
+[2012-09-05 17:14:16] myapp.INFO: application init finished [] []
+[2012-09-05 17:14:38] myapp.INFO: application init finished [] []
+[2012-09-05 17:14:38] myapp.INFO: > GET / [] []
+[2012-09-05 17:14:38] myapp.INFO: < 200 [] []
+[2012-09-05 17:14:52] myapp.INFO: application init finished [] []
+[2012-09-05 17:14:52] myapp.INFO: > GET /blop [] []
+[2012-09-05 17:14:52] myapp.INFO: < 200 [] []
