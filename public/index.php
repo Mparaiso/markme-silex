@@ -1,5 +1,4 @@
 <?php
-#app/bootstrap.php
 
 /**
  *
@@ -8,7 +7,6 @@
  */
 
 use Silex\Application;
-use Silex\Provider\MonologServiceProvider;
 
 require_once '../vendor/autoload.php';
 
@@ -17,9 +15,6 @@ $app = new Silex\Application();
 
 # Enable debugging
 $app['debug'] = true;
-
-# Services
-$app->register(new MonologServiceProvider(),array("monolog.logfile"=>dirname(__DIR__)."/log/error.log"));
 
 # No name specified, so give instructions
 $app->get('/', function() {
@@ -38,6 +33,6 @@ $app->get('/{name}', function($name) use($app) {
     return 'Hello, '.$app->escape($name).'!';
 });
 
-$app['monolog']->addInfo('application init finished');
-
-return $app;
+# Run the app
+$app->run();
+?>

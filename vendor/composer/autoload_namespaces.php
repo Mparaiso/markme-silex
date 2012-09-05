@@ -15,7 +15,6 @@ return array(
     'Silex' => $vendorDir . '/silex/silex/src/',
     'SessionHandlerInterface' => $vendorDir . '/symfony/http-foundation/Symfony/Component/HttpFoundation/Resources/stubs',
     'Pimple' => $vendorDir . '/pimple/pimple/lib/',
-    'Monolog' => $vendorDir . '/monolog/monolog/src/',
     'Doctrine\\ODM\\MongoDB' => $vendorDir . '/doctrine/mongodb-odm/lib/',
     'Doctrine\\MongoDB' => $vendorDir . '/doctrine/mongodb/lib/',
     'Doctrine\\Common' => $vendorDir . '/doctrine/common/lib/',

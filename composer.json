@@ -2,7 +2,6 @@
 	"minimum-stability":"dev",
     "require": {
         "silex/silex": "1.*",
-        "doctrine/mongodb-odm":"1.*",
-        "monolog/monolog":"*"
+        "doctrine/mongodb-odm":"1.*"
     }
 }
