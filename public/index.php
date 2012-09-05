@@ -7,11 +7,13 @@
  */
 
 use Silex\Application;
+use Silex\Provider\MonologServiceProvider;
 
 require_once '../vendor/autoload.php';
 
 # Create new app
 $app = new Silex\Application();
+$app->register(new MonologServiceProvider(),array("monolog.logfile"=>dirname(__DIR__)."/log/application.log"));
 
 # Enable debugging
 $app['debug'] = true;
@@ -32,6 +34,8 @@ endif;
 $app->get('/{name}', function($name) use($app) {
     return 'Hello, '.$app->escape($name).'!';
 });
+
+$app['monolog']->addInfo("Application configured.");
 
 # Run the app
 $app->run();
