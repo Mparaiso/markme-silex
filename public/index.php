@@ -44,7 +44,7 @@ if($app['debug']===true):
 	});
 endif;
 
-$app['monolog']->addInfo("Application configured.");
+#$app['monolog']->addInfo("Application configured.");
 
 # Run the app
 $app->run();
