@@ -5,7 +5,9 @@ namespace App\Controller{
 	use Silex\Application;
 	use Symfony\Component\HttpFoundation\Response;
 	use Symfony\Component\HttpFoundation\Request;
-
+	/** 
+	* index
+	*/
 	class IndexController implements ControllerProviderInterface{
 		function connect(Application $app){
 			$index = $app['controllers_factory'];
