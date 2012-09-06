@@ -4,7 +4,6 @@ SetEnv MONGODB_DATABASE appfog_1cdb65c060c0_b8d5ece4740a
     Options -MultiViews
     RewriteBase /mongoblog
     RewriteEngine On
-    #RewriteBase public
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
