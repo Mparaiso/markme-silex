@@ -4,6 +4,7 @@ namespace App\Controller{
 	use Silex\ControllerProviderInterface;
 	use Silex\Application;
 	use Symfony\Component\HttpFoundation\Response;
+	use Symfony\Component\HttpFoundation\Request;
 
 	class IndexController implements ControllerProviderInterface{
 		function connect(Application $app){
@@ -11,7 +12,7 @@ namespace App\Controller{
 			$index->get('/','App\Controller\IndexController::index');
 			$index->get('/info','App\Controller\IndexController::info');
 			$index->get('/log','App\Controller\IndexController::log')->after(
-				function(Response $response){
+				function(Request $request,Response $response){
 					return $response->headers->set('Content-Type','text/plain');
 				}
 			);
