@@ -1,5 +1,5 @@
 <?php
-
+var_dump(getenv("MONGODB_SERVER") );
 /**
  *
  *  View documentation at http://silex.sensiolabs.org/documentation
