@@ -49,8 +49,8 @@ if($app['debug']===true):
 endif;
 
 #$app['monolog']->addInfo("Application configured.");
-#$collection = $app['mongo']->selectDB($app['config.mongodb_database'])->selectCollection('log');
-#$collection->insert(array("message"=>"test"));
+$collection = $app['mongo']->selectDB($app['config.mongodb_database'])->selectCollection('log');
+$collection->insert(array("message"=>"test"));
 
 # Run the app
 $app->run();
