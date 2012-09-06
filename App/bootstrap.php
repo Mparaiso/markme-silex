@@ -12,14 +12,18 @@ $loader = require_once(dirname(__DIR__).'/vendor/autoload.php');
 
 # Create new app
 $app = new Silex\Application();
-$app['config.mongodb_server']=getenv("MONGODB_SERVER");
-$app['config.mongodb_database']=getenv("MONGODB_DATABASE");
+$app['config.mongodb_server']=getenv("MONGODB_SERVER")?getenv("MONGODB_SERVER"):"localhost";
+$app['config.mongodb_database']=getenv("MONGODB_DATABASE")?getenv("MONGODB_DATABASE"):'log';
 
 $app['autoloader'] = $app->share(function(Application $app)use($loader){
 	return $loader;
 });
 $app['autoloader']->add("App",dirname(__DIR__));
-
+$app['mongo'] = $app->share(
+	function(Application $app){
+		return new Mongo($app['config.mongodb_server']);
+	}
+);
 ### SERVICES 
 
 $app->register(new MonologServiceProvider(),
@@ -28,7 +32,7 @@ $app->register(new MonologServiceProvider(),
 $app['monolog.handler'] = $app->share(
 	function(Application $app){
 		return new Monolog\Handler\MongoDBHandler(
-			new Mongo($app['config.mongodb_server']),
+			new $app['mongo'],
 			$app['config.mongodb_database'],
 			"log");
 	}
@@ -45,6 +49,8 @@ if($app['debug']===true):
 endif;
 
 #$app['monolog']->addInfo("Application configured.");
+$collection = $app['mongo']->selectDB($app['config.mongodb_database'])->selectCollection('log');
+$collection->insert(array("message"=>"test"));
 
 # Run the app
 $app->run();
