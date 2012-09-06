@@ -1,5 +1,5 @@
 <?php
-if($_SERVER['HTTP_HOST']!="mparaiso.local"):
+if($_SERVER['HTTP_HOST']!='mparaiso.local'):
 	putenv('MONGODB_SERVER=mongodb://camus:defender@alex.mongohq.com:10079/mparaiso');
 	putenv('MONGODB_DATABASE=mpraiso');
 endif;
