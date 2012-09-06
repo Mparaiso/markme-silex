@@ -7,7 +7,6 @@ namespace App\Controller{
 	use Symfony\Component\HttpFoundation\Request;
 	/** 
 	* index
-	*
 	*/
 	class IndexController implements ControllerProviderInterface{
 		function connect(Application $app){
