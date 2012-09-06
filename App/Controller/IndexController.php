@@ -14,7 +14,7 @@ namespace App\Controller{
 		}
 
 		function index(Application $app){
-			    return 'home : $_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]';
+			    return 'home : .'$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI];
 		}
 
 		function helloName(Application $app,$name){
