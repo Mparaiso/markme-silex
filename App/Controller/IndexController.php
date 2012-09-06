@@ -28,6 +28,7 @@ namespace App\Controller{
 
 		function log(Application $app){
 			$log = file_get_contents(ROOT.'/log/application.log');
+			$app['response']->headers->set('Content-Type','text/plain');
 			return $log;
 		}
 	}
