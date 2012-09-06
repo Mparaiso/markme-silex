@@ -14,7 +14,7 @@ namespace App\Controller{
 		}
 
 		function index(Application $app){
-			    return 'Hello! To test this Silex app, put your name at the end of the URL in the address bar above! For example: '.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'John';
+			    return 'home : $_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]';
 		}
 
 		function helloName(Application $app,$name){
