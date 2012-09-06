@@ -13,8 +13,8 @@ $loader = require_once(dirname(__DIR__).'/vendor/autoload.php');
 
 # Create new app
 $app = new Silex\Application();
-$app['config.mongodb_server']=getenv("mongodb_server");
-$app['config.mongodb_database']=getenv("mongodb_database");
+$app['config.mongodb_server']=getenv("MONGODB_SERVER");
+$app['config.mongodb_database']=getenv("MONGODB_DATABASE");
 
 $app['autoloader'] = $app->share(function(Application $app)use($loader){
 	return $loader;
