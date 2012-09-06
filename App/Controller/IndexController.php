@@ -23,7 +23,7 @@ namespace App\Controller{
 		function index(Application $app){
 				try {
 					$collection = $app['mongo']->selectDB($app['config.mongodb_database'])->selectCollection('log');
-					$collection->insert(array("message"=>"test"));
+					$collection->insert(array("message"=>"test".date("r")));
 				} catch (Exception $e) {
 				    echo 'Exception reçue : ',  $e->getMessage(), "\n";
 				}
