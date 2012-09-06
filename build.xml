@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project  default="deploy" name="upload website">
   <target name="deploy">
+  	<property file="build.properties"/>
 	<exec executable="git">
 	    <arg line="add ."/>
 	</exec>
