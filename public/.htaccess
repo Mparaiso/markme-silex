@@ -1,5 +1,3 @@
-SetEnv MONGODB_SERVER localhost
-SetEnv MONGODB_DATABASE mparaiso
 <IfModule mod_rewrite.c>
     Options -MultiViews
 
