@@ -7,20 +7,22 @@
  */
 use Silex\Application;
 use Silex\Provider\MonologServiceProvider;
+use App\Controller\IndexController;
 
-require_once dirname(__DIR__).'/vendor/autoload.php';
+$loader = require_once(dirname(__DIR__).'/vendor/autoload.php');
 
 # Create new app
 $app = new Silex\Application();
-$app->register(new MonologServiceProvider(),array("monolog.logfile"=>dirname(__DIR__)."/log/application.log"));
-
+$app['autoloader'] = $app->share(function(Application $app)use($loader){
+	return $loader;
+});
+$app['autoloader']->add("App",dirname(__DIR__));
+$app->register(new MonologServiceProvider(),
+	array("monolog.logfile"=>dirname(__DIR__)."/log/application.log")
+);
+$app->mount('/',new IndexController());
 # Enable debugging
 $app['debug'] = true;
-
-# No name specified, so give instructions
-$app->get('/', function() {
-    return 'Hello! To test this Silex app, put your name at the end of the URL in the address bar above! For example: '.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'John';
-});
 
 # info
 if($app['debug']===true):
@@ -28,11 +30,6 @@ if($app['debug']===true):
 		return phpinfo();
 	});
 endif;
-
-# Hello {name} example
-$app->get('/{name}', function($name) use($app) {
-    return 'Hello, '.$app->escape($name).'!';
-});
 
 $app['monolog']->addInfo("Application configured.");
 
