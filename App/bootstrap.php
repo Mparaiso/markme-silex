@@ -48,9 +48,14 @@ if($app['debug']===true):
 	});
 endif;
 
+
+try {
+	$collection = $app['mongo']->selectDB($app['config.mongodb_database'])->selectCollection('log');
+	$collection->insert(array("message"=>"test"));
+} catch (Exception $e) {
+    echo 'Exception reçue : ',  $e->getMessage(), "\n";
+}
 #$app['monolog']->addInfo("Application configured.");
-$collection = $app['mongo']->selectDB($app['config.mongodb_database'])->selectCollection('log');
-$collection->insert(array("message"=>"test"));
 
 # Run the app
 $app->run();
