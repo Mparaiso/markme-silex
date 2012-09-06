@@ -1,5 +1,4 @@
 <?php
-var_dump(getenv("MONGODB_SERVER") );
 /**
  *
  *  View documentation at http://silex.sensiolabs.org/documentation
@@ -13,8 +12,8 @@ $loader = require_once(dirname(__DIR__).'/vendor/autoload.php');
 
 # Create new app
 $app = new Silex\Application();
-$app['config.mongodb_server']=getenv("MONGODB_SERVER");
-$app['config.mongodb_database']=getenv("MONGODB_DATABASE");
+$app['config.mongodb_server']="mongodb://appfog:bb19977612e768f52dc08c0e1911037b@alex.mongohq.com:10005/phpfog7c8dabd0_d905_012f_0d77_7efd45a4c57b";
+$app['config.mongodb_database']="phpfog7c8dabd0_d905_012f_0d77_7efd45a4c57b";
 
 $app['autoloader'] = $app->share(function(Application $app)use($loader){
 	return $loader;
