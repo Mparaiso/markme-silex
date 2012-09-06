@@ -31,7 +31,7 @@ $app['monolog.handler'] = function()use($app){
 			$app['config.mongodb_database'],
 			"log"
 	);
-}:
+};
 $app->mount('/',new IndexController());
 # Enable debugging
 $app['debug'] = true;
