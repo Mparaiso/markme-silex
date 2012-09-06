@@ -2,7 +2,7 @@ SetEnv MONGODB_SERVER mongodb://camus:defender@ds037587.mongolab.com:37587/appfo
 SetEnv MONGODB_DATABASE appfog_1cdb65c060c0_b8d5ece4740a
 <IfModule mod_rewrite.c>
     Options -MultiViews
-    RewriteBase /mparaiso
+    #RewriteBase /mparaiso
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
