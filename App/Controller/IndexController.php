@@ -21,6 +21,12 @@ namespace App\Controller{
 		}
 
 		function index(Application $app){
+				try {
+					$collection = $app['mongo']->selectDB($app['config.mongodb_database'])->selectCollection('log');
+					$collection->insert(array("message"=>"test"));
+				} catch (Exception $e) {
+				    echo 'Exception reçue : ',  $e->getMessage(), "\n";
+				}
 			    return 'home : .'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 		}
 
