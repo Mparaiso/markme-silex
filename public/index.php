@@ -28,7 +28,7 @@ $app->register(new MonologServiceProvider(),
 );
 $app['monolog.handler'] = $app->share(function(Application $app){
 		return new Monolog\Handler\MongoDBHandler(
-			$app['config.mongodb_server'],
+			new Mongo($app['config.mongodb_server']),
 			$app['config.mongodb_database'],
 			"log"
 			);
