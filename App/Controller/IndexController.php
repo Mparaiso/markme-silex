@@ -3,13 +3,18 @@ namespace App\Controller{
 
 	use Silex\ControllerProviderInterface;
 	use Silex\Application;
+	use Symfony\Component\HttpFoundation\Response;
 
 	class IndexController implements ControllerProviderInterface{
 		function connect(Application $app){
 			$index = $app['controllers_factory'];
 			$index->get('/','App\Controller\IndexController::index');
 			$index->get('/info','App\Controller\IndexController::info');
-			$index->get('/log','App\Controller\IndexController::log');
+			$index->get('/log','App\Controller\IndexController::log')->after(
+				function(Response $response){
+					return $response->headers->set('Content-Type','text/plain');
+				}
+			);
 			$index->get('/{name}','App\Controller\IndexController::helloName');
 			return $index;
 		}
@@ -28,7 +33,6 @@ namespace App\Controller{
 
 		function log(Application $app){
 			$log = file_get_contents(ROOT.'/log/application.log');
-			$app['response']->headers->set('Content-Type','text/plain');
 			return $log;
 		}
 	}
