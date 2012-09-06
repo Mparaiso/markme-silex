@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<project  default="deploy" name="upload website">
+  <target name="deploy">
+	<exec executable="git">
+	    <arg line="add ."/>
+	</exec>
+	<exec executable="git">
+	    <arg line="commit -am${message}"/>
+	</exec>
+	<exec executable="git">
+	    <arg line="push ${branch}"/>
+	</exec>
+  </target>
+</project>
