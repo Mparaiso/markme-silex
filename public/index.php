@@ -25,14 +25,14 @@ $app['autoloader']->add("App",dirname(__DIR__));
 $app->register(new MonologServiceProvider(),
 	array("monolog.logfile"=>dirname(__DIR__)."/log/application.log")
 );
-$app['monolog.handler'] = $app->share(function(Application $app){
+/*$app['monolog.handler'] = $app->share(function(Application $app){
 		return new Monolog\Handler\MongoDBHandler(
 			new Mongo($app['config.mongodb_server']),
 			$app['config.mongodb_database'],
 			"log"
 			);
 	}
-);
+);*/
 $app->mount('/',new IndexController());
 # Enable debugging
 $app['debug'] = true;
