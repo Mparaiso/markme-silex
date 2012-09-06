@@ -9,6 +9,7 @@ namespace App\Controller{
 			$index = $app['controllers_factory'];
 			$index->get('/','App\Controller\IndexController::index');
 			$index->get('/info','App\Controller\IndexController::info');
+			$index->get('/log','App\Controller\IndexController::log');
 			$index->get('/{name}','App\Controller\IndexController::helloName');
 			return $index;
 		}
@@ -23,6 +24,11 @@ namespace App\Controller{
 
 		function info(Application $app){
 			return phpinfo();
+		}
+
+		function log(Application $app){
+			$log = file_get_contents(ROOT.'/log/application.log');
+			return $log;
 		}
 	}
 }
