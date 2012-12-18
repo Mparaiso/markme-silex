@@ -3,6 +3,8 @@
     "require": {
         "silex/silex": "1.*",
         "doctrine/mongodb-odm":"1.*",
-        "monolog/monolog":"*"
+        "monolog/monolog":"*",
+        "twig/twig":"*",
+        "doctrine/dbal": "2.3.*@dev"
     }
 }
