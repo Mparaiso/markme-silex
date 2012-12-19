@@ -1,0 +1,10 @@
+language: php
+php:
+    - 5.4
+    - 5.3
+# install les packages avec composer
+before_Script:
+    - composer install
+# executer phpunit
+script: phpunit
+
