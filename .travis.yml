@@ -8,6 +8,7 @@ env:
 # install les packages avec composer
 before_Script:
     - composer install
+    - composer upgrade
 # executer phpunit
 script: phpunit
 
