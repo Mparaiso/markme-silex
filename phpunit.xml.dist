@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<phpunit backupGlobals='false'
+    bootstrap="/vendor/autoload.php"
+    backupStaticAttributes="false"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    processIsolation="false"
+    stopOnFailure="false"
+    syntaxCheck="false">
+    <testsuites>
+        <testsuite name="MarkMe test suit">
+            <directory>./tests/</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

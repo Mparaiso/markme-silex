@@ -5,6 +5,7 @@
         "doctrine/mongodb-odm":"1.*",
         "monolog/monolog":"*",
         "twig/twig":"*",
-        "doctrine/dbal": "2.3.*@dev"
+        "doctrine/dbal": "2.3.*@dev",
+        "symfony/twig-bridge":"2.1.*"
     }
 }

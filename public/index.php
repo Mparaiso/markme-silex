@@ -1,2 +1,3 @@
 <?php
-require("../App/application.php");
+$app = require("../App/application.php");
+$app->run();

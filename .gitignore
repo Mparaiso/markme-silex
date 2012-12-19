@@ -1,6 +1,8 @@
 .DS_Store
 composer.lock
 vendor/*
+cache/*
+log/*
 *.tmp
 *.cloud
 *.sh
