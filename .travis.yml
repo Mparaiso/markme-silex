@@ -2,6 +2,9 @@ language: php
 php:
     - 5.4
     - 5.3
+# variables d'envirronement
+env:
+- MARKME_DB_DRIVER= pdo_sqlite
 # install les packages avec composer
 before_Script:
     - composer install

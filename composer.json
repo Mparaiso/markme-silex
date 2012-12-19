@@ -6,6 +6,7 @@
         "monolog/monolog":"*",
         "twig/twig":"*",
         "doctrine/dbal": "2.3.*@dev",
-        "symfony/twig-bridge":"2.1.*"
+        "symfony/twig-bridge":"2.1.*",
+        "symfony/browser-kit": "2.2.*@dev"
     }
 }

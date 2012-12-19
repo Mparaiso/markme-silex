@@ -42,11 +42,12 @@ $app["debug"]=true;
 $app['salt']="yMeb2v7+hnJxEWpG/SgytDv57qKEg5Uw1t2I9dNmd/o=";
 // enregistrement de DoctrineServiceProvider
 $app->register(new DoctrineServiceProvider(),array("db.options"=>array(
-    "driver"=>"pdo_mysql",
+    "driver"=>getenv("MARKME_DB_DRIVER"),
     "dbname"=>"markme",
     "host"=>"localhost",
-    "user"=>"camus",
-    "password"=>"defender",
+    "user"=>getenv("MARKME_DB_USERNAME"),
+    "password"=>getenv("MARKME_DB_PASSWORD"),
+    "memory"=>true,
 )));
 // enregistrement de Twig
 $app->register(new Silex\Provider\TwigServiceProvider(),array(
@@ -60,10 +61,6 @@ $app->register(new SessionServiceProvider(),array(
         "httponly"=>true,
     ),
 ));
-// utilisation de la clef client pour le service de base de données
-$app['client'] = $app->share(function(Silex\Applicaton $app){
-    return $app["db"];
-});
 /**
  * 
  * MIDDLEWARE
@@ -110,3 +107,6 @@ $app->post("/json/register",function(Silex\Application $app){
 
 
 });
+
+// export la variable app du module application
+return $app;
