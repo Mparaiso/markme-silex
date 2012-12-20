@@ -59,6 +59,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(),array(
 $app->register(new SessionServiceProvider(),array(
     "session.storage.options"=>array(
         "httponly"=>true,
+        "domain"=>"markme.app"
     ),
 ));
 /**
@@ -87,6 +88,7 @@ $app->get("/{name}",function(Silex\Application $app,$name){
 
 // enregistre un nouvel utilisateur
 $app->post("/json/register",function(Silex\Application $app){
+    $jsonContentType = array("Content-Type"=>"application/javascript");
     $username = $app['request']->get("username");
     $password = md5($app['request']->get("password")+$username+$app['salt']);
     $email = $app['request']->get("email");
@@ -101,11 +103,14 @@ $app->post("/json/register",function(Silex\Application $app){
                 "email"=>$result["email"]);
             $app['session']->set("user_id",$user["id"]);
             $app["session"]->set("user",$user);
-            return $app->json($user,200,array("Content-Type"=>"application/javascript"));
+            $response =  $app->json($user,200,$jsonContentType);
+        else:
+            $response = $app->json(array("status"=>"error","message"=>"database error"),200,$jsonContentType);
         endif;
     endif;
-
-
+    $response = $app->json(array("status"=>"error","message"=>"request error"),
+        200,$jsonContentType);
+    return $response;
 });
 
 // export la variable app du module application
