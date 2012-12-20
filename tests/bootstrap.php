@@ -1,7 +1,9 @@
 <?php
 
 /** charge l'autoloader pour les tests * */
-!defined("ROOT") AND define("ROOT", dirname(__DIR__));
+if(! defined("ROOT")):
+    define("ROOT", dirname(__DIR__));
+endif;
 
 require(__DIR__ . "/../vendor/autoload.php");
 

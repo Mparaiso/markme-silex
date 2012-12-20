@@ -23,7 +23,9 @@ use \Silex\Provider\DoctrineServiceProvider;
 use \Symfony\Component\HttpFoundation\Request;
 use \Silex\Provider\SessionServiceProvider;
 
-define('ROOT',dirname(__DIR__));
+if(! defined("ROOT")):
+    define('ROOT',dirname(__DIR__));
+endif;
 /**
  *  @var Composer\Autoload\ClassLoader
  */
