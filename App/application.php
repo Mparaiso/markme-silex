@@ -55,6 +55,11 @@ $app->register(new Silex\Provider\TwigServiceProvider(),array(
         "cache"=>ROOT."/cache/",
     ),
 ));
+// enregistrement de monolog pour log des infos
+$app->register(new \Silex\Provider\MonologServiceProvider(),array(
+   "monolog.logfile"=>ROOT."/log/access.log",
+   "monolog.name"=>"markme",
+));
 // enregistrement de SessionServiceProvider
 $app->register(new SessionServiceProvider(),array(
     "session.storage.options"=>array(
@@ -70,7 +75,7 @@ $app->register(new SessionServiceProvider(),array(
 // transforme le corps d'une requete json en données de formulaire classique
 $app->before(function(Request $req){
     if(0===strpos($req->headers->get('Content-Type'),'application/json')):
-        $data= json_decode($request->getContent(),true);
+        $data= json_decode($req->getContent(),true);
         $req->request->replace(is_array($data)?$data:array());
         return $req;
     endif;
@@ -94,8 +99,7 @@ $app->post("/json/register",function(Silex\Application $app){
     $email = $app['request']->get("email");
     if($username AND $password AND $email):
         $time = time();
-        $result = $query->execute();
-        $result = $conn->insert('users', array('username' => $username, 
+        $result = $app["db"]->insert('users', array('username' => $username, 
             'email' => $email ,'password'=>$password, 'created_at'=>$time,
             'last_login'=>$time));
         if($result):

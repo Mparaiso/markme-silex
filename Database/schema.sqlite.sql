@@ -1,6 +1,6 @@
 -- schema for sqlite
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL ,
+  `id` INTEGER NOT NULL ,
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,

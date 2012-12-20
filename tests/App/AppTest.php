@@ -39,14 +39,15 @@ class AppTest extends WebTestCase{
      * crée un utilisateur via une requète json
      */
     function testJsonRegister_POST(){
-        $json = json_encode(array("username"=>"camus",
-            "email"=>"aikah@free.fr","password"=>"password"));
+        $json = json_encode(array("username"=>"camus", "email"=>"aikah@free.fr","password"=>"password"));
         $client = $this->createClient();
         $crawler = $client->request("POST","/json/register",array(),array(),
-            array(),$json);
-        print($client->getResponse());
-        // $this->assertTrue($this->app["session"]->get("user"));
-        // $this->assertTrue($this->app["session"]->get("user_id"));
+            array(
+                "HTTP_Content-Type"=>"application/json",
+            ),$json);
+        $response = $client->getResponse();
+        $this->assertTrue($this->app["session"]->get("user"));
+        $this->assertTrue($this->app["session"]->get("user_id"));
         $this->assertTrue(true);
     }
 
