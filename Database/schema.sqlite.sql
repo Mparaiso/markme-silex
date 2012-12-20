@@ -1,9 +1,9 @@
 -- schema for sqlite
 CREATE TABLE `users` (
   `id` INTEGER NOT NULL ,
-  `username` varchar(255) DEFAULT NULL,
+  `username` varchar(255) DEFAULT NULL UNIQUE,
   `password` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL UNIQUE,
   `created_at` datetime DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)

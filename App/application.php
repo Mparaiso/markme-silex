@@ -7,8 +7,6 @@
  * @author M.Paraiso
  * 
  * API : 
- * GET  / display default content
- * POST /json/register/ Register a new user
  * POST /json/login/ Log in an existing user, starting a session
  * POST /json/logout/ Log out the current user
  * PUT /json/user/ Update a user's profile
@@ -23,11 +21,12 @@
 
 use \Silex\Provider\DoctrineServiceProvider;
 use \Symfony\Component\HttpFoundation\Request;
-use \Symfony\Component\HttpFoundation\Response;
 use \Silex\Provider\SessionServiceProvider;
 
 define('ROOT',dirname(__DIR__));
-
+/**
+ *  @var Composer\Autoload\ClassLoader
+ */
 $loader = require(ROOT.'/vendor/autoload.php');
 $app = new Silex\Application();
 
@@ -37,6 +36,7 @@ $app = new Silex\Application();
  * 
  */
 
+$loader->add("App",ROOT);
 $app["debug"]=true;
 //used for session and password hashes
 $app['salt']="yMeb2v7+hnJxEWpG/SgytDv57qKEg5Uw1t2I9dNmd/o=";
@@ -55,12 +55,13 @@ $app->register(new Silex\Provider\TwigServiceProvider(),array(
         "cache"=>ROOT."/cache/",
     ),
 ));
+
 // enregistrement de monolog pour log des infos
 $app->register(new \Silex\Provider\MonologServiceProvider(),array(
    "monolog.logfile"=>ROOT."/log/access.log",
    "monolog.name"=>"markme",
 ));
-// enregistrement de SessionServiceProvider
+// FR : enregistrement de SessionServiceProvider
 $app->register(new SessionServiceProvider(),array(
     "session.storage.options"=>array(
         "httponly"=>true,
@@ -80,6 +81,20 @@ $app->before(function(Request $req){
         return $req;
     endif;
 });
+/** vérifie si un utilisateur est loggé **/
+$mustBeLoggedIn = function()use($app){
+    if(!($app[session]->get("user_id") && $app[session]->get("user"))):
+        $app["session"]->invalidate();
+        return $app->abort("401",'Unauthorized user');
+    endif;
+};
+// la requète post doit être un json
+$mustBeValidJSON = function(Request $request)use($app){
+    $data= json_decode($request->getContent(),true);
+    if(!isset($data)):
+        return $app->abort("403");
+    endif;
+};
 /**
  * 
  * ROUTES
@@ -87,35 +102,26 @@ $app->before(function(Request $req){
  */
 
 // root route
-$app->get("/{name}",function(Silex\Application $app,$name){
-    return $app["twig"]->render("index.twig",array("name"=>$name));
-})->value("name","Silex");
+$app->match("/{name}","App\Controller\IndexController::index")
+        ->value("name","Silex");
 
-// enregistre un nouvel utilisateur
-$app->post("/json/register",function(Silex\Application $app){
-    $jsonContentType = array("Content-Type"=>"application/javascript");
-    $username = $app['request']->get("username");
-    $password = md5($app['request']->get("password")+$username+$app['salt']);
-    $email = $app['request']->get("email");
-    if($username AND $password AND $email):
-        $time = time();
-        $result = $app["db"]->insert('users', array('username' => $username, 
-            'email' => $email ,'password'=>$password, 'created_at'=>$time,
-            'last_login'=>$time));
-        if($result):
-            $user = array("id"=>$result['id'],"username"=>$result['username'],
-                "email"=>$result["email"]);
-            $app['session']->set("user_id",$user["id"]);
-            $app["session"]->set("user",$user);
-            $response =  $app->json($user,200,$jsonContentType);
-        else:
-            $response = $app->json(array("status"=>"error","message"=>"database error"),200,$jsonContentType);
-        endif;
-    endif;
-    $response = $app->json(array("status"=>"error","message"=>"request error"),
-        200,$jsonContentType);
-    return $response;
-});
+// FR : enregistre un nouvel utilisateur
+$app->post("/json/register",
+        "App\Controller\UserController::register")->before($mustBeValidJSON);
+
+$app->post("/json/login",
+        "App\Controller\UserController::login")->before($mustBeValidJSON);
+
+// FR : routes protégée
+$protectedRoutes = $app["controllers_factory"];
+$protectedRoutes->before($mustBeLoggedIn);
+$protectedRoutes->post("/json/logout",
+        "App\Controller\UserController::logout");
+$protectedRoutes->get("/json/user",
+        "App\Controller\UserController::getCurrent");
+$protectedRoutes->put("/json/user",
+        "App\Controller\UserController::updateUser")->before($mustBeValidJSON);
+$app->mount("/",$protectedRoutes);
 
 // export la variable app du module application
 return $app;
