@@ -2,7 +2,6 @@
 composer.lock
 vendor/*
 cache/*
-log/*
 *.tmp
 *.cloud
 *.sh
