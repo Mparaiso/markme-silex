@@ -123,6 +123,13 @@ $protectedRoutes->get("/json/user",
         "App\Controller\UserController::getCurrent");
 $protectedRoutes->put("/json/user",
         "App\Controller\UserController::updateUser")->before($mustBeValidJSON);
+// bookmarks
+$protectedRoutes->post("/json/bookmark",
+        "App\Controller\BookmarkController::create")->before($mustBeValidJSON);
+$protectedRoutes->delete("/json/bookmark/{id}",
+        "App\Controller\BookmarkController::delete");
+
+// installer les routes protégées
 $app->mount("/",$protectedRoutes);
 
 // export la variable app du module application

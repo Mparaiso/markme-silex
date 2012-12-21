@@ -1,16 +1,6 @@
 -- schema for sqlite
-CREATE TABLE `users` (
-  `id` INTEGER NOT NULL ,
-  `username` varchar(255) DEFAULT NULL UNIQUE,
-  `password` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL UNIQUE,
-  `created_at` datetime DEFAULT NULL,
-  `last_login` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-);
-
 CREATE TABLE `bookmarks` (
-  `id` int(11) NOT NULL ,
+  `id` INTEGER NOT NULL ,
   `user_id` int(11) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
@@ -21,6 +11,16 @@ CREATE TABLE `bookmarks` (
 );
 
 CREATE TABLE `tags` (
-  `bookmark_id` int(11) DEFAULT NULL,
+  `bookmark_id` INTEGER DEFAULT NULL,
   `tag` varchar(255) DEFAULT NULL
+);
+
+CREATE TABLE `users` (
+  `id` INTEGER NOT NULL ,
+  `username` varchar(255) DEFAULT NULL UNIQUE,
+  `password` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL UNIQUE,
+  `created_at` datetime DEFAULT NULL,
+  `last_login` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
 );

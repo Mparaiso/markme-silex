@@ -30,9 +30,7 @@ class UserController {
                     'last_login' => $time));
                 $app['monolog']->addInfo("result = $LastInsertedId");
                 $user = array("id" => $LastInsertedId, "username" => $username, "email" => $email);
-                $app['session']->set("user_id", $user["id"]);
-                $app["session"]->set("user", array("id" => $user["id"],
-                    "username" => $user["username"], "email" => $user["email"]));
+                $this->_setLoggedUserSession($app, $user);
                 $response = $app->json(array_merge($user, array("status" => "ok")), 200, $jsonContentType);
             } catch (DBALException $exc) {
                 $app['monolog']->addError("error : {$exc->getMessage()}");
