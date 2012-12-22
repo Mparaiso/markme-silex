@@ -26,5 +26,6 @@ CREATE TABLE `tags` (
   `bookmark_id` int(11) DEFAULT NULL,
   `tag` varchar(255) DEFAULT NULL,
   KEY `bookmarkIdIdx` (`bookmark_id`),
-  KEY `tagIdx` (`tag`)
+  KEY `tagIdx` (`tag`),
+  FOREIGN KEY(bookmark_id) REFERENCES bookmarks(id) ON DELETE CASCADE
 );

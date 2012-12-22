@@ -12,7 +12,9 @@ CREATE TABLE `bookmarks` (
 
 CREATE TABLE `tags` (
   `bookmark_id` INTEGER DEFAULT NULL,
-  `tag` varchar(255) DEFAULT NULL
+  `tag` varchar(255) DEFAULT NULL,
+  FOREIGN KEY(bookmark_id) REFERENCES bookmarks(id) ON DELETE CASCADE
+
 );
 
 CREATE TABLE `users` (

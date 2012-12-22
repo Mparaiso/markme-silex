@@ -25,10 +25,10 @@ class UserController {
         if ($username AND $password AND $email):
             $time = time();
             try {
-                $LastInsertedId = $app["db"]->insert('users', array('username' => $username,
+                $affetchedRows = $app["db"]->insert('users', array('username' => $username,
                     'email' => $email, 'password' => $password, 'created_at' => $time,
                     'last_login' => $time));
-                $app['monolog']->addInfo("result = $LastInsertedId");
+                $LastInsertedId = intval($app["db"]->lastInsertId());
                 $user = array("id" => $LastInsertedId, "username" => $username, "email" => $email);
                 $this->_setLoggedUserSession($app, $user);
                 $response = $app->json(array_merge($user, array("status" => "ok")), 200, $jsonContentType);

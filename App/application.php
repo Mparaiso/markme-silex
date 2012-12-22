@@ -7,14 +7,10 @@
  * @author M.Paraiso
  * 
  * API : 
- * POST /json/login/ Log in an existing user, starting a session
- * POST /json/logout/ Log out the current user
  * PUT /json/user/ Update a user's profile
  * GET /json/tag/ Retrieve a user's tags
  * GET /json/autocomplete/ Autocomplete for tagging, returns tags matching input
- * GET /json/bookmark/ Return a user's bookmarks
  * PUT /json/bookmark/:id update a bookmark
- * POST /json/bookmark/:id? Create a new bookmark
  * DELETE /json/bookmark/:id Delete a bookmark
  * POST /json/import Import bookmarks from an HTML file
  */
@@ -90,6 +86,11 @@ $mustBeLoggedIn = function()use($app){
         return $app->abort("401",'Unauthorized user');
     endif;
 };
+$mustBeAnonymous =function()use($app){
+    if($app["session"]->get(user_id)):
+        return $app->abort("404","User already logged in");
+    endif;
+};
 // la requète post doit être un json
 $mustBeValidJSON = function(Request $request)use($app){
     $data= json_decode($request->getContent(),true);
@@ -109,7 +110,8 @@ $app->match("/{name}","App\Controller\IndexController::index")
 
 // FR : enregistre un nouvel utilisateur
 $app->post("/json/register",
-        "App\Controller\UserController::register")->before($mustBeValidJSON);
+        "App\Controller\UserController::register")->before($mustBeValidJSON)
+        ->before($mustBeAnonymous);
 
 $app->post("/json/login",
         "App\Controller\UserController::login")->before($mustBeValidJSON);
@@ -128,7 +130,17 @@ $protectedRoutes->post("/json/bookmark",
         "App\Controller\BookmarkController::create")->before($mustBeValidJSON);
 $protectedRoutes->delete("/json/bookmark/{id}",
         "App\Controller\BookmarkController::delete");
-
+$protectedRoutes->get("/json/bookmark",
+        "App\Controller\BookmarkController::getAll");
+$protectedRoutes->get("/json/bookmark/tag",
+        "App\Controller\BookmarkController::getByTag")->before($mustBeValidJSON);
+$protectedRoutes->get("/json/bookmark/search",
+    "App\Controller\BookmarkController::search")->before($mustBeValidJSON);
+// tags
+$protectedRoutes->get("/json/tag",
+    "App\Controller\TagController::get");
+$protectedRoutes->get("/json/tag/{tag}",
+    "App\Controller\TagController::autocomplete");
 // installer les routes protégées
 $app->mount("/",$protectedRoutes);
 

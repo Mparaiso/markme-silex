@@ -8,8 +8,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
  * @author M.PAraiso
  */
-class BookmarkControllerTest
-    extends WebTestCase{
+class BookmarkControllerTest extends WebTestCase{
 
     function setUp(){
         parent::setUp();
@@ -37,9 +36,6 @@ class BookmarkControllerTest
                         "google search engine", "url"=>"http://google.com", "private"=>0,
                         "tags"=>array("google", "search", "popular", "advertising")),
                 ),
-                array(
-                    "username"=>"superman", "email"=>"superman@yahoo.fr", "password"=>"password"
-                ),
                 array("HTTP_Content-Type"=>"application/json"),
             ),
         );
@@ -49,7 +45,7 @@ class BookmarkControllerTest
      * @covers App\Controller\BookmarkController::create
      * @dataProvider provider
      */
-    public function testCreate($bookmarks, $user, $headers){
+    public function testCreate($bookmarks, $headers){
         # l'utilisateur crée 2 bookmarks
         $client = $this->createClient();
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
@@ -78,7 +74,7 @@ class BookmarkControllerTest
      * @covers App\Controller\BookmarkController::delete
      * @dataProvider provider
      */
-    public function testDelete($bookmarks, $user, $headers){
+    public function testDelete($bookmarks, $headers){
         # l'utilisateur crée 2 bookmarks puis en efface 1
         $client = $this->createClient();
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
@@ -98,7 +94,7 @@ class BookmarkControllerTest
      * @param type $user
      * @param type $headers
      */
-    function testGetAll($bookmarks, $user, $headers){
+    function testGetAll($bookmarks, $headers){
         // un utilisateur obtient des bookmarks crées
         $client = $this->createClient();
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
@@ -120,21 +116,16 @@ class BookmarkControllerTest
      * @param type $user
      * @param type $headers
      */
-    function testSearch($bookmarks, $user, $headers){
+    function testSearch($bookmarks, $headers){
         $client = $this->createClient();
-        $client->request("POST", "/json/bookmark", array(), array(), $headers, 
-            json_encode($bookmarks[0]));
-        $client->request("POST", "/json/bookmark", array(), array(), $headers, 
-            json_encode($bookmarks[1]));
-        $client->request("GET","/json/bookmark/search",array(),array(),$headers,
-            json_encode(array("query"=>"engine")));
+        $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
+        $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[1]));
+        $client->request("GET", "/json/bookmark/search", array(), array(), $headers, json_encode(array("query"=>"engine")));
         $response = $client->getResponse();
-        $bookmarks = json_decode($response->getContent());
-        $this->assertEquals(1,count($bookmarks));
-        print_r($bookmarks);
-        //$this->assertTrue( preg_match("/engine/",$bookmarks[0]->description));
-        
-        
+        $json = json_decode($response->getContent());
+        //print_r($json);
+        $this->assertEquals(1, count($json->bookmarks));
+        $this->assertTrue(preg_match("/engine/", $json->bookmarks[0]->description) >= 1);
     }
 
     /**
@@ -144,7 +135,7 @@ class BookmarkControllerTest
      * @param type $user
      * @param type $headers
      */
-    function testGetByTag($bookmarks, $user, $headers){
+    function testGetByTag($bookmarks, $headers){
         $client = $this->createClient();
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[1]));

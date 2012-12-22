@@ -6,7 +6,6 @@
 
 namespace App\Controller {
 
-    use Symfony\Component\HttpKernel\Exception\HttpException;
 
     class UserControllerTest extends \Silex\WebTestCase {
 
@@ -50,6 +49,8 @@ namespace App\Controller {
             $this->assertEquals($data['validJsonResponse'], $response->getContent());
             $this->assertEquals($this->app["session"]->get("user"), $data["userResponse"]);
             $this->assertEquals($this->app["session"]->get("user_id"), 1);
+            $this->app["session"]->invalidate();
+            $client->restart();
             // FR : la requète échoue parce que l'utilisateur or l'email existe déja
             $client2 = $this->createClient();
             $client2->request("POST", "/json/register", array(), array(), array("HTTP_Content-Type" => "application/json"), $data['json']);
@@ -122,7 +123,7 @@ namespace App\Controller {
                             array("status" => "ok", "message" => "user logged out")));
             // l'utilisateur n'était pas connecté et ne peut donc pas se déconnecté , l'application lève une exception
             $client2 = $this->createClient();
-            $this->setExpectedException( "Symfony\Component\HttpKernel\Exception\HttpException" , "Unauthorized user");
+            $this->setExpectedException("Symfony\Component\HttpKernel\Exception\HttpException", "Unauthorized user");
             $client2->request("POST", "/json/logout");
         }
 
@@ -141,37 +142,30 @@ namespace App\Controller {
             $client->request("GET", "/json/user");
             $response = $client->getResponse();
             $this->assertEquals($response->getContent(), $data['validJsonResponse']);
-            $client->request("POST","/json/logout");
+            $client->request("POST", "/json/logout");
             // l'utilisateur n'est pas connecté
-            $this->setExpectedException( "Symfony\Component\HttpKernel\Exception\HttpException" , "Unauthorized user");
-            $client->request("GET","/json/user");
-
+            $this->setExpectedException("Symfony\Component\HttpKernel\Exception\HttpException", "Unauthorized user");
+            $client->request("GET", "/json/user");
         }
-        
+
         /**
          * @dataProvider provider
          * @param array $data
          */
-        public function testUpdateUser($data){
+        public function testUpdateUser($data) {
             // un utilisateur connecté met à jour ses informations
-            $newDatas = json_encode(array("username"=>"superboy","email"=>"superboy@free.fr","password"=>"password2"));
-            $responseData = json_encode(array("username"=>"superboy","email"=>"superboy@free.fr","status"=>"ok"));
+            $newDatas = json_encode(array("username" => "superboy", "email" => "superboy@free.fr", "password" => "password2"));
+            $responseData = json_encode(array("username" => "superboy", "email" => "superboy@free.fr", "status" => "ok"));
             $client = $this->createClient();
-            $client->request("POST","/json/register",
-                    array(),array(),
-                    array("HTTP_Content-Type" => "application/json"),$data["json"]);
-            $client->request("PUT","/json/user",array(),array(),
-                    array("HTTP_Content-Type" => "application/json"),
-                    $newDatas);
+            $client->request("POST", "/json/register", array(), array(), array("HTTP_Content-Type" => "application/json"), $data["json"]);
+            $client->request("PUT", "/json/user", array(), array(), array("HTTP_Content-Type" => "application/json"), $newDatas);
             $response = $client->getResponse();
-            $this->assertEquals($responseData,$response->getContent());
-            $client->request("POST","/json/logout");
+            $this->assertEquals($responseData, $response->getContent());
+            $client->request("POST", "/json/logout");
             $client->restart();
             // un utilisateur non connecté tente de mettre à jour ses informations
-            $this->setExpectedException("Symfony\Component\HttpKernel\Exception\HttpException","Unauthorized user");
-            $client->request("PUT","/json/user",array(),array(),
-                    array("HTTP_Content-Type" => "application/json"),
-                    $newDatas);
+            $this->setExpectedException("Symfony\Component\HttpKernel\Exception\HttpException", "Unauthorized user");
+            $client->request("PUT", "/json/user", array(), array(), array("HTTP_Content-Type" => "application/json"), $newDatas);
         }
 
         public function createApplication() {
