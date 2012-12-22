@@ -985,3 +985,6 @@ SQLSTATE[23000]: Integrity constraint violation: 19 column email is not unique [
 [2012-12-22 20:10:13] markme.INFO: Matched route "_name" (parameters: "_controller": "App\Controller\IndexController::index", "name": "Silex", "_route": "_name") [] []
 [2012-12-22 20:10:13] markme.INFO: > GET / [] []
 [2012-12-22 20:10:13] markme.INFO: < 200 [] []
+[2012-12-22 20:12:00] markme.INFO: Matched route "_name" (parameters: "_controller": "App\Controller\IndexController::index", "name": "Silex", "_route": "_name") [] []
+[2012-12-22 20:12:00] markme.INFO: > GET / [] []
+[2012-12-22 20:12:00] markme.INFO: < 200 [] []
