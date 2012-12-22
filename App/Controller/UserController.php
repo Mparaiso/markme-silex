@@ -33,7 +33,7 @@ class UserController {
                 $this->_setLoggedUserSession($app, $user);
                 $response = $app->json(array_merge($user, array("status" => "ok")), 200, $jsonContentType);
             } catch (DBALException $exc) {
-                $app['monolog']->addError("error : {$exc->getMessage()}");
+                $app['logger']->err("error : {$exc->getMessage()}");
                 $response = $app->json(array("status" => "error", "message" => "There is already an account with that e-mail or username"), 200, $jsonContentType);
             }
         else:
@@ -63,7 +63,7 @@ class UserController {
                     return $app->json(array("status" => "error", "message" => "User not found"), 200);
                 endif;
             } catch (DBALException $exc) {
-                $app['monolog']->addError($exc->getTraceAsString());
+                $app['logger']->err($exc->getTraceAsString());
                 $app["session"]->invalidate();
                 return $app->json(array("status" => "error", "message" => "Database Error"), 200);
             }

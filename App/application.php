@@ -87,7 +87,7 @@ $mustBeLoggedIn = function()use($app){
     endif;
 };
 $mustBeAnonymous =function()use($app){
-    if($app["session"]->get(user_id)):
+    if($app["session"]->get("user_id")):
         return $app->abort("404","User already logged in");
     endif;
 };
@@ -104,9 +104,6 @@ $mustBeValidJSON = function(Request $request)use($app){
  * 
  */
 
-// root route
-$app->match("/{name}","App\Controller\IndexController::index")
-        ->value("name","Silex");
 
 // FR : enregistre un nouvel utilisateur
 $app->post("/json/register",
@@ -115,6 +112,14 @@ $app->post("/json/register",
 
 $app->post("/json/login",
         "App\Controller\UserController::login")->before($mustBeValidJSON);
+
+// images
+$app->get("/image",
+    "App\Controller\ImageController::getByUrl");
+
+// root route
+$app->match("/{name}","App\Controller\IndexController::index")
+        ->value("name","Silex");
 
 // FR : routes protégée
 $protectedRoutes = $app["controllers_factory"];
@@ -141,6 +146,9 @@ $protectedRoutes->get("/json/tag",
     "App\Controller\TagController::get");
 $protectedRoutes->get("/json/tag/{tag}",
     "App\Controller\TagController::autocomplete");
+// images
+$protectedRoutes->get("/image/{imageName}",
+    "App\Controller\ImageController::get");
 // installer les routes protégées
 $app->mount("/",$protectedRoutes);
 

@@ -1,8 +1,13 @@
 <?php
 
 namespace App\Services\WebScreenGrabber{
-
-    class ThumbalizrScreenGrabber extends ScreenGrabber implements IScreenGrabber{
+    /**
+     * @author M.Paraiso
+     * permet d'interroger le service Thumbalizr
+     * pour obtenir la miniature d'une capture d'écran
+     * d'un site internet grace à l'url de ce site.
+     */
+    class ThumbalizrScreenGrabber extends ScreenGrabber {
 
         const URL = "http://api.thumbalizr.com/";
 
@@ -15,20 +20,11 @@ namespace App\Services\WebScreenGrabber{
          * @param string $url
          */
         function request($url){
-            $context = stream_context_create(array(
-                "http"=>array(
-                    "method"=>"GET"
-                )
-            ));
             $queryString = $this->getQueryString($url);
-            $image = file_get_contents(URL."?".$queryString,false,$context);
-            $responseHeaders = $this->splitHeaders($http_reponse_header);
-            return array(
-                "content"=>$image,
-                "headers"=>$responseHeaders
-            );
+            $_url = self::URL."?".$queryString;
+            return $this->doRequest($_url);
         }
-        
+
         /**
          * construit le query string
          * @param string $url

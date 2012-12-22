@@ -1,7 +1,7 @@
 <?php
 namespace App\Services\WebScreenGrabber{
 
-    interface IWebScreenGrabber{
+    interface IScreenGrabber{
         /**
          * @return File retourne un fichier d'image
          * @param string $url

@@ -21,10 +21,10 @@ use Doctrine\DBAL\DBALException;
                     "INNER JOIN bookmarks ON bookmarks.id = tags.bookmark_id ".
                     " WHERE user_id = :id GROUP BY tag ".
                     " ORDER BY COUNT(*) DESC", array("id"=>$user_id));
-                $app["monolog"]->addInfo("tags = ".json_encode($tags));
+                $app["logger"]->info("tags = ".json_encode($tags));
                 return $app->json(array("status"=>"ok", "tags"=>$tags), 200);
             } catch (DBALException $e){
-                $app["monolog"]->addError($e->getMessage());
+                $app["logger"]->err($e->getMessage());
                 return $app->json($this->err(self::DB_ERR));
             }
             return $app->json($this->err(self::REQ_ERR));
@@ -44,7 +44,7 @@ use Doctrine\DBAL\DBALException;
                     array("id"=>$user_id, "tag"=>$tag));
                 return $app->json(array("status"=>"ok", "tags"=>$tags), 200);
             } catch (DBALException $e){
-                $app["monolog"]->addError($e->getMessage());
+                $app["logger"]->err($e->getMessage());
                 return $app->json($this->err(self::DB_ERR));
             }
             return $app->json($this->err(self::REQ_ERR));

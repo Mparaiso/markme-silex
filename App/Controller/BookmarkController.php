@@ -33,7 +33,7 @@ use Doctrine\DBAL\DBALException;
                     " LIMIT :offset,:limit", $data);
                 return $app->json(array("status"=>"ok", "bookmarks"=>$bookmarks));
             } catch (DBALException $exc){
-                $app["monolog"]->addError($exc->getMessage());
+                $app["logger"]->err($exc->getMessage());
                 return $app->json($this->err(self::DB_ERR));
             }
 
@@ -62,7 +62,7 @@ use Doctrine\DBAL\DBALException;
                     $bookmarks = $app["db"]->fetchAll($query, $data);
                     return $app->json(array("status"=>"ok", "bookmarks"=>$bookmarks));
                 } catch (DBALException $e){
-                    $app["monolog"]->addError($e->getMessage());
+                    $app["logger"]->err($e->getMessage());
                     return $app->json($this->err(self::DB_ERR));
                 }
             else:
@@ -92,7 +92,7 @@ use Doctrine\DBAL\DBALException;
                     $bookmarks = $app["db"]->fetchAll($query, $data);
                     return $app->json(array("status"=>"ok", "bookmarks"=>$bookmarks));
                 } catch (DBALException $exc){
-                    $app["monolog"]->addError($exc->getMessage());
+                    $app["logger"]->err($exc->getMessage());
                     return $app->json($this->err(self::DB_ERR));
                 }
             else:
@@ -121,7 +121,7 @@ use Doctrine\DBAL\DBALException;
                 endforeach;
                 return $app->json(array("status"=>"ok", "bookmark"=>array_merge(array("tags"=>$tags), $data)), 200);
             } catch (DBALException $e){
-                $app['monolog']->addError($e->getMessage());
+                $app['logger']->err($e->getMessage());
             }
             return $app->json(array("status"=>"error", "message"=>"Cant create bookmark"));
         }
@@ -151,7 +151,7 @@ use Doctrine\DBAL\DBALException;
                         });
                     return $app->json(array("status"=>"ok"));
                 } catch (DBALException $exc){
-                    $app["monolog"]->addError($exc->getMessage());
+                    $app["logger"]->err($exc->getMessage());
                     return $app->json($this->err(self::DB_ERR));
                 }
             endif;
@@ -172,7 +172,7 @@ use Doctrine\DBAL\DBALException;
                 $rows = $app["db"]->delete($this->_table, $data);
                 return $app->json(array("status"=>"ok"));
             } catch (DBALException $e){
-                $app["monolog"]->addError($e->getMessage());
+                $app["logger"]->err($e->getMessage());
             }
             return $app->json(array("status"=>"error", "message"=>"Cant delete Bookmark"));
         }
