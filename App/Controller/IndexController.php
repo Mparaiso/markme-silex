@@ -9,7 +9,8 @@ namespace App\Controller{
     class IndexController{
         
         function index(Application $app,$name){
-            return $app["twig"]->render("index.twig",array("name"=>$name));
+            return $app["twig"]->render("index.twig",
+                array("name"=>$name));
         }
     }
         

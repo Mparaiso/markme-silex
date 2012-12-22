@@ -1,8 +1,17 @@
 {% extends 'layout.twig' %}
+{% block head_css %}
+<link rel="stylesheet" href="{{app.request.baseUrl}}/static/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{app.request.baseUrl}}/static/css/style.css">
+{% endblock %}
 {% block content %}
- <h1 class="title">Hello {{name}} !</h1> 
- <img src="http://wimg.ca//image?url=http://stackoverflow.com/" title='sun' alt="sun" />
- <img src="http://wimg.ca//image?url=http://www.nbcnews.com/" title='sun' alt="sun" />
- <img src="http://wimg.ca//image?url=http://techcrunch.com/" title='sun' alt="sun" />
- <img src="http://wimg.ca/http://www.business2community.com/" title='sun' alt="sun" />
+<div ng-app="Application">
+    <div ng-view></div>
+</div>
+{% endblock %}
+{% block bottom_scripts %}
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/underscore.min.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/angular.min.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/main.js"></script>
 {% endblock %}

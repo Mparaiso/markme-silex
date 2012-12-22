@@ -2,25 +2,3 @@ Options -MultiViews
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [L]
-
-# Turn on Expires and set default to 0
-#ExpiresActive On
-#ExpiresDefault A0
- 
-# Set up caching on media files for 1 year (forever?)
-#<filesMatch ".(flv|ico|pdf|avi|mov|ppt|doc|mp3|wmv|wav)$">
-#ExpiresDefault A29030400
-#Header append Cache-Control "public"
-#</filesMatch>
- 
-# Set up caching on media files for 1 week
-#<filesMatch ".(gif|jpg|jpeg|png|swf)$">
-#ExpiresDefault A604800
-#Header append Cache-Control "public"
-#</filesMatch>
- 
-# Set up 2 Hour caching on commonly updated files
-#<filesMatch ".(xml|txt|html|js|css)$">
-#ExpiresDefault A7200
-#Header append Cache-Control "proxy-revalidate"
-#</filesMatch>

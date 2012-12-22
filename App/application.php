@@ -49,7 +49,7 @@ $app->register(new DoctrineServiceProvider(),array("db.options"=>array(
 )));
 // enregistrement de Twig
 $app->register(new Silex\Provider\TwigServiceProvider(),array(
-    "twig.path"=>ROOT."/App/Views/","twig.options"=>array(
+    "twig.path"=>array(ROOT."/App/Views/",ROOT."/public/"),"twig.options"=>array(
         "cache"=>ROOT."/cache/",
     ),
 ));

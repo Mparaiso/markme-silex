@@ -1,0 +1,13 @@
+.brand{
+    font-family: Georgia,Times,serif;
+    font-weight: bold;
+}
+ul{
+    list-style-type: square;
+}
+.white{
+    color:#FFF;
+}
+hr.white{
+    border-color: #FFF;
+}
