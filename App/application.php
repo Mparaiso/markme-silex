@@ -162,11 +162,17 @@ $protectedRoutes->post("/json/logout", "App\Controller\UserController::logout");
 $protectedRoutes->get("/json/user", "App\Controller\UserController::getCurrent");
 $protectedRoutes->put("/json/user", "App\Controller\UserController::updateUser")->before($mustBeValidJSON);
 // bookmarks
-$protectedRoutes->post("/json/bookmark", "App\Controller\BookmarkController::create")->before($mustBeValidJSON);
-$protectedRoutes->delete("/json/bookmark/{id}", "App\Controller\BookmarkController::delete");
-$protectedRoutes->get("/json/bookmark", "App\Controller\BookmarkController::getAll");
-$protectedRoutes->get("/json/bookmark/tag", "App\Controller\BookmarkController::getByTag")->before($mustBeValidJSON);
-$protectedRoutes->get("/json/bookmark/search", "App\Controller\BookmarkController::search")->before($mustBeValidJSON);
+$protectedRoutes->post("/json/bookmark", "App\Controller\BookmarkController::create")
+    ->before($mustBeValidJSON)
+    ->bind("create_bookmark");
+$protectedRoutes->delete("/json/bookmark/{id}", "App\Controller\BookmarkController::delete")
+    ->bind("delete_bookmark");
+$protectedRoutes->get("/json/bookmark", "App\Controller\BookmarkController::getAll")
+    ->bind("get_bookmarks");
+$protectedRoutes->get("/json/bookmark/tag", "App\Controller\BookmarkController::getByTag")
+    ->before($mustBeValidJSON);
+$protectedRoutes->get("/json/bookmark/search", "App\Controller\BookmarkController::search")
+    ->before($mustBeValidJSON);
 // tags
 $protectedRoutes->get("/json/tag", "App\Controller\TagController::get")
     ->bind("get_tags");

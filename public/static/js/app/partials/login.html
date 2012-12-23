@@ -1,7 +1,15 @@
 <!--
 login form
 -->
-<form name='form_login' class='form' >
+<form name='form_login' class='form' data-ng-controller="LoginController">
+    <div class="alert" data-ng-show="error">
+      <button type="button" class="close" data-ng-click="error=null">&times;</button>
+      {{error}}
+    </div>
+    <div class="alert alert-info" data-ng-show="info">
+      <button type="button" class="close" data-ng-click="info=null">&times;</button>
+      {{info}}
+    </div>
     <input data-ng-model='user.username' value='' type="text" name="username" placeholder='username' required>
     <input data-ng-model='user.password' type="password" name="password" placeholder='password' value='' required>
     <input type="button" data-ng-disabled="form_login.$invalid" data-ng-click='login(user)' class='btn btn-success' name='submit' value="Login">

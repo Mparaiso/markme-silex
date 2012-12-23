@@ -68,6 +68,7 @@ namespace App\Controller {
          * @depends testRegister
          */
         function testLogin() {
+            // l'utilisateur se connecte
            $client = $this->createClient();
            $client->request(
                     "POST", "/json/register", array(), array(), array(
@@ -91,7 +92,7 @@ namespace App\Controller {
                     )
             );
             $response = $client->getResponse();
-            $this->assertEquals($response->getStatusCode(), 200);
+            $this->assertTrue($response->getStatusCode()<400);
             $this->assertEquals(1,$this->app["session"]->get("user_id"));
             $this->assertEquals(
                     $this->app["session"]->get("user"), array(

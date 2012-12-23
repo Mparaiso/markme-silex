@@ -1,13 +1,19 @@
-var RegisterController =function($scope,$http,UserService){
+var RegisterController =function($scope,$http,$window,UserService){
     $scope.user = {};
     $scope.register = function(user){
         if(user.password !== user.password_verify){
-            console.log("error");
             $scope.error = "passwords dont match";
         }else{
-            console.log("ok");
             $scope.error = "";
-            UserService.register(user);
+            UserService.register(user,function success(data){
+                if(data.status==="ok"){
+                    $window.location = "/application";
+                }else{
+                    $scope.error = data.message;
+                }
+            },function error(){
+                console.log(arguments);
+            });
         }
     };
 };

@@ -1,3 +1,41 @@
 {% extends 'index.twig' %}
 {% block content %}
+{% raw %}
+<div class='container' data-ng-controller="ApplicationController">
+    <div class="row">&nbsp;</div>
+    <!-- header -->
+    <div class="row">
+        <div class="navbar "  >
+            <div class='navbar-inner'>
+                <span 
+                data-ng-include='baseUrl+"/static/js/app/partials/application-nav.html"'>
+                <!-- application navigation --></span>
+                <a class='brand' href='{{app.request.baseUrl}}/'>Mark.me</a>
+            </div>
+            <hr class='white'>
+        </div>
+    </div>
+    <!-- body -->
+    <div class="row " data-ng-include="baseUrl+'/static/js/app/partials/application.html'">
+    </div>
+    <hr class="white">
+    <hr class="white">
+    <hr class="white">
+    <!-- footer -->
+    <div class="row" data-ng-include='baseUrl+"/static/js/app/partials/footer.html"'>
+    </div>
+</div>
+{% endraw %}
+{% endblock %}
+{% block bottom_scripts %}
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/underscore.min.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/angular.min.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/app/Controllers/ApplicationController.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/app/Controllers/LoginController.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/app/Controllers/RegisterController.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/app/Directives/ApplicationDirectives.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/app/Services/ApplicationServices.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/main.js"></script>
 {% endblock %}

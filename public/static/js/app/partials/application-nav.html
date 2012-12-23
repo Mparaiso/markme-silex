@@ -1,0 +1,13 @@
+<ul class='nav pull-right'>
+    <li data-ng-show="user.username"><a class='sans disabled disable'>Welcome {{user.username}}</a></li>
+    <li><a href="#"><input type="text" placeholder="search" name="search" data-ng-model="search"> </a></li>
+    <li><a href="#">Tags</a></li>
+    <li class='{{active}}' 
+    data-toggle-active='active'>
+    <a href="javascript: void 0;">Add a Bookmark</a></li>
+    <li class='{{active}}' 
+    data-toggle-active='active'>
+    <a href="javascript: void 0;">Account</a></li>
+    <li>
+    <a data-ng-click="logout()">Logout</a></li>
+</ul>
