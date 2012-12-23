@@ -1,0 +1,23 @@
+<div class="navbar ">
+    <div class='navbar-inner'>
+        <ul class='nav pull-right'>
+            <li class='{{active}}' 
+                data-toggle-active='active' data-pop-over 
+                data-target="#login-form" 
+                data-placement='bottom'>
+                <a href="javascript: void 0;">Login</a>
+                <div id='login-form'>
+                    <div data-ng-show='response.message!=null' 
+                         class='alert alert-{{response.status}}'>
+                        <button type="button" class="close" 
+                                data-ng-click='response.message=null'>&times;</button>
+                        {{response.message}}</div>
+                    <span data-ng-include="baseUrl+'/static/js/app/partials/login.html'"></span>
+                </div>
+            </li>
+
+        </ul>
+        <a class='brand' href='#'>{{title}}</a>
+    </div>
+    <hr class='white'>
+</div>

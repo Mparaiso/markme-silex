@@ -1,0 +1,21 @@
+<!--
+registration form
+-->
+<form ng-controller="RegisterController" name="form_register" action="javascript: void 0;" class='form' novalidate>
+    <p class='lead'>Register, it's fast and free !</p>
+    <div data-ng-show="error" class='alert alert-error'>{{error}}</div>
+    <input data-ng-model='user.username' type="text" name='username' placeholder='username' required>
+    <input data-ng-model='user.email' type="email" name='email' placeholder='email' required >
+    <input data-ng-model='user.password' type="password" name='password' placeholder='password' required >
+    <input data-ng-model='user.password_verify' 
+           type="password" name='confirm_password' 
+           placeholder='confirm password' required data-password-verify="user.password" >
+    <label for="register-submit">
+        <input name='submit' id="register-submit" 
+               class='btn btn-success' 
+               type="button" 
+               value="Register" 
+               data-ng-click="register(user)"
+               data-ng-disabled='form_register.$invalid'>
+    </label>
+</form>

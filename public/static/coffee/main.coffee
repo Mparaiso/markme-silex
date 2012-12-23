@@ -3,7 +3,7 @@
 window.baseUrl = window.baseUrl || ""
 
 ### FR : creation d'une application ###
-app = angular.module("Application",[])
+app = angular.module("Application",["ApplicationDirectives"])
 
 ### FR : configuration des routes ###
 app.config(["$routeProvider",

@@ -1,0 +1,8 @@
+<!--
+login form
+-->
+<form name='form_login' class='form' >
+    <input data-ng-model='user.username' value='' type="text" name="username" placeholder='username' required>
+    <input data-ng-model='user.password' type="password" name="password" placeholder='password' value='' required>
+    <input type="button" data-ng-disabled="form_login.$invalid" data-ng-click='login(user)' class='btn btn-success' name='submit' value="Login">
+</form>

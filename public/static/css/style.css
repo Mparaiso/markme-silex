@@ -1,13 +1,30 @@
-.brand{
+.brand,.sans{
     font-family: Georgia,Times,serif;
     font-weight: bold;
 }
+.italic{
+    font-style: italic;
+}
+
 ul{
     list-style-type: square;
 }
+
 .white{
     color:#FFF;
 }
+
 hr.white{
     border-color: #FFF;
+}
+.popover {
+    width: auto;
+}
+
+input.ng-invalid.ng-dirty {
+    background-color: #FA787E;
+}
+
+input.ng-valid.ng-dirty {
+    background-color: #78FA89;
 }

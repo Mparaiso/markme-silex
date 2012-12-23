@@ -27,11 +27,11 @@ namespace App\Controller {
                             "email" => "superman@free.fr", "id" => 1),
                         "requestFailedResponse" => json_encode(
                                 array("status" => "error",
-                                    "message" => "There is already an account with that e-mail or username")),
+                                    "message" => "Email already used")),
                         "requestMissingArgumentResponse" => json_encode(
                                 array("status" => "error",
                                     "message" =>
-                                    "request error")),
+                                    "Request error")),
                     ),
                 ),
             );
@@ -68,7 +68,8 @@ namespace App\Controller {
          * @depends testRegister
          */
         function testLogin() {
-            $this->createClient()->request(
+           $client = $this->createClient();
+           $client->request(
                     "POST", "/json/register", array(), array(), array(
                 "HTTP_Content-Type" => "application/json"
                     ), json_encode(
@@ -79,19 +80,19 @@ namespace App\Controller {
                             )
                     )
             );
-            $client = $this->createClient();
+            $this->app["session"]->invalidate;
+            $client->restart();
             $client->request("POST", "/json/login", array(), array(), array(
                 "HTTP_Content-Type" => "application/json"
                     ), json_encode(
-                            array("username" => "camus",
+                            array("username" => "superman",
                                 "password" => "password"
                             )
                     )
             );
             $response = $client->getResponse();
-            //print($response->getContent());
             $this->assertEquals($response->getStatusCode(), 200);
-            $this->assertEquals($this->app["session"]->get("user_id"), 1);
+            $this->assertEquals(1,$this->app["session"]->get("user_id"));
             $this->assertEquals(
                     $this->app["session"]->get("user"), array(
                 "username" => "superman",
