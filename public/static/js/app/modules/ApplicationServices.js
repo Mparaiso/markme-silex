@@ -2,6 +2,7 @@
 
 var ApplicationServices = angular.module("ApplicationServices",[]);
 
+/** manage user API calls **/
 ApplicationServices.factory("UserService",['$http','$window',
     function($http,$window){
         return {
@@ -22,6 +23,7 @@ ApplicationServices.factory("UserService",['$http','$window',
     }
 ]);
 
+/** manage bookmark API calls **/
 ApplicationServices.factory("BookmarkService",['$http',function($http){
     return {
         get : function(success,error){
@@ -40,8 +42,11 @@ ApplicationServices.factory("BookmarkService",['$http',function($http){
     };
 }]);
 
+/** manage tag API calls **/
 ApplicationServices.factory("TagService",["$http",function($http){
     return {
-
+        get : function(success,error){
+            $http.get("/json/tag").success(success).error(error);
+        }
     };
 }]);

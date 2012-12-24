@@ -35,3 +35,6 @@ input.ng-valid.ng-dirty {
     margin-left:5px;
     margin-right: 5px;
 }
+.modal-body{
+    max-height: none;
+}

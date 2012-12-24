@@ -1,7 +1,7 @@
 <ul class='nav pull-right'>
     <li data-ng-show="user.username"><a class='sans disabled disable'>Welcome {{user.username}}</a></li>
-    <li><a href="#">Bookmarks</a></li>
-    <li><a href="#">Tags</a></li>
+    <li><a href="#" data-ng-click="getBookmarks()">Bookmarks</a></li>
+    <li><a href="#" data-ng-click="getTags()">Tags</a></li>
     <li class='{{active}}' 
     data-toggle-active='active'>
     <a href="javascript: void 0;">Add a Bookmark</a></li>

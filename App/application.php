@@ -173,7 +173,9 @@ $protectedRoutes = $app["controllers_factory"];
 $protectedRoutes->before($mustBeLoggedIn);
 $protectedRoutes->post("/json/logout", "App\Controller\UserController::logout");
 $protectedRoutes->get("/json/user", "App\Controller\UserController::getCurrent");
-$protectedRoutes->put("/json/user", "App\Controller\UserController::updateUser")->before($mustBeValidJSON);
+$protectedRoutes->put("/json/user", "App\Controller\UserController::updateUser")
+->before($mustBeValidJSON);
+
 // bookmarks
 $protectedRoutes->post("/json/bookmark", "App\Controller\BookmarkController::create")
 ->before($mustBeValidJSON)
@@ -186,6 +188,7 @@ $protectedRoutes->get("/json/bookmark/tag", "App\Controller\BookmarkController::
 ->before($mustBeValidJSON);
 $protectedRoutes->get("/json/bookmark/search", "App\Controller\BookmarkController::search")
 ->before($mustBeValidJSON);
+
 // tags
 $protectedRoutes->get("/json/tag", "App\Controller\TagController::get")
 ->bind("get_tags");

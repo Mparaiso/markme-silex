@@ -1,0 +1,40 @@
+    <form name="bookmark_form" class='form-horizontal'>
+      <h5>Edit bookmark</h5>
+      <div class="control-group">
+        <label class='control-label' for="bookmark_title">Title :</label>
+        <div class="controls">
+          <input type="text" placeholder="title" 
+          name="bookmark_title"
+          class="span4"
+          data-ng-model='bookmark_title'
+          id="bookmark_title" required>
+        </div>
+        <label class='control-label' for="bookmark_url">Url :</label>
+        <div class="controls">
+          <input type="text" placeholder="url" 
+          name="bookmark_url" 
+          class="span4"
+          data-ng-model="bookmark_url" 
+          id="bookmark_url" required>
+        </div>
+        <label class='control-label' for="bookmark_description">Description :</label>
+        <div class="controls">
+          <input type="text" placeholder="description" 
+          name="bookmark_description" 
+          class="span4"
+          data-ng-model="bookmark_description" 
+          id="bookmark_description" required>
+        </div>
+        <label class='control-label' for="bookmark_tags">Tags :</label>
+        <div class="controls">
+          <textarea placeholder='sport, music, software' name="bookmark_tags" 
+          data-ng-model="bookmark_tags" 
+          id="bookmark_tags" cols="30" rows="10" class="span4"></textarea>
+        </div>
+      </div>
+      <div class='controls '>
+        <input class="btn btn-primary"type="submit" value="Save">
+        <input class="btn" type="reset" value="Reset">
+        <button class='btn' aria-hidden="true">Cancel</button>
+      </div>
+    </form>

@@ -1,7 +1,7 @@
 {% extends 'index.twig' %}
 {% block content %}
 {% raw %}
-<div class='container' data-ng-controller="ApplicationController">
+<div class='container' data-ng-controller="MainController">
     <div class="row">&nbsp;</div>
     <!-- header -->
     <div class="row">
@@ -32,8 +32,7 @@
 <script type="text/javascript" src="{{app.request.baseUrl}}/static/vendor/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="{{app.request.baseUrl}}/static/js/underscore.min.js"></script>
 <script type="text/javascript" src="{{app.request.baseUrl}}/static/js/angular.min.js"></script>
-<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/app/Controllers/ApplicationController.js"></script>
-<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/app/Directives/ApplicationDirectives.js"></script>
-<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/app/Services/ApplicationServices.js"></script>
-<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/main.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/app/modules/Application.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/app/modules/ApplicationDirectives.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/js/app/modules/ApplicationServices.js"></script>
 {% endblock %}
