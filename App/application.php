@@ -40,34 +40,41 @@ $app["debug"] = true;
 $app['salt'] = "yMeb2v7+hnJxEWpG/SgytDv57qKEg5Uw1t2I9dNmd/o=";
 // enregistrement de DoctrineServiceProvider
 $app->register(new DoctrineServiceProvider(), array("db.options"=>array(
-        "driver"=>getenv("MARKME_DB_DRIVER"),
-        "dbname"=>"markme",
-        "host"=>"localhost",
-        "user"=>getenv("MARKME_DB_USERNAME"),
-        "password"=>getenv("MARKME_DB_PASSWORD"),
-        "memory"=>true,
+    "driver"=>getenv("MARKME_DB_DRIVER"),
+    "dbname"=>"markme",
+    "host"=>"localhost",
+    "user"=>getenv("MARKME_DB_USERNAME"),
+    "password"=>getenv("MARKME_DB_PASSWORD"),
+    "memory"=>true,
     )));
 // enregistrement de Twig
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     "twig.path"=>array(ROOT."/App/Views/", ROOT."/public/"), "twig.options"=>array(
         "cache"=>ROOT."/cache/",
-    ),
-));
+        ),
+    ));
 // enregistrement de monolog pour log des infos
 $app->register(new \Silex\Provider\MonologServiceProvider(), array(
     "monolog.logfile"=>ROOT."/log/access.log",
     "monolog.name"=>"markme",
-));
+    ));
 // FR : enregistrement de SessionServiceProvider
 $app->register(new SessionServiceProvider(), array(
     "session.storage.options"=>array(
         "httponly"=>true,
         "domain"=>"markme.app"
-    ),
-));
+        ),
+    ));
 // FR : enregistrement de UrlGeneratorServiceProvider
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
+/**
+ * Services personnalisés
+ */
+# retourne le temps actuel au format DATETIME de  MYSQL
+$app["current_time"] =   function(){
+    return date('Y-m-d H:i:s', time());
+};
 /**
  * 
  * MIDDLEWARE
@@ -75,48 +82,53 @@ $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
  */
 # transforme le corps d'une requete json en données de formulaire classique
 $app->before(function(Request $req){
-        if (0 === strpos($req->headers->get('Content-Type'), 'application/json')):
-            $data = json_decode($req->getContent(), true);
-            $req->request->replace(is_array($data) ? $data : array());
-            return $req;
-        endif;
-    });
+    if (0 === strpos($req->headers->get('Content-Type'), 'application/json')):
+        $data = json_decode($req->getContent(), true);
+    $req->request->replace(is_array($data) ? $data : array());
+    return $req;
+    endif;
+});
 
 # vérifie si un utilisateur est loggé 
 $mustBeLoggedIn = function()use($app){
-        if (!($app["session"]->get("user_id") && $app["session"]->get("user"))):
-            $app["session"]->invalidate();
-            return $app->abort("401", 'Unauthorized user');
-        endif;
-    };
+    if (!($app["session"]->get("user_id") && $app["session"]->get("user"))):
+        $app["session"]->invalidate();
+    return $app->abort("401", 'Unauthorized user');
+    endif;
+};
 
 # si utilisateur connecté rediriger vers application
 $mustBeAnonymous = function()use($app){
-        if ($app["session"]->get("user_id") && $app["session"]->get("user")):
-            return $app->redirect($app["url_generator"]->generate("application"));
-        endif;
-    };
+    if ($app["session"]->get("user_id") && $app["session"]->get("user")):
+        return $app->redirect($app["url_generator"]->generate("application"));
+    endif;
+};
 
 # la requète post doit être un json
 $mustBeValidJSON = function(Request $request)use($app){
-        $data = json_decode($request->getContent(), true);
-        if (!isset($data)):
-            return $app->abort("403");
-        endif;
-    };
+    $app["logger"]->info("must be valid json : ".$request->getContent());
+    $data = json_decode($request->getContent(), true);
+    if (!isset($data)):
+        return $app->abort("403");
+    endif;
+};
 
 # redirige vers la page de guarde si l'acces n'est pas autorisé
 $unauthorizedAccessHandler = function(\Exception $e, $code)use($app){
-        switch ($code){
-            case 401:
+    switch ($code){
+        case 401:
                 # acces non autorisé
-                return $app->redirect($app["url_generator"]->generate("index"));
-                break;
-            default :
+        return $app->redirect($app["url_generator"]->generate("index"));
+        break;
+        default :
             # ne rien faire
-        }
-        return new Response($e->getMessage());
-    };
+    }
+    return new Response($e->getMessage());
+};
+# FR : retrouve l'url de base du site internet
+$makeBasePath = function(Request $req)use($app){
+    $app["markme.base_url"] = $req->getUriForPath("/");
+};
 
 /**
  * FR : Gestion des exceptions
@@ -129,31 +141,32 @@ if (!$app["debug"])
  * ROUTES
  * 
  */
+$app->before($makeBasePath);
 # FR : enregistre un nouvel utilisateur
 $app->post("/json/register", "App\Controller\UserController::register")
-    ->before($mustBeValidJSON)
-    ->before($mustBeAnonymous);
+->before($mustBeValidJSON)
+->before($mustBeAnonymous);
 
 $app->post("/json/login", "App\Controller\UserController::login")
-    ->before($mustBeAnonymous)
-    ->before($mustBeValidJSON);
+->before($mustBeAnonymous)
+->before($mustBeValidJSON);
 
 
 // application
 $app->get("/application", "App\Controller\IndexController::application")
-    ->before($mustBeLoggedIn)
-    ->bind("application");
+->before($mustBeLoggedIn)
+->bind("application");
 
 
 // index
 $app->match("/", "App\Controller\IndexController::index")
-    ->bind("index")
-    ->before($mustBeAnonymous);
+->bind("index")
+->before($mustBeAnonymous);
 
 // images
 $app->get("/image", "App\Controller\ImageController::getByUrl")
-    ->bind("image")
-    ->before($mustBeLoggedIn);
+->bind("image")
+->before($mustBeLoggedIn);
 
 // FR : routes protégée
 $protectedRoutes = $app["controllers_factory"];
@@ -163,21 +176,21 @@ $protectedRoutes->get("/json/user", "App\Controller\UserController::getCurrent")
 $protectedRoutes->put("/json/user", "App\Controller\UserController::updateUser")->before($mustBeValidJSON);
 // bookmarks
 $protectedRoutes->post("/json/bookmark", "App\Controller\BookmarkController::create")
-    ->before($mustBeValidJSON)
-    ->bind("create_bookmark");
+->before($mustBeValidJSON)
+->bind("create_bookmark");
 $protectedRoutes->delete("/json/bookmark/{id}", "App\Controller\BookmarkController::delete")
-    ->bind("delete_bookmark");
+->bind("delete_bookmark");
 $protectedRoutes->get("/json/bookmark", "App\Controller\BookmarkController::getAll")
-    ->bind("get_bookmarks");
+->bind("get_bookmarks");
 $protectedRoutes->get("/json/bookmark/tag", "App\Controller\BookmarkController::getByTag")
-    ->before($mustBeValidJSON);
+->before($mustBeValidJSON);
 $protectedRoutes->get("/json/bookmark/search", "App\Controller\BookmarkController::search")
-    ->before($mustBeValidJSON);
+->before($mustBeValidJSON);
 // tags
 $protectedRoutes->get("/json/tag", "App\Controller\TagController::get")
-    ->bind("get_tags");
+->bind("get_tags");
 $protectedRoutes->get("/json/tag/{tag}", "App\Controller\TagController::autocomplete")
-    ->bind("search_tag");
+->bind("search_tag");
 // images
 $protectedRoutes->get("/image/{imageName}", "App\Controller\ImageController::get");
 // installer les routes protégées

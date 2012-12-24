@@ -1,17 +1,21 @@
 <!DOCTYPE HTML>
 <html lang="en-US" ng-app="Application">
-    <head>
-        <meta charset="UTF-8">
-        <title>Markme : Organize your bookmarks online</title>
-        {% block head_css %}
-        {% endblock %}
-        {% block head_scripts %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block content %}
-        {% endblock %}
-        {% block bottom_scripts %}
-        {% endblock %}
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="base_url" content="{{ app['markme.base_url'] }}">
+    <meta name="description" content="online bookmark manager">
+    <meta name="keywords" content="html5,web application,webapp,bookmark,bookmarks,application,utility,organizer,manager">
+    <meta name="author" content="M.Paraiso">
+    <title>Markme : Organize your bookmarks online</title>
+    {% block head_css %}
+    {% endblock %}
+    {% block head_scripts %}
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    {% endblock %}
+    {% block bottom_scripts %}
+    {% endblock %}
+</body>
 </html>

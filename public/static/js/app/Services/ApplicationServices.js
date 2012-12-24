@@ -21,3 +21,27 @@ ApplicationServices.factory("UserService",['$http','$window',
         };
     }
 ]);
+
+ApplicationServices.factory("BookmarkService",['$http',function($http){
+    return {
+        get : function(success,error){
+            $http.get("/json/bookmark").success(success).error(error);
+        },
+        post : function(bookmark,success,error){
+            $http.put("/json/bookmark",bookmark).success(success).error(error);
+        },
+        put : function(bookmark,success,error){
+            $http.post("/json/bookmark",bookmark).success(success).error(error);
+        },
+        "delete" : function(bookmark){
+            $http['delete']("/json/bookmark",bookmark).success(success).error(error);
+
+        }
+    };
+}]);
+
+ApplicationServices.factory("TagService",["$http",function($http){
+    return {
+
+    };
+}]);

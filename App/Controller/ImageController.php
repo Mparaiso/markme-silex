@@ -45,10 +45,8 @@ use Symfony\Component\HttpFoundation\Response;
                 }
                 $i+=1;
             }
-            $app["logger"]->info(print_r($response->headers, true));
             $contentType = $response->headers["Content-Type"];
             if ($response->content){
-                // return new Response($response->content, 200, array("Content-Type"=>"image/jpeg","Cache-Control"=>"max-age=2629000"));
                 return new Response($response->content, 200, array("Content-Type"=>$contentType));
             } else{
                 return $app->abord(404, "Image not found");

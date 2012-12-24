@@ -19,12 +19,12 @@ class ImageControllerTest extends WebTestCase{
      * @covers App\Controller\ImageController::get
      * @todo Implement testGet().
      */
-    public function testGet(){
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
+    // public function testGet(){
+    //     // Remove the following lines when you implement this test.
+    //     $this->markTestIncomplete(
+    //         'This test has not been implemented yet.'
+    //     );
+    // }
 
     /**
      * @covers App\Controller\ImageController::getByUrl
@@ -39,7 +39,6 @@ class ImageControllerTest extends WebTestCase{
         );
         $client->request("GET", "/image?url=http://stackoverflow.com/");
         $response = $client->getResponse();
-        print_r($response->getContent());
         $this->assertNotNull($response);
     }
 

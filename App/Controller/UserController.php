@@ -40,7 +40,7 @@ class UserController extends BaseController{
                 $LastInsertedId = intval($app["db"]->lastInsertId());
                 $user = array("id"=>$LastInsertedId, "username"=>$username, "email"=>$email);
                 $this->_setLoggedUserSession($app, $user);
-                return $app->json(array_merge($user, array("status"=>"ok")));
+                return $app->json(array("status"=>"ok","user"=>$user));
             } catch (DBALException $exc){
                 $app['logger']->err("error : {$exc->getMessage()} ".json_encode($exc));
                 return $app->json($this->err(self::DB_ERR));
@@ -130,7 +130,7 @@ class UserController extends BaseController{
                 return $user;
             }
 
-            protected function _getCurrentDatetime(){
+            function _getCurrentDatetime(){
                 return $time = date('Y-m-d H:i:s', time());
             }
 

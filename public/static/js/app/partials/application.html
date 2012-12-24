@@ -1,1 +1,18 @@
-Application
+<ul  class="thumbnails">
+    <li class='thumbnail' data-ng-repeat="bookmark in bookmarks">
+        <div><a href='{{bookmark.url}}' 
+            title='{{bookmark.title}}' 
+            target="_blank"><img class='bookmark-image' ng-src="http://wimg.ca/w_200_h_150/{{bookmark.url}}" 
+            src="http://placehold.it/256x192" alt="{{bookmark.title}}"></a></div>
+            <h4> <a href="{{bookmark.url}}" target='_blank'>{{bookmark.title}}</a></h4>
+            <div ><small>{{bookmark.description}}</small></div>
+            <div>
+                <ul class='pull-right small inline'>
+                    <li><small><a href="#">edit</a></small></li>
+                    <li><small><a href="#">delete</a><small></li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+    <span data-ng-include="'/static/js/app/partials/modal.html'">
+    </span>

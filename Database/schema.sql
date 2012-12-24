@@ -12,10 +12,10 @@ CREATE TABLE `users` (
 
 CREATE TABLE `bookmarks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `url` text,
+  `url` text NOT NULL,
   `private` tinyint(4) DEFAULT '0',
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),

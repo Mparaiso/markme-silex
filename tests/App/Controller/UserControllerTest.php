@@ -19,10 +19,12 @@ namespace App\Controller {
                                     "password" => "password")
                         ),
                         "validJsonResponse" => json_encode(
-                                array("id" => 1,
+                                array("status" => "ok",
+                                    "user"=>array("id" => 1,
                                     "username" => "superman",
-                                    "email" => "superman@free.fr",
-                                    "status" => "ok")),
+                                    "email" => "superman@free.fr"),
+                                    )
+                                ),
                         "userResponse" => array("username" => "superman",
                             "email" => "superman@free.fr", "id" => 1),
                         "requestFailedResponse" => json_encode(

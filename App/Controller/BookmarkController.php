@@ -14,23 +14,24 @@ use Doctrine\DBAL\DBALException;
         protected $_table = "bookmarks";
 
         /**
+         * @todo regler le problème de limit
          * retrouver tout les bookmarks , par offset de 50;
          * @param \Silex\Application $app
          */
         function getAll(Application $app){
             $data = array();
             $data['user_id'] = $app["session"]->get("user_id");
-            $data['limit'] = 50;
-            $data['offset'] = $app['request']->get("offset", 0);
+            $offset =intval($app['request']->get("offset", 0));
+            $limit = 50;
             try{
                 $bookmarks = $app["db"]->fetchAll("SELECT ".
                     "id,url,title,description,".
-                    " DATE(created_at,'unixepoch') AS timestamp,".
+                    " created_at ,".
                     "GROUP_CONCAT(tag,',')".
                     "AS tags FROM bookmarks LEFT OUTER JOIN tags ON ".
                     "bookmarks.id = tags.bookmark_id WHERE ".
                     " user_id = :user_id GROUP BY id ORDER BY created_at DESC ".
-                    " LIMIT :offset,:limit", $data);
+                    " LIMIT $offset , $limit ", $data);
                 return $app->json(array("status"=>"ok", "bookmarks"=>$bookmarks));
             } catch (DBALException $exc){
                 $app["logger"]->err($exc->getMessage());
@@ -111,7 +112,7 @@ use Doctrine\DBAL\DBALException;
             $data['title'] = $app["request"]->get("title");
             $data['description'] = $app["request"]->get("description");
             $tags = $app['request']->get("tags");
-            $data["created_at"] = time();
+            $data["created_at"] = $app["current_time"];
             $data["private"] = $app["request"]->get("private");
             try{
                 $app["db"]->insert($this->_table, $data);
