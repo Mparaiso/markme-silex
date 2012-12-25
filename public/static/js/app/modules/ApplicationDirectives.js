@@ -61,3 +61,17 @@ Directives.directive("toggleActive", function() {
         }
     };
 });
+
+ Directives.directive("masonry",function(){
+    return function(scope,element,attrs){
+        var options = {};
+        if(attrs['itemSelector'])options.itemSelector = attrs['itemSelector'];
+        if(attrs['columnWidth'])options.columnWidth = 240 ; //
+        if(attrs["isAnimated"])options.isAnimated = true;
+        $(function(){
+            element.imagesLoaded(function(){
+                element.masonry(options);
+            });
+        });
+    };
+});

@@ -184,8 +184,7 @@ $protectedRoutes->delete("/json/bookmark/{id}", "App\Controller\BookmarkControll
 ->bind("delete_bookmark");
 $protectedRoutes->get("/json/bookmark", "App\Controller\BookmarkController::getAll")
 ->bind("get_bookmarks");
-$protectedRoutes->get("/json/bookmark/tag", "App\Controller\BookmarkController::getByTag")
-->before($mustBeValidJSON);
+$protectedRoutes->get("/json/bookmark/tag/{tagName}", "App\Controller\BookmarkController::getByTag");
 $protectedRoutes->get("/json/bookmark/search", "App\Controller\BookmarkController::search")
 ->before($mustBeValidJSON);
 

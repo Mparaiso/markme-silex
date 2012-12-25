@@ -5,6 +5,7 @@ var ApplicationServices = angular.module("ApplicationServices",[]);
 /** manage user API calls **/
 ApplicationServices.factory("UserService",['$http','$window',
     function($http,$window){
+        var config = {cache:true};
         return {
             getCurrentUser:function(success,error){
                 $http.get("/json/user").success(success).error(error||function(){});
@@ -21,13 +22,14 @@ ApplicationServices.factory("UserService",['$http','$window',
             }
         };
     }
-]);
+    ]);
 
 /** manage bookmark API calls **/
 ApplicationServices.factory("BookmarkService",['$http',function($http){
+    var config = {cache:true};
     return {
         get : function(success,error){
-            $http.get("/json/bookmark").success(success).error(error);
+            $http.get("/json/bookmark",config).success(success).error(error);
         },
         post : function(bookmark,success,error){
             $http.put("/json/bookmark",bookmark).success(success).error(error);
@@ -38,15 +40,19 @@ ApplicationServices.factory("BookmarkService",['$http',function($http){
         "delete" : function(bookmark){
             $http['delete']("/json/bookmark",bookmark).success(success).error(error);
 
+        },
+        "getByTag":function(tagName,success,error){
+            $http.get("/json/bookmark/tag/"+tagName,config).success(success).error(error);
         }
     };
 }]);
 
 /** manage tag API calls **/
 ApplicationServices.factory("TagService",["$http",function($http){
+    var config = {cache:true};
     return {
         get : function(success,error){
-            $http.get("/json/tag").success(success).error(error);
+            $http.get("/json/tag",config).success(success).error(error);
         }
     };
 }]);

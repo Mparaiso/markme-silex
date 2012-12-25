@@ -28,6 +28,11 @@ input.ng-invalid.ng-dirty {
 input.ng-valid.ng-dirty {
     background-color: #78FA89;
 }
+
+.bookmark.thumbnail{
+    width:210px;
+}
+
 .bookmark-image{
     width:200px;
     height:150px;

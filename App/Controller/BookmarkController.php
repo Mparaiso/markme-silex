@@ -45,14 +45,15 @@ use Doctrine\DBAL\DBALException;
          * trouver par tag
          * @param \App\Controller\Application $app
          */
-        function getByTag(Application $app){
+        function getByTag(Application $app,$tagName){
             $data = array();
             $data['user_id'] = $app["session"]->get("user_id");
-            $data['tag'] = $app["request"]->get("tag");
+            $data['tag'] = $tagName;
             if ($data["tag"]):
                 try{
                     $query = "SELECT id,title,description,url,".
-                        "date(created_at,'unixepoch') as timestamp,".
+                        // "date(created_at,'unixepoch') as timestamp,". doesnt work with mysql
+                        " created_at,".
                         "GROUP_CONCAT(tag) AS tags FROM bookmarks".
                         " LEFT OUTER JOIN tags ".
                         "ON bookmarks.id = tags.bookmark_id WHERE ".
@@ -82,7 +83,8 @@ use Doctrine\DBAL\DBALException;
             if ($data["query"] && $data['user_id']):
                 try{
                     $query = "SELECT id,url,title, description,".
-                        " date(created_at,'unixepoch') as timestamp, ".
+                        // " date(created_at,'unixepoch') as timestamp, ". doesnt work with mysql
+                        " created_at, ".
                         "GROUP_CONCAT(DISTINCT tag) as tags ".
                         "FROM bookmarks LEFT OUTER JOIN tags ON "
                         ." bookmarks.id = tags.bookmark_id WHERE user_id = :user_id "

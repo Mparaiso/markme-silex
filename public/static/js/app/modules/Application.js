@@ -2,35 +2,35 @@ window.baseUrl = window.baseUrl || "";
 
 // FR : module principal
 // EN : main module
-var app = angular.module("Application",["ApplicationDirectives","ApplicationServices"]);
-
-app.config(["$routeProvider","$locationProvider",
-    function($routeProvider,$locationProvider){
-    $routeProvider.when("/bookmark",{
-        templateUrl:"static/js/app/partials/bookmarks.html",
-        controller:"BookmarkController"
-    });
-    $routeProvider.when("/tag",{
-        templateUrl:"static/js/app/partials/tags.html",
-        controller:"TagController"
-    });
-}]);
-
+var app = angular.module("Application",
+    ["ApplicationDirectives","ApplicationServices","ApplicationFilters"]);
 
 app.controller("MainController",
     function($scope,$window,UserService,BookmarkService,TagService){
+
+        $scope.bookmarks =[];
+
+        $scope.user ={};
+
+        $scope.tags = {};
+
+        $scope.alert = {};
 
         UserService.getCurrentUser(function success(data){
             $scope.user = data.user ;
         });
 
-        BookmarkService.get(function success(data){
-            $scope.bookmarks = data.bookmarks;
-        });
-
         $scope.getBookmarks = function(){
             BookmarkService.get(function success(data){
                 $scope.bookmarks = data.bookmarks;
+            });
+        };
+
+        $scope.getByTag = function(tagName){
+            BookmarkService.getByTag(tagName,function success(data){
+                $scope.bookmarks = data.bookmarks;
+            },function error(){
+                console.log(arguments);
             });
         };
 
@@ -62,16 +62,36 @@ app.controller("MainController",
 });
 
 app.controller("BookmarkController",
-    function($scope){
+    function($scope,$routeParams,BookmarkService){
 
-    }
-);
+        var successCallback = function success(data){
+            if(data.status === "ok"){
+                $scope.bookmarks = data.bookmarks;
+            }else{
+                $scope.alert.info = data.message;
+            }
+        };
+
+        if($routeParams.tagName){
+            BookmarkService.getByTag($routeParams.tagName,successCallback);
+        }else{
+            BookmarkService.get(successCallback);
+        }
+    });
 
 app.controller("TagController",
-    function($scope){
+    function($scope,$routeParams,TagService){
 
-    }
-);
+        var successCallback = function success(data){
+            if(data.status === "ok"){
+                $scope.tags = data.tags;
+            }else{
+                $scope.alert.info = data.message;
+            }
+        };
+
+        TagService.get(successCallback);
+    });
 
 app.controller("HomeController",
     function($scope) {
@@ -126,4 +146,21 @@ app.controller("RegisterController",
             }
         };
     });
+
+app.config(['$routeProvider',
+    function($routeProvider){
+        $routeProvider.when("/bookmark",{
+            templateUrl:"static/js/app/partials/bookmarks.html",
+            controller:"BookmarkController"
+        });
+        $routeProvider.when("/bookmark/tag/:tagName",{
+            templateUrl:"static/js/app/partials/bookmarks.html",
+            controller:"BookmarkController"
+        });
+        $routeProvider.when("/tag",{
+            templateUrl:"static/js/app/partials/tags.html",
+            controller:"TagController"
+        });
+        $routeProvider.otherwise({redirectTo :"/bookmark"});
+    }]);
 
