@@ -1,13 +1,8 @@
-<ul class='nav pull-right'>
+<ul class='nav pull-right' ng-controller="NavigationController">
     <li data-ng-show="user.username"><a class='sans disabled disable'>Welcome {{user.username}}</a></li>
-    <li><a href="#bookmark" >Bookmarks</a></li>
-    <li><a href="#tag">Tags</a></li>
-    <li class='{{active}}' 
-    data-toggle-active='active'>
-    <a href="javascript: void 0;">Add a Bookmark</a></li>
-    <li class='{{active}}' 
-    data-toggle-active='active'>
-    <a href="javascript: void 0;">Account</a></li>
-    <li>
-    <a data-ng-click="logout()">Logout</a></li>
+    <li ><a href="#bookmark"  >Bookmarks</a></li>
+    <li ><a href="#tag" >Tags</a></li>
+    <li ><a href="javascript: void 0;">Add a Bookmark</a></li>
+    <li ><a href="javascript: void 0;">Account</a></li>
+    <li><a data-ng-click="logout()">Logout</a></li>
 </ul>

@@ -16,6 +16,8 @@ app.controller("MainController",
 
         $scope.alert = {};
 
+        $scope.alert.info = "Application loaded successfully!";
+
         UserService.getCurrentUser(function success(data){
             $scope.user = data.user ;
         });
@@ -61,6 +63,11 @@ app.controller("MainController",
     };
 });
 
+app.controller("NavigationController",["$scope","$route",
+    function($scope,$route){
+    }
+]);
+
 app.controller("BookmarkController",
     function($scope,$routeParams,BookmarkService){
 
@@ -72,6 +79,20 @@ app.controller("BookmarkController",
             }
         };
 
+        $scope['delete'] = function(id,index){
+            BookmarkService['delete'](id,function success(data){
+                if(data.status === "ok"){
+                    $scope.alert.info = "Bookmark "+$scope.bookmarks[index].title+" deleted successfully!";
+                    $scope.bookmarks.splice(index,1);
+                }else{
+                    $scope.alert.error = data.message;
+                }
+            },function error(){
+                console.log("error",arguments);
+            });
+        };
+
+        // initialization
         if($routeParams.tagName){
             BookmarkService.getByTag($routeParams.tagName,successCallback);
         }else{

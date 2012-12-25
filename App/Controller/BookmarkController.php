@@ -7,11 +7,13 @@
 namespace App\Controller{
 
     use Silex\Application;
-use Doctrine\DBAL\DBALException;
+    use Doctrine\DBAL\DBALException;
 
     class BookmarkController extends BaseController{
 
         protected $_table = "bookmarks";
+
+        const DEL_ERR = "Cant delete Bookmark";
 
         /**
          * @todo regler le problème de limit
@@ -53,24 +55,24 @@ use Doctrine\DBAL\DBALException;
                 try{
                     $query = "SELECT id,title,description,url,".
                         // "date(created_at,'unixepoch') as timestamp,". doesnt work with mysql
-                        " created_at,".
-                        "GROUP_CONCAT(tag) AS tags FROM bookmarks".
-                        " LEFT OUTER JOIN tags ".
-                        "ON bookmarks.id = tags.bookmark_id WHERE ".
-                        " user_id = :user_id ".
-                        " AND id IN (SELECT bookmark_id from ".
+                    " created_at,".
+                    "GROUP_CONCAT(tag) AS tags FROM bookmarks".
+                    " LEFT OUTER JOIN tags ".
+                    "ON bookmarks.id = tags.bookmark_id WHERE ".
+                    " user_id = :user_id ".
+                    " AND id IN (SELECT bookmark_id from ".
                         " tags WHERE tag = :tag ) GROUP BY id ".
-                        "ORDER BY created_at DESC ";
-                    $bookmarks = $app["db"]->fetchAll($query, $data);
-                    return $app->json(array("status"=>"ok", "bookmarks"=>$bookmarks));
-                } catch (DBALException $e){
-                    $app["logger"]->err($e->getMessage());
-                    return $app->json($this->err(self::DB_ERR));
-                }
-            else:
-                return $app->json($this->err(self::REQ_ERR));
-            endif;
-        }
+"ORDER BY created_at DESC ";
+$bookmarks = $app["db"]->fetchAll($query, $data);
+return $app->json(array("status"=>"ok", "bookmarks"=>$bookmarks));
+} catch (DBALException $e){
+    $app["logger"]->err($e->getMessage());
+    return $app->json($this->err(self::DB_ERR));
+}
+else:
+    return $app->json($this->err(self::REQ_ERR));
+endif;
+}
 
         /**
          * trouver par tag,description ou titre
@@ -84,24 +86,24 @@ use Doctrine\DBAL\DBALException;
                 try{
                     $query = "SELECT id,url,title, description,".
                         // " date(created_at,'unixepoch') as timestamp, ". doesnt work with mysql
-                        " created_at, ".
-                        "GROUP_CONCAT(DISTINCT tag) as tags ".
-                        "FROM bookmarks LEFT OUTER JOIN tags ON "
-                        ." bookmarks.id = tags.bookmark_id WHERE user_id = :user_id "
-                        ." AND (( title LIKE :query OR description LIKE :query ".
+                    " created_at, ".
+                    "GROUP_CONCAT(DISTINCT tag) as tags ".
+                    "FROM bookmarks LEFT OUTER JOIN tags ON "
+                    ." bookmarks.id = tags.bookmark_id WHERE user_id = :user_id "
+                    ." AND (( title LIKE :query OR description LIKE :query ".
                         "OR url LIKE :query ) OR id IN ( SELECT bookmark_id ".
                         "FROM tags WHERE tag like :query )) GROUP BY id ORDER BY ".
-                        "created_at DESC ";
-                    $bookmarks = $app["db"]->fetchAll($query, $data);
-                    return $app->json(array("status"=>"ok", "bookmarks"=>$bookmarks));
-                } catch (DBALException $exc){
-                    $app["logger"]->err($exc->getMessage());
-                    return $app->json($this->err(self::DB_ERR));
-                }
-            else:
-                return $app->json($this->err(self::REQ_ERR));
-            endif;
-        }
+"created_at DESC ";
+$bookmarks = $app["db"]->fetchAll($query, $data);
+return $app->json(array("status"=>"ok", "bookmarks"=>$bookmarks));
+} catch (DBALException $exc){
+    $app["logger"]->err($exc->getMessage());
+    return $app->json($this->err(self::DB_ERR));
+}
+else:
+    return $app->json($this->err(self::REQ_ERR));
+endif;
+}
 
         /**
          * Create a new bookmark
@@ -150,16 +152,16 @@ use Doctrine\DBAL\DBALException;
                     $app["db"]->update($this->_table, $bookmark, array("user_id"=>$user_id, "id"=>$id));
                     $app["db"]->delete("tags", array("bookmark_id"=>$id));
                     array_walk($tags, function($el){
-                            $app["db"]->insert("tags", array("bookmark_id"=>$id, "tag"=>$el));
-                        });
+                        $app["db"]->insert("tags", array("bookmark_id"=>$id, "tag"=>$el));
+                    });
                     return $app->json(array("status"=>"ok"));
                 } catch (DBALException $exc){
                     $app["logger"]->err($exc->getMessage());
                     return $app->json($this->err(self::DB_ERR));
                 }
-            endif;
-            return $app->json($this->err(self::REQ_ERR));
-        }
+                endif;
+                return $app->json($this->err(self::REQ_ERR));
+            }
 
         /**
          * efface un bookmark
@@ -170,14 +172,17 @@ use Doctrine\DBAL\DBALException;
         function delete(Application $app, $id){
             $data["user_id"] = $app["session"]->get("user_id");
             $data["id"] = $id;
-            try{
-                $app["db"]->executeQuery('PRAGMA foreign_keys = true;');
-                $rows = $app["db"]->delete($this->_table, $data);
-                return $app->json(array("status"=>"ok"));
-            } catch (DBALException $e){
-                $app["logger"]->err($e->getMessage());
+            if($data["user_id"] && $data["id"]){
+                try{
+                // $app["db"]->executeQuery('PRAGMA foreign_keys = true;');
+                    $rows = $app["db"]->delete($this->_table, $data);
+                    return $app->json(array("status"=>"ok","rows"=>$rows));
+                } catch (DBALException $e){
+                    $app["logger"]->err($e->getMessage());
+                    return $app->json($this->err(self::DB_ERR));
+                }
             }
-            return $app->json(array("status"=>"error", "message"=>"Cant delete Bookmark"));
+            return $app->json($this->err(self::DEL_ERR));
         }
 
     }

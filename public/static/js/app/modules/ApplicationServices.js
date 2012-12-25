@@ -37,8 +37,8 @@ ApplicationServices.factory("BookmarkService",['$http',function($http){
         put : function(bookmark,success,error){
             $http.post("/json/bookmark",bookmark).success(success).error(error);
         },
-        "delete" : function(bookmark){
-            $http['delete']("/json/bookmark",bookmark).success(success).error(error);
+        "delete" : function(id,success,error){
+            $http['delete']("/json/bookmark/"+id).success(success).error(error);
 
         },
         "getByTag":function(tagName,success,error){

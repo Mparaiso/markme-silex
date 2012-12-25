@@ -16,13 +16,23 @@
         </div>
     </div>
     <!-- body -->
-    <div class='row' ng-view>
-    </div>
-    <hr class="white">
-    <hr class="white">
-    <!-- footer -->
-    <div class="row" data-ng-include='baseUrl+"/static/js/app/partials/footer.html"'>
-    </div>
+    <div class="row">
+        <div class="alert alert-info" data-ng-show="alert.info">
+          <button type="button" class="close" data-ng-click="alert.info=null">&times;</button>
+          {{alert.info}}
+      </div>
+      <div class="alert alert-error" data-ng-show="alert.error">
+          <button type="button" class="close"  data-ng-click="alert.error=null">&times;</button>
+          {{alert.error}}
+      </div>
+  </div>
+  <div class='row' ng-view>
+  </div>
+  <hr class="white">
+  <hr class="white">
+  <!-- footer -->
+  <div class="row" data-ng-include='baseUrl+"/static/js/app/partials/footer.html"'>
+  </div>
 </div>
 {% endraw %}
 {% endblock %}
