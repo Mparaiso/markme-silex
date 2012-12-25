@@ -8,6 +8,7 @@ var app = angular.module("Application",
 app.controller("MainController",
     function($scope,$window,UserService,BookmarkService,TagService){
 
+        // initialization
         $scope.bookmarks =[];
 
         $scope.user ={};
@@ -21,14 +22,47 @@ app.controller("MainController",
         UserService.getCurrentUser(function success(data){
             $scope.user = data.user ;
         });
+        // end init.
+
+        var success = function(data){
+            if(data.status === "ok"){
+                $scope.alert.info = "Bookmark saved successfully";
+            }else{
+                $scope.alert.error = data.message;
+            }
+
+        };
+
+        var error = function(){
+            console.log(arguments);
+            $scope.alert.error="Something went wrong bookmark could not be saved";
+        };
+
+        $scope.save=function(bookmark){
+            // EN : save bookmark currently edited
+            bookmark.tags = bookmark.tags.split(",").filter(function(x){return x!=="";});
+            if(bookmark.id!==null ){
+                BookmarkService.put(bookmark,success,error);
+            }else{
+                BookmarkService.post(bookmark,success,error);
+            }
+            $scope.alert.info="Saving bookmark "+bookmark.title+", please wait...";
+        };
+
+        $scope.addBookmark = function(){
+            // edit new bookmark
+            $scope.bookmark = {};
+        };
 
         $scope.getBookmarks = function(){
+            // EN : get user bookmarks
             BookmarkService.get(function success(data){
                 $scope.bookmarks = data.bookmarks;
             });
         };
 
         $scope.getByTag = function(tagName){
+            // EN : get user bookmarks by tag
             BookmarkService.getByTag(tagName,function success(data){
                 $scope.bookmarks = data.bookmarks;
             },function error(){
@@ -36,11 +70,10 @@ app.controller("MainController",
             });
         };
 
-    /**
-     * EN : get user tags
-     * FR : obtenir les tags d'un utilisateur
-     */
-     $scope.getTags = function(){
+
+        $scope.getTags = function(){
+        // EN : get user tags
+        // FR : obtenir les tags d'un utilisateur
         TagService.get(function success(data){
             console.log(data);
             $scope.tags = data.tags;
@@ -64,12 +97,20 @@ app.controller("MainController",
 });
 
 app.controller("NavigationController",["$scope","$route",
-    function($scope,$route){
+    function NavigationController($scope,$route){
+        $scope.modal_id = "add_modal";
     }
-]);
+    ]);
+
+app.controller("BookmarkFormController",["$scope","BookmarkService",
+    function($scope,BookmarkService){
+
+    }]);
 
 app.controller("BookmarkController",
     function($scope,$routeParams,BookmarkService){
+
+        $scope.modal_id = "edit_modal";
 
         var successCallback = function success(data){
             if(data.status === "ok"){
@@ -79,8 +120,13 @@ app.controller("BookmarkController",
             }
         };
 
-        $scope['delete'] = function(id,index){
-            BookmarkService['delete'](id,function success(data){
+        $scope.editBookmark = function(bookmark){
+            // edit selected bookmark
+            $scope.bookmark = bookmark;
+        };
+
+        $scope.delete = function(id,index){
+            BookmarkService.delete(id,function success(data){
                 if(data.status === "ok"){
                     $scope.alert.info = "Bookmark "+$scope.bookmarks[index].title+" deleted successfully!";
                     $scope.bookmarks.splice(index,1);
@@ -89,6 +135,7 @@ app.controller("BookmarkController",
                 }
             },function error(){
                 console.log("error",arguments);
+                $scope.alert.error = "Something went wrong during bookmark deletion.";
             });
         };
 
@@ -101,7 +148,7 @@ app.controller("BookmarkController",
     });
 
 app.controller("TagController",
-    function($scope,$routeParams,TagService){
+    function TagController($scope,$routeParams,TagService){
 
         var successCallback = function success(data){
             if(data.status === "ok"){

@@ -75,3 +75,13 @@ Directives.directive("toggleActive", function() {
         });
     };
 });
+
+Directives.directive("openModal",function(){
+    return function(scope,element,attrs){
+        element.on("click",function(event){
+            var modalSelector = attrs["openModal"];
+            $(modalSelector).modal("show");
+        });
+    };
+});
+

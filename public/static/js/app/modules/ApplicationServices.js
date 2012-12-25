@@ -43,7 +43,8 @@ ApplicationServices.factory("BookmarkService",['$http',function($http){
         },
         "getByTag":function(tagName,success,error){
             $http.get("/json/bookmark/tag/"+tagName,config).success(success).error(error);
-        }
+        },
+        bookmark :{}
     };
 }]);
 

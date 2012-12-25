@@ -1,40 +1,44 @@
-    <form name="bookmark_form" class='form-horizontal'>
-      <h5>Edit bookmark</h5>
-      <div class="control-group">
-        <label class='control-label' for="bookmark_title">Title :</label>
-        <div class="controls">
-          <input type="text" placeholder="title" 
-          name="bookmark_title"
-          class="span4"
-          data-ng-model='bookmark_title'
-          id="bookmark_title" required>
-        </div>
-        <label class='control-label' for="bookmark_url">Url :</label>
-        <div class="controls">
-          <input type="text" placeholder="url" 
-          name="bookmark_url" 
-          class="span4"
-          data-ng-model="bookmark_url" 
-          id="bookmark_url" required>
-        </div>
-        <label class='control-label' for="bookmark_description">Description :</label>
-        <div class="controls">
-          <input type="text" placeholder="description" 
-          name="bookmark_description" 
-          class="span4"
-          data-ng-model="bookmark_description" 
-          id="bookmark_description" required>
-        </div>
-        <label class='control-label' for="bookmark_tags">Tags :</label>
-        <div class="controls">
-          <textarea placeholder='sport, music, software' name="bookmark_tags" 
-          data-ng-model="bookmark_tags" 
-          id="bookmark_tags" cols="30" rows="10" class="span4"></textarea>
-        </div>
+    <form name="bookmark_form" class='form-horizontal'
+    ng-controller="BookmarkFormController" novalidate="novalidate">
+    <h5 ng-show="bookmark.id">Edit bookmark <small>{{bookmark.title}}</small></h5>
+    <h5 ng-show="!bookmark.id">Add bookmark</h5>
+    <div class="control-group">
+      <label class='control-label' for="bookmark_title">Title :</label>
+      <div class="controls">
+        <input type="text" placeholder="title" 
+        name="bookmark_title"
+        class="span4"
+        data-ng-model='bookmark.title'
+        id="bookmark_title" required>
       </div>
-      <div class='controls '>
-        <input class="btn btn-primary"type="submit" value="Save">
-        <input class="btn" type="reset" value="Reset">
-        <button class='btn' aria-hidden="true">Cancel</button>
+      <label class='control-label' for="bookmark_url">Url :</label>
+      <div class="controls">
+        <input type="url" placeholder="http://exemple.com" 
+        name="bookmark_url" 
+        data-valid-url
+        class="span4"
+        data-ng-model="bookmark.url" 
+        id="bookmark_url" required>
       </div>
-    </form>
+      <label class='control-label' for="bookmark_description">Description :</label>
+      <div class="controls">
+        <input type="text" placeholder="description" 
+        name="bookmark_description" 
+        class="span4"
+        data-ng-model="bookmark.description" 
+        id="bookmark_description" required>
+      </div>
+      <label class='control-label' for="bookmark_tags">Tags :</label>
+      <div class="controls">
+        <textarea placeholder='sport, music, software' name="bookmark_tags" 
+        data-ng-model="bookmark.tags"
+        id="bookmark_tags" cols="30" rows="10" class="span4"></textarea>
+      </div>
+    </div>
+    <input type="hidden" ng-model="bookmark.id" name="bookmark_id">
+    <div class='controls '>
+      <input ng-click="save(bookmark)" ng-disabled="bookmark_form.$invalid" class="btn btn-primary"type="submit" value="Save" data-dismiss="modal">
+      <input class="btn" type="reset" value="Reset">
+      <input class='btn' type="button" value="Cancel" data-dismiss="modal">
+    </div>
+  </form>

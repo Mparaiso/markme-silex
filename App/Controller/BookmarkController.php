@@ -29,7 +29,7 @@ namespace App\Controller{
                 $bookmarks = $app["db"]->fetchAll("SELECT ".
                     "id,url,title,description,".
                     " created_at ,".
-                    "GROUP_CONCAT(tag,',')".
+                    "GROUP_CONCAT(tag)".
                     "AS tags FROM bookmarks LEFT OUTER JOIN tags ON ".
                     "bookmarks.id = tags.bookmark_id WHERE ".
                     " user_id = :user_id GROUP BY id ORDER BY created_at DESC ".
@@ -137,7 +137,7 @@ endif;
          * @param type $id
          * @return type
          */
-        function update(Application $app, $id){
+        function update(Application $app){
             $bookmark = array();
             $reqData = $app["request"]->get("bookmark");
             $user_id = $app["session"]->get("user_id");

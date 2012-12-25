@@ -2,29 +2,30 @@
 {% block content %}
 {% raw %}
 <div class='container' data-ng-controller="MainController">
-    <div class="row">&nbsp;</div>
-    <!-- header -->
-    <div class="row">
-        <div class="navbar "  >
-            <div class='navbar-inner'>
-                <span 
-                data-ng-include='baseUrl+"/static/js/app/partials/application-nav.html"'>
-                <!-- application navigation --></span>
-                <a class='brand' href='{{app.request.baseUrl}}/'>Mark.me</a>
-            </div>
-            <hr class='white'>
-        </div>
+  <div class="row">&nbsp;</div>
+  <!-- header -->
+  <div class="row">
+    <div class="navbar navbar-static-top">
+      <div class='navbar-inner'>
+        <span 
+        data-ng-include='baseUrl+"/static/js/app/partials/application-nav.html"'>
+        <!-- application navigation --></span>
+        <a class='brand' href='{{app.request.baseUrl}}/'>Mark.me</a>
+      </div>
     </div>
-    <!-- body -->
-    <div class="row">
-        <div class="alert alert-info" data-ng-show="alert.info">
-          <button type="button" class="close" data-ng-click="alert.info=null">&times;</button>
-          {{alert.info}}
-      </div>
-      <div class="alert alert-error" data-ng-show="alert.error">
-          <button type="button" class="close"  data-ng-click="alert.error=null">&times;</button>
-          {{alert.error}}
-      </div>
+  </div>
+  <hr class='white'>
+
+  <!-- body -->
+  <div class="row" data-ng-cloak>
+    <div class="alert alert-info" data-ng-show="alert.info">
+      <button type="button" class="close" data-ng-click="alert.info=null">&times;</button>
+      {{alert.info}}
+    </div>
+    <div class="alert alert-error" data-ng-show="alert.error">
+      <button type="button" class="close"  data-ng-click="alert.error=null">&times;</button>
+      {{alert.error}}
+    </div>
   </div>
   <div class='row' ng-view>
   </div>

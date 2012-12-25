@@ -180,6 +180,9 @@ $protectedRoutes->put("/json/user", "App\Controller\UserController::updateUser")
 $protectedRoutes->post("/json/bookmark", "App\Controller\BookmarkController::create")
 ->before($mustBeValidJSON)
 ->bind("create_bookmark");
+$protectedRoutes->put("/json/bookmark","App\Controller\BookmarkController::update")
+->before($mustBeValidJSON)
+->bind("update_bookmark");
 $protectedRoutes->delete("/json/bookmark/{id}", "App\Controller\BookmarkController::delete")
 ->bind("delete_bookmark");
 $protectedRoutes->get("/json/bookmark", "App\Controller\BookmarkController::getAll")
