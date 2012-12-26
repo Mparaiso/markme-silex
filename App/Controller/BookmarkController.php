@@ -8,6 +8,7 @@ namespace App\Controller{
 
     use Silex\Application;
     use Doctrine\DBAL\DBALException;
+    use App\Services\Managers\BookmarkManager;
 
     class BookmarkController extends BaseController{
 
@@ -26,14 +27,15 @@ namespace App\Controller{
             $offset =intval($app['request']->get("offset", 0));
             $limit = 50;
             try{
-                $bookmarks = $app["db"]->fetchAll("SELECT ".
+                /*$bookmarks = $app["db"]->fetchAll("SELECT ".
                     "id,url,title,description,".
                     " created_at ,".
                     "GROUP_CONCAT(tag)".
                     "AS tags FROM bookmarks LEFT OUTER JOIN tags ON ".
                     "bookmarks.id = tags.bookmark_id WHERE ".
                     " user_id = :user_id GROUP BY id ORDER BY created_at DESC ".
-                    " LIMIT $offset , $limit ", $data);
+                    " LIMIT $offset , $limit ", $data);*/
+                $bookmarks = $app["bookmark_manager"]->getAll($offset,$limit,$data["user_id"]);
                 return $app->json(array("status"=>"ok", "bookmarks"=>$bookmarks));
             } catch (DBALException $exc){
                 $app["logger"]->err($exc->getMessage());

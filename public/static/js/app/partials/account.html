@@ -1,0 +1,36 @@
+<div class="span6">
+    <h4>Account</h4>
+    <form name="account_form">
+        <label for="user_email">Email :</label>
+        <input type="text" name="email" ng-model='user_config.email' id="user_email" required>
+        <label for="user_username">Username :</label>
+        <input type="text" name="username" ng-model="user_config.username" id="user_username" required>
+        <label for=""></label>
+        <input class="btn btn-success" type="button" value="Save" ng-disabled="account_form.$invalid">
+        <input class="btn " type="reset" value="Reset">
+    </form>
+    <hr>
+    <h4>Change password</h4>
+    <form action="password_form">
+        <label for="user_old_password">Old Password : </label>
+        <input type="password" name="username" ng-model="user_config.old_password" required id="user_old_password">
+        <label for="user_new_password">New Password : </label>
+        <input type="password" name="username" ng-model="user_config.password" required id="user_new_password">
+        <label for="user_new_verify_password">New Password verify: </label>
+        <input type="password" name="username" ng-model="user_config.verify_password" id="user_new_verify_password" required data-password-verify="user_config.password">
+        <label for=""></label>
+        <input class="btn btn-success" type="button" value="Save" ng-disabled="password_form.$invalid">
+        <input class="btn " type="reset" value="Reset">
+    </form>
+</div>
+<div class="span6">
+    <h4>Import bookmarks</h4>
+    <p>Import bookmarks from a html file</p>
+    <form name="import_form">
+        <label for="import_bookmarks"></label>
+        <input type="file" name="bookmarks" id="import_bookmarks">
+        <label for=""></label>
+        <input class="btn btn-success" type="button" value="Save" ng-disabled="import_form.$invalid">
+        <input class="btn " type="reset" value="Reset">
+    </form>
+</div>

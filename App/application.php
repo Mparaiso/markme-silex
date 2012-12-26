@@ -75,6 +75,9 @@ $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app["current_time"] =   function(){
     return date('Y-m-d H:i:s', time());
 };
+$app["bookmark_manager"]=function( $app){
+    return new App\Services\Managers\BookmarkManager($app["db"]);
+};
 /**
  * 
  * MIDDLEWARE

@@ -122,7 +122,7 @@ app.controller("BookmarkController",
 
         $scope.editBookmark = function(bookmark){
             // edit selected bookmark
-            $scope.bookmark = bookmark;
+            $scope.bookmark = angular.copy(bookmark);
         };
 
         $scope.delete = function(id,index){
@@ -215,6 +215,20 @@ app.controller("RegisterController",
         };
     });
 
+app.controller("AccountController",["$scope","UserService",
+    function AccountController($scope,UserService){
+        $scope.user_config = {};
+        UserService.getCurrentUser(function(data){
+            if(data.status === "ok"){
+                $scope.user_config = data.user;
+            }else{
+                $scope.alert.error = "Could not get user infos.";
+            }
+        },function(){
+            $scope.alert.error = "Could not get user infos.";
+        });
+    }]);
+
 app.config(['$routeProvider',
     function($routeProvider){
         $routeProvider.when("/bookmark",{
@@ -228,6 +242,11 @@ app.config(['$routeProvider',
         $routeProvider.when("/tag",{
             templateUrl:"static/js/app/partials/tags.html",
             controller:"TagController"
+        });
+
+        $routeProvider.when("/account",{
+            templateUrl:"static/js/app/partials/account.html",
+            controller:"AccountController"
         });
         $routeProvider.otherwise({redirectTo :"/bookmark"});
     }]);

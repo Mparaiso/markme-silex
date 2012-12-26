@@ -2,8 +2,6 @@ var Directives = angular.module("ApplicationDirectives", []);
 
 /* FR : utilise le plugin bootstrap pop-over
 */
-
-
 Directives.directive("popOver", function() {
     return function(scope, element, attrs) {
         var $target, options;
@@ -21,8 +19,6 @@ Directives.directive("popOver", function() {
 
 /* FR : bascule l'élement en mode active en changant la classe
 */
-
-
 Directives.directive("toggleActive", function() {
     return function(scope, element, attrs) {
         var _class = attrs.toggleActive;
@@ -35,7 +31,6 @@ Directives.directive("toggleActive", function() {
         });
     };
 });
-
 
 /**
  * EN : 2 fields . if the origin field value
@@ -57,12 +52,11 @@ Directives.directive("toggleActive", function() {
                     return viewValue;
                 }
             });
-
         }
     };
 });
 
- Directives.directive("masonry",function(){
+Directives.directive("masonry",function(){
     return function(scope,element,attrs){
         var options = {};
         if(attrs['itemSelector'])options.itemSelector = attrs['itemSelector'];
@@ -85,3 +79,20 @@ Directives.directive("openModal",function(){
     };
 });
 
+Directives.directive("preloadImage",function(){
+    return function(scope,element,attrs) {
+        // debugger;
+        console.log(attrs['preloadImage']);
+        var imageToload = scope.$eval(attrs['preloadImage']);
+        var lowSrc = attrs["lowSrc"];
+        element.attr("src",lowSrc);
+        var image = new Image();
+        image.onload = function(){
+            element.attr("src",image.src);
+        };
+        image.onerror = function(){
+            console.log("error");
+        };
+        image.src = imageToload;
+    };
+});
