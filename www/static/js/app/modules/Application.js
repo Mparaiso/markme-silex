@@ -6,10 +6,10 @@ var app = angular.module("Application",
         ["ApplicationDirectives", "ApplicationServices", "ApplicationFilters"]);
 
 app.controller("MainController",
-        function($scope, $window, UserService, BookmarkService, TagService) {
+        function($scope, $window, UserService, BookmarkService, TagService,Url) {
 
             // initialization
-            $scope.baseUrl = $("meta[name=base_url]").attr("content");
+            $scope.baseUrl = Url.getBase();
 
             $scope.bookmarks = [];
 
@@ -92,7 +92,7 @@ app.controller("MainController",
                 UserService.logout(function success(data) {
                     if (data.status === "ok") {
                         $scope.info = "User logged out";
-                        $window.location = "/";
+                        $window.location = $scope.baseUrl+"/";
                     }
                 }, function error() {
                     console.log(arguments);
