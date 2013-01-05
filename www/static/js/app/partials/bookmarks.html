@@ -8,7 +8,7 @@ FR : affiche la liste des marques pages
         <div>
           <!--   <a href='{{bookmark.url}}' title='{{bookmark.title}}' target="_blank"><img class='bookmark-image' ng-src="http://wimg.ca/w_200_h_150/{{bookmark.url}}" src="http://placehold.it/256x192" alt="{{bookmark.title}}"></a> -->
              <a href='{{bookmark.url}}' title='{{bookmark.title}}' target="_blank">
-                 <img class='bookmark-image' src="/static/img/placeholder.gif" 
+                 <img class='bookmark-image' src="{{baseUrl}}/static/img/placeholder.gif" 
                       alt="{{bookmark.title}}"  data-preload-image="getThumbnail(bookmark.url)" ></a> 
         </div>
         <h5> <a href="{{bookmark.url}}" target='_blank'>{{bookmark.title}}</a></h5>
