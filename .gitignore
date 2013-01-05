@@ -5,6 +5,7 @@ cache/*
 *.cloud
 *.sh
 log/*
+vendor/*
 nbproject/* 
 *.sublime-project
 *.sublime-workspace
