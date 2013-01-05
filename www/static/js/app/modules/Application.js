@@ -174,8 +174,8 @@ app.controller("TagController",
         });
 
 app.controller("HomeController",
-        function($scope) {
-            $scope.baseUrl = $("meta[name=base_url]").attr("content");
+        function($scope,Url) {
+            $scope.baseUrl = Url.getBase();
             $scope.user = $scope.user || {};
             $scope.response = {};
             $scope.title = "Mark.me";
@@ -187,7 +187,7 @@ app.controller("HomeController",
             };
         });
 
-app.controller("LoginController",
+app.controller("LoginController",["$scope", "$window", "UserService",
         function($scope, $window, UserService) {
             $scope.error = "";
             $scope.info = "";
@@ -196,7 +196,7 @@ app.controller("LoginController",
                 UserService.login(user, function success(data) {
                     if (data.status === "ok") {
                         $scope.info = "redirecting to application";
-                        $window.location = "/application";
+                        $window.location = $scope.baseUrl+"/application";
                     } else {
                         $scope.error = data.message;
                     }
@@ -205,7 +205,7 @@ app.controller("LoginController",
                     $scope.error = "Something went wrong";
                 });
             };
-        });
+        }]);
 
 app.controller("RegisterController",
         function($scope, $http, $window, UserService) {
