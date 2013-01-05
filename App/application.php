@@ -43,8 +43,8 @@ $app['salt'] = "yMeb2v7+hnJxEWpG/SgytDv57qKEg5Uw1t2I9dNmd/o=";
 // enregistrement de DoctrineServiceProvider
 $app->register(new DoctrineServiceProvider(), array("db.options" => array(
         "driver" => getenv("MARKME_DB_DRIVER"),
-        "dbname" => "markme",
-        "host" => "localhost",
+        "dbname" => getenv("MARKME_DB_DATABASE_NAME"),
+        "host" => getenv("MARKME_DB_HOST"),
         "user" => getenv("MARKME_DB_USERNAME"),
         "password" => getenv("MARKME_DB_PASSWORD"),
         "memory" => true,
