@@ -40,8 +40,9 @@ app.controller("MainController",
 
         $scope.save=function(bookmark){
             // EN : save bookmark currently edited
+            console.log(bookmark);
             bookmark.tags = bookmark.tags.split(",").filter(function(x){return x!=="";});
-            if(bookmark.id!==null ){
+            if(bookmark.id){
                 BookmarkService.put(bookmark,success,error);
             }else{
                 BookmarkService.post(bookmark,success,error);
@@ -108,10 +109,16 @@ app.controller("BookmarkFormController",["$scope","BookmarkService",
     }]);
 
 app.controller("BookmarkController",
-    function($scope,$routeParams,BookmarkService){
-
+    function BookmarkController($scope,$routeParams,BookmarkService,ThumbnailService){
+        
+        // configure le service
+        
+        ThumbnailService.setService(ThumbnailService.services.ROBOTHUMB);
+        
         $scope.modal_id = "edit_modal";
-
+        
+        $scope.getThumbnail = ThumbnailService.getThumbnail;
+        
         var successCallback = function success(data){
             if(data.status === "ok"){
                 $scope.bookmarks = data.bookmarks;
@@ -126,6 +133,7 @@ app.controller("BookmarkController",
         };
 
         $scope.delete = function(id,index){
+            $scope.alert.info  = "Deleting "+$scope.bookmarks[index].title+"...";
             BookmarkService.delete(id,function success(data){
                 if(data.status === "ok"){
                     $scope.alert.info = "Bookmark "+$scope.bookmarks[index].title+" deleted successfully!";

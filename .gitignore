@@ -1,6 +1,5 @@
 .DS_Store
 composer.lock
-vendor/*
 cache/*
 *.tmp
 *.cloud

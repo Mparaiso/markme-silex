@@ -1,3 +1,18 @@
+DEVNOTES
+========
+
+### SQL
+
+#### Obtenir tout les bookmarks : 
+
+<pre><code>
+select id,user_id,url,description,title,created_at,
+GROUP_CONCAT(tags.tag) as tags
+from bookmarks 
+join tags on tags.bookmark_id = bookmarks.id 
+group by bookmarks.id
+</code></pre>
+
 <pre><code>
 http://wimg.ca
 

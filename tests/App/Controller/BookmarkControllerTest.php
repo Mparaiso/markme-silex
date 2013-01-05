@@ -82,7 +82,7 @@ class BookmarkControllerTest extends WebTestCase{
         $bookmarkId = json_decode($client->getResponse()->getContent())->bookmark->user_id;
         $client->request("DELETE", "/json/bookmark/$bookmarkId", array(), array(), $headers);
         $response = $client->getResponse()->getContent();
-        $this->assertEquals($response, json_encode(array("status"=>"ok")));
+        $this->assertEquals($response, json_encode(array("status"=>"ok","rows"=>1)));
         $rows = $this->app["db"]->fetchColumn("SELECT COUNT(*) FROM bookmarks");
         $this->assertEquals(1, $rows);
     }
@@ -139,7 +139,7 @@ class BookmarkControllerTest extends WebTestCase{
         $client = $this->createClient();
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[1]));
-        $client->request("GET", "/json/bookmark/tag", array(), array(), $headers, json_encode(array("tag"=>"advertising")));
+        $client->request("GET", "/json/bookmark/tag/advertising", array(), array());
         $response = $client->getResponse();
         $content = json_decode($response->getContent(), true);
         $this->assertEquals(2, count($content['bookmarks']));
