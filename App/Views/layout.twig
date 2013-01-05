@@ -2,11 +2,10 @@
 <html lang="en-US" >
 <head>
     <meta charset="UTF-8">
-    <meta name="base_url" content="{{ app['markme.base_url'] }}">
+    <meta name="base_url" content="{{ app['request'].getBaseUrl() }}">
     <meta name="description" content="online bookmark manager">
     <meta name="keywords" content="html5,web application,webapp,bookmark,bookmarks,application,utility,organizer,manager">
     <meta name="author" content="M.Paraiso">
-
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="PUBLIC">
     <title>Markme : Organize your bookmarks online</title>
     {% block head_css %}

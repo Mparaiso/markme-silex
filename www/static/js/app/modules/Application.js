@@ -9,6 +9,8 @@ app.controller("MainController",
     function($scope,$window,UserService,BookmarkService,TagService){
 
         // initialization
+        $scope.baseUrl = $("meta[name:base_url").attr("content");
+        
         $scope.bookmarks =[];
 
         $scope.user ={};
