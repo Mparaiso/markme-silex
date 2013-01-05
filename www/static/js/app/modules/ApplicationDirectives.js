@@ -82,7 +82,7 @@ Directives.directive("openModal",function(){
 Directives.directive("preloadImage",function(){
     return function(scope,element,attrs) {
         // debugger;
-        console.log(attrs['preloadImage']);
+        //console.log(attrs['preloadImage']);
         var imageToload = scope.$eval(attrs['preloadImage']);
         var lowSrc = attrs["lowSrc"];
         element.attr("src",lowSrc);
