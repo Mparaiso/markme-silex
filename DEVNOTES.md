@@ -31,6 +31,6 @@ SELECT id,url,title,description, created_at ,GROUP_CONCAT(tag,',')AS tags FROM b
 
 angularjs.org
 
-$.ajax({url:"/json/bookmark",data:JSON.stringify({"title":"angularjs.org","description":"angularjs javascript framework","url":"http://angularjs.org","tags":["angularjs","framework","library","mvc","javascript","google"]}),success:function(){console.log(arguments);},contentType:"application/json",type:"POST"})
+
 
 </code></pre>
