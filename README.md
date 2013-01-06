@@ -43,6 +43,8 @@ inspired by bookmark.ly : http://bookmarkly.com/
     + in the repository folder , install composer packages : 
         php /path-to-composer/composer.phar install
 
++ create the database , the database schema is Database/schema.sql
+
 ###### Why
 
 + Help learn Silex Framework : http://silex.sensiolabs.org
