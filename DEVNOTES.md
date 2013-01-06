@@ -33,8 +33,4 @@ angularjs.org
 
 $.ajax({url:"/json/bookmark",data:JSON.stringify({"title":"angularjs.org","description":"angularjs javascript framework","url":"http://angularjs.org","tags":["angularjs","framework","library","mvc","javascript","google"]}),success:function(){console.log(arguments);},contentType:"application/json",type:"POST"})
 
-https://github.com
-
-$.ajax({url:"/json/bookmark",data:JSON.stringify({"title":"github","description":"github git repositories","url":"https://github.com","tags":["git","github","version management","open source"]}),success:function(){console.log(arguments);},contentType:"application/json",type:"POST"})
-
 </code></pre>
