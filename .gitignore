@@ -9,3 +9,4 @@ vendor/*
 nbproject/* 
 *.sublime-project
 *.sublime-workspace
+PRIVATEDEVNOTES.md

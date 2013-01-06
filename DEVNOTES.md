@@ -37,8 +37,4 @@ https://github.com
 
 $.ajax({url:"/json/bookmark",data:JSON.stringify({"title":"github","description":"github git repositories","url":"https://github.com","tags":["git","github","version management","open source"]}),success:function(){console.log(arguments);},contentType:"application/json",type:"POST"})
 
-http://twitter.github.com/bootstrap
-
-$.ajax({url:"/json/bookmark",data:JSON.stringify({"title":"Bootstrap","description":"front-end framework for faster and easier web development.","url":"http://twitter.github.com/bootstrap","tags":["git","github","twitter","bootstrap","css","framework","front end"]}),success:function(){console.log(arguments);},contentType:"application/json",type:"POST"})
-
 </code></pre>

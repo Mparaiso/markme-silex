@@ -56,7 +56,10 @@ EOF;
             $regexp = "/<a([^>]*)>([^<]*)<\/a>/gmi";
             $list = array();
         }
-
+        
+        /**
+         * @see http://msdn.microsoft.com/en-us/library/aa753582(v=vs.85).aspx
+         */
         function toValidHtml(array $bookmarks){
             $time= time();
             $top = <<<EOF
@@ -67,7 +70,7 @@ EOF;
     <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
     <TITLE>Bookmarks</TITLE>
     <H1>Bookmarks Menu</H1>
-    
+
     <DL>
     <DT><H3 FOLDED ADD_DATE="$time">Mark.me</H3>
     <DL><p>
