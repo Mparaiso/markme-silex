@@ -17,3 +17,9 @@ group by bookmarks.id
 SELECT id,url,title,description, created_at ,GROUP_CONCAT(tag,',')AS tags FROM bookmarks LEFT OUTER JOIN tags ON bookmarks.id = tags.bookmark_id WHERE  user_id = 1 GROUP BY id ORDER BY created_at DESC  LIMIT 0, 50 
 
 </code></pre>
+
+### SSH
+
+#### Installer sa clé SSH sur un serveur distant
+
+http://prendreuncafe.com/blog/post/2005/08/29/262-installer-sa-cle-ssh-sur-un-serveur-distant
