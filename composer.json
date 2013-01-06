@@ -3,7 +3,7 @@
     "require": {
         "silex/silex": "1.*",
         "monolog/monolog":"*",
-        "twig/twig":"*",
+        "twig/twig": "1.12.*@dev",
         "doctrine/dbal": "2.3.*@dev",
         "symfony/twig-bridge":"2.1.*",
         "symfony/browser-kit": "2.2.*@dev",
