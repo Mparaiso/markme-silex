@@ -7,13 +7,6 @@
  * 
  * @author M.Paraiso
  * 
- * API : 
- * PUT /json/user/ Update a user's profile
- * GET /json/tag/ Retrieve a user's tags
- * GET /json/autocomplete/ Autocomplete for tagging, returns tags matching input
- * PUT /json/bookmark/:id update a bookmark
- * DELETE /json/bookmark/:id Delete a bookmark
- * POST /json/import Import bookmarks from an HTML file
  */
 use \Silex\Provider\DoctrineServiceProvider;
 use \Symfony\Component\HttpFoundation\Request;
