@@ -29,8 +29,5 @@ $.ajax({url:"/json/bookmark",data:JSON.stringify({"title":"yahoo.com","descripti
 
 SELECT id,url,title,description, created_at ,GROUP_CONCAT(tag,',')AS tags FROM bookmarks LEFT OUTER JOIN tags ON bookmarks.id = tags.bookmark_id WHERE  user_id = 1 GROUP BY id ORDER BY created_at DESC  LIMIT 0, 50 
 
-angularjs.org
-
-
 
 </code></pre>
