@@ -3,7 +3,7 @@
 namespace App\DataAccessLayer {
 
     use App\DataAccessLayer\BookmarkProvider;
-use App\DataTransferObjects\Bookmark;
+    use App\DataTransferObjects\Bookmark;
 
     /**
      * @author M.Paraiso
@@ -56,7 +56,7 @@ use App\DataTransferObjects\Bookmark;
             $bookmark->created_at = $app["current_time"];
             return array(
                 array($bookmark)
-            );
+                );
         }
 
     }

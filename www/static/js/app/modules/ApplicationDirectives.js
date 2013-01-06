@@ -56,7 +56,7 @@ Directives.directive("toggleActive", function() {
     };
 });
 
-Directives.directive("masonry",function(){
+ Directives.directive("masonry",function(){
     return function(scope,element,attrs){
         var options = {};
         if(attrs['itemSelector'])options.itemSelector = attrs['itemSelector'];
@@ -70,7 +70,7 @@ Directives.directive("masonry",function(){
     };
 });
 
-Directives.directive("openModal",function(){
+ Directives.directive("openModal",function(){
     return function(scope,element,attrs){
         element.on("click",function(event){
             var modalSelector = attrs["openModal"];
@@ -79,20 +79,28 @@ Directives.directive("openModal",function(){
     };
 });
 
-Directives.directive("preloadImage",function(){
+ Directives.directive("preloadImage",function(){
     return function(scope,element,attrs) {
-        // debugger;
-        //console.log(attrs['preloadImage']);
         var imageToload = scope.$eval(attrs['preloadImage']);
         var lowSrc = attrs["lowSrc"];
         element.attr("src",lowSrc);
         var image = new Image();
         image.onload = function(){
+            element.hide();
             element.attr("src",image.src);
+            element.fadeIn(300);
         };
-        image.onerror = function(){
-            console.log("error");
+        image.onerror = function(error){
+            console.log("error",error);
         };
         image.src = imageToload;
     };
 });
+
+ Directives.directive("bstTooltip",["$timeout",function($timeout){
+    return function(scope,element,attrs){
+        $timeout(function() {
+            return element.tooltip();
+        }, 10);
+    };
+}]);

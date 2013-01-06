@@ -6,6 +6,7 @@
 
 namespace App\Controller {
 
+    use Symfony\Component\HttpFoundation\Response;
     use Silex\Application;
     use Doctrine\DBAL\DBALException;
     use App\DataTransferObjects\Bookmark;
@@ -134,6 +135,17 @@ namespace App\Controller {
                 return $app->json($this->err(self::DB_ERR));
             }
             return $app->json($this->err(self::DEL_ERR));
+        }
+
+        /**
+         * FR : exporte les bookmarks vers un fichier html
+         */
+        function export(Application $app){
+            $user_id = $app["session"]->get("user_id");
+            $bookmarks = $app["bookmark_manager"]->getAll(0,10000,$user_id);
+            $html = $app["bookmark_manager"]->toValidHtml($bookmarks);
+            $response = new Response($html,200,array("content-disposition"=>"attachment; filename=bookmarks.html"));
+            return $response;
         }
 
     }

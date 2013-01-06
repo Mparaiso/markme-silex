@@ -6,13 +6,12 @@ FR : affiche la liste des marques pages
 <ul  class="thumbnails">
     <li class='thumbnail bookmark' data-ng-repeat="bookmark in bookmarks">
         <div>
-          <!--   <a href='{{bookmark.url}}' title='{{bookmark.title}}' target="_blank"><img class='bookmark-image' ng-src="http://wimg.ca/w_200_h_150/{{bookmark.url}}" src="http://placehold.it/256x192" alt="{{bookmark.title}}"></a> -->
              <a href='{{bookmark.url}}' title='{{bookmark.title}}' target="_blank">
                  <img class='bookmark-image' data-ng-src="{{baseUrl}}/static/img/placeholder.gif" 
                       alt="{{bookmark.title}}"  data-preload-image="getThumbnail(bookmark.url)" ></a> 
         </div>
         <h5> <a href="{{bookmark.url}}" target='_blank'>{{bookmark.title}}</a></h5>
-        <div><small>{{ bookmark.description | trim:35 }}</small></div>
+        <div title="{{bookmark.description}}" data-bst-tooltip data-placement="bottom"><small>{{ bookmark.description | trim:35 }}</small></div>
         <div>
             <ul class='pull-right small inline'>
                 <li><small><a data-open-modal="#{{modal_id}}" data-ng-click="editBookmark(bookmark)" href="javascript: void 0;">edit</a></small></li>

@@ -151,6 +151,24 @@ class BookmarkControllerTest extends WebTestCase{
         return createApplication();
     }
 
+      /**
+     * @covers App\Controller\BookmarkController::export
+     * @dataProvider provider
+     */
+    public function testExport($bookmarks, $headers){
+        # l'utilisateur crée 2 bookmarks
+        $client = $this->createClient();
+        $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
+        $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[1]));
+        $crawler = $client->request("POST","/json/bookmark/export");
+        // @var Symfony\Component\HttpFoundation\Response $response 
+        $response = $client->getResponse();
+        $status = $response->getStatusCode();
+        $this->assertEquals(200,$status);
+        $this->assertTrue($response->isOk());
+        $this->assertCount(2,$crawler->filter("a"));
+    }
+
 }
 
 ?>

@@ -33,4 +33,9 @@
         <input class="btn btn-success" type="button" value="Save" ng-disabled="import_form.$invalid">
         <input class="btn " type="reset" value="Reset">
     </form>
+    <h4>Export bookmarks</h4>
+    <p>Save bookmarks as html file</p>
+    <form action="{{baseUrl}}/json/bookmark/export" method="POST">
+        <input type="submit" value="Get bookmarks" class='btn btn-info'>
+    </form>
 </div>
