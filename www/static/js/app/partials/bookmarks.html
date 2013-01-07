@@ -10,7 +10,7 @@ FR : affiche la liste des marques pages
                  <img class='bookmark-image' data-ng-src="{{baseUrl}}/static/img/placeholder.gif" 
                       alt="{{bookmark.title}}"  data-preload-image="getThumbnail(bookmark.url)" ></a> 
         </div>
-        <h5> <a href="{{bookmark.url}}" target='_blank'>{{bookmark.title}}</a></h5>
+        <h5> <a href="{{bookmark.url}}" target='_blank'>{{bookmark.title | trim:30 }}</a></h5>
         <div title="{{bookmark.description}}" data-bst-tooltip data-placement="bottom"><small>{{ bookmark.description | trim:35 }}</small></div>
         <div>
             <ul class='pull-right small inline'>
