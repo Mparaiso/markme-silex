@@ -9,6 +9,7 @@ namespace App\BusinessLogicLayer{
 
         protected $bookmarkProvider;
 
+
         function __construct(IBookmarkProvider $bookmarkProvider){
             $this->bookmarkProvider = $bookmarkProvider;
         }

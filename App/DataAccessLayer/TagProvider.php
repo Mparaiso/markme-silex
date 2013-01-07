@@ -1,6 +1,6 @@
 <?php
 
-namespace  App\DataAccessLayer{
+namespace  App\DataAccessLayer {
 
     use App\DataTransferObjects\Tag;
     use Doctrine\DBAL\Connection;
@@ -39,6 +39,7 @@ namespace  App\DataAccessLayer{
             $tag->bookmark_id = $record["bookmark_id"];
             $tag->tag = $record["tag"];
             $tag->count = $record["count"];
+            return $tag;
         }
 
         protected function recordArrayToTagArray($records){

@@ -3,6 +3,7 @@
 namespace App\Controller{
 
     use Silex\WebTestCase;
+    use App\DataTransferObjects\Tag;
 
     class TagControllerTest extends WebTestCase{
 
@@ -33,10 +34,10 @@ namespace App\Controller{
                         array("title"=>"google.com", "description"=>
                             "google search engine", "url"=>"http://google.com", "private"=>0,
                             "tags"=>array("google", "search", "popular", "advertising")),
-                    ),
+                        ),
                     array("HTTP_Content-Type"=>"application/json"),
-                ),
-            );
+                    ),
+                );
         }
 
         /**
@@ -51,11 +52,14 @@ namespace App\Controller{
             $client->request("GET", "/json/tag");
             $response = $client->getResponse();
             $json = json_decode($response->getContent());
+            // print_r($json);
             $this->assertEquals(6, count($json->tags));
             $ad = new \stdClass();
             $ad->count = 2;
             $ad->tag = "advertising";
+            $ad->bookmark_id=null;
             $this->assertTrue(in_array($ad, $json->tags));
+            
         }
 
         /**
@@ -73,6 +77,8 @@ namespace App\Controller{
             $this->assertEquals(1, count($json->tags));
             $ad = new \stdClass();
             $ad->tag = "popular";
+            $ad->count = null;
+            $ad->bookmark_id=null;
             $this->assertTrue(in_array($ad, $json->tags));
             $client->request("GET", "/json/tag/oo");
             $response2 = $client->getResponse();
@@ -80,9 +86,13 @@ namespace App\Controller{
             $this->assertEquals(2, count($json->tags));
             $google = new \stdClass();
             $google->tag = "google";
+            $google->count = null;
+            $google->bookmark_id=null;
             $this->assertTrue(in_array($google, $json->tags));
             $yahoo = new \stdClass();
             $yahoo->tag = "yahoo";
+            $yahoo->bookmark_id=null;
+            $yahoo->count=null;
             $this->assertTrue(in_array($yahoo, $json->tags));
         }
 

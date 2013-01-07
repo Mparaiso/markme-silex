@@ -2,8 +2,9 @@
 
 namespace App\BusinessLogicLayer{
 
-    use App\DataAccessLayer;
-    
+    use App\DataAccessLayer\ITagProvider;
+    use App\DataTransfertObject\Tag;
+
     class TagManager{
         /**
          * @var ITagProvider $tagProvider
@@ -15,6 +16,7 @@ namespace App\BusinessLogicLayer{
         }
         /**
          * obtient la liste des $tags d'un utilisateur
+         * @return array
          */
         function get($user_id){
             return $this->tagProvider->get($user_id);
@@ -22,6 +24,7 @@ namespace App\BusinessLogicLayer{
 
         /**
          * retourne une liste de tags suivant leurs nom
+         * @return array
          */
         function search($expression,$user_id){
             return $this->tagProvider->search($expression,$user_id);
