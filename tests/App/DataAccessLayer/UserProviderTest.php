@@ -47,6 +47,11 @@ namespace App\DataAccessLayer {
             // le client cherche un utilisateur absent de la BDD
             $result = $this->userProvider->getById(2);
             $this->assertNull($result);
+            // le client crée un utilisateur puis cherche l'utilisateur par id
+            $newUser = $this->userProvider->create($user);
+            $fetchedUser = $this->userProvider->getById(1);
+            $this->assertEquals(1,$fetchedUser->id);
+            $this->assertEquals("superman",$fetchedUser->username);
         }
 
         /**
