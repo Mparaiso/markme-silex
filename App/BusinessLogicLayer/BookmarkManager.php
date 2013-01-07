@@ -52,6 +52,11 @@ EOF;
             return implode(" ", $result);
         }
 
+        function export($user_id){
+            $bookmarks = $this->getAll(0,10000,$user_id);
+            return $this->toValidHtml($bookmarks);
+        }
+
         function fromHTML($html){
             $regexp = "/<a([^>]*)>([^<]*)<\/a>/gmi";
             $list = array();

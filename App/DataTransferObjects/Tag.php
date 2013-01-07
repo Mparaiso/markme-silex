@@ -9,6 +9,7 @@ namespace App\DataTransferObjects {
 
         public $bookmark_id;
         public $tag;
+        public $count;
 
     }
 

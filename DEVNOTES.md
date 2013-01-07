@@ -23,3 +23,7 @@ SELECT id,url,title,description, created_at ,GROUP_CONCAT(tag,',')AS tags FROM b
 #### Installer sa clé SSH sur un serveur distant
 
 http://prendreuncafe.com/blog/post/2005/08/29/262-installer-sa-cle-ssh-sur-un-serveur-distant
+
+#### Utiliser SSH
+
+http://www.linux-france.org/prj/edu/archinet/systeme/ch13s03.html

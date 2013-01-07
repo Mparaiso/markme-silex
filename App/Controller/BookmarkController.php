@@ -142,8 +142,7 @@ namespace App\Controller {
          */
         function export(Application $app){
             $user_id = $app["session"]->get("user_id");
-            $bookmarks = $app["bookmark_manager"]->getAll(0,10000,$user_id);
-            $html = $app["bookmark_manager"]->toValidHtml($bookmarks);
+            $html = $app["bookmark_manager"]->export($user_id);
             $response = new Response($html,200,array("content-disposition"=>"attachment; filename=bookmarks.html"));
             return $response;
         }
