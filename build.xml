@@ -17,14 +17,7 @@
             <arg line='commit -am"${message} ${TODAY_FR}"'/>
         </exec>
     </target>
-    <target name="deploy">
-     <property file="build.properties"/>
-     <exec executable="git">
-       <arg line="add ."/>
-   </exec>
-   <exec executable="git">
-       <arg line='commit -am"${message} ${TODAY_FR}"'/>
-   </exec>
+    <target name="deploy" depends="commit">
    <exec executable="git">
        <arg line="push ${branch} master"/>
    </exec>
