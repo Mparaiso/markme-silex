@@ -185,11 +185,6 @@ $app->match("/", "App\Controller\IndexController::index")
 ->bind("index")
 ->before($mustBeAnonymous);
 
-// images
-$app->get("/image", "App\Controller\ImageController::getByUrl")
-->bind("image")
-->before($mustBeLoggedIn);
-
 // FR : routes protégée
 $protectedRoutes = $app["controllers_factory"];
 $protectedRoutes->before($mustBeLoggedIn);
