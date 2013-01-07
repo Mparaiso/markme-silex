@@ -43,6 +43,15 @@ namespace App\DataAccessLayer {
         /**
          * @dataProvider provider
          */
+        function testGetById(User $user){
+            // le client cherche un utilisateur absent de la BDD
+            $result = $this->userProvider->getById(2);
+            $this->assertNull($result);
+        }
+
+        /**
+         * @dataProvider provider
+         */
         function testCreate($user) {
             # un utilisateur est crée
             $user_id = 1;
