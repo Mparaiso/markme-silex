@@ -1,7 +1,7 @@
 MARK.ME
 =======
 
-https://travis-ci.org/Mparaiso/silex-bookmarkly.png?branch=master
+<img src="https://travis-ci.org/Mparaiso/silex-bookmarkly.png?branch=master" />
 
 Online bookmark manager
 -----------------------
