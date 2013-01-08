@@ -7,9 +7,9 @@
 namespace App\Controller {
 
     use Symfony\Component\HttpFoundation\Response;
-    use Silex\Application;
-    use Doctrine\DBAL\DBALException;
-    use App\DataTransferObjects\Bookmark;
+use Silex\Application;
+use Doctrine\DBAL\DBALException;
+use App\DataTransferObjects\Bookmark;
 
     class BookmarkController extends BaseController {
 
@@ -111,7 +111,7 @@ namespace App\Controller {
             try {
                 $result = $app["bookmark_manager"]->update($bookmark);
                 $app["logger"]->info("update result = $result");
-                return $app->json(array("status" => "ok","bookmark"=>$bookmark));
+                return $app->json(array("status" => "ok", "bookmark" => $bookmark));
             } catch (DBALException $exc) {
                 $app["logger"]->err($exc->getMessage());
                 return $app->json($this->err(self::DB_ERR));
@@ -140,15 +140,29 @@ namespace App\Controller {
         /**
          * FR : exporte les bookmarks vers un fichier html
          */
-        function export(Application $app){
+        function export(Application $app) {
             $user_id = $app["session"]->get("user_id");
             $html = $app["bookmark_manager"]->export($user_id);
-            $response = new Response($html,200,array("content-disposition"=>"attachment; filename=bookmarks.html"));
+            $response = new Response($html, 200, array("content-disposition" => "attachment; filename=bookmarks.html"));
             return $response;
         }
 
-        function import(Application $app){
-            
+        /**
+         * FR : import les bookmarks à partir d'un fichier HTML
+         * @param \Silex\Application $app
+         */
+        function import(Application $app) {
+            $user_id = $app["session"]->get("user_id");
+            $file = $app["files"]->get("html-file");
+            try {
+                $bookmarks = $app["bookmarkManager"]->import($file, $user_id);
+            } catch (DBALException $e) {
+                $app["logger"]->err($e->getMessage());
+            }
+            $app["session"]->getFlashBag()
+                    ->add("notice", count($bookmarks) . " imported successfully");
+            return $app->redirect(
+                            $app["url_generator"]->generate("application"), 302);
         }
 
     }
