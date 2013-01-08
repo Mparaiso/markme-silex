@@ -2,7 +2,6 @@
 
 namespace App\BusinessLogicLayer {
 
-    use App\BusinessLogicLayer\BookmarkManager;
     use App\DataTransferObjects\Bookmark;
 
     /**
@@ -19,6 +18,22 @@ namespace App\BusinessLogicLayer {
             parent::setUp();
             $this->app = createApplication();
         }
+        
+        /**
+         * @dataProvider htmlProvider
+         * @covers \App\BusinessLogicLayer\BookmarkManager::import
+         */
+        
+        function testImport($html,$bookmarkCount){
+            // le client importe un fichier html 
+            $user_id = 2;
+            $bookmarkManager = $this->app["bookmark_manager"];
+            /* @var $bookmarkManager \App\BusinessLogicLayer\BookmarkManager  */
+            $bookmarks = $bookmarkManager->import($html,$user_id);
+            $this->assertCount($bookmarkCount, $bookmarks);
+            $_bookmarks = $bookmarkManager->getAll(0, 10000, $user_id);
+            $this->assertCount($bookmarkCount,$_bookmarks);
+        }
 
         /**
          * @dataProvider provider
@@ -28,8 +43,33 @@ namespace App\BusinessLogicLayer {
             // @var \App\BusinessLogicLayer\BookmarkManager $bookmarkManager 
             $bookmarkManager = $this->app["bookmark_manager"];
             $html = $bookmarkManager->toHtml(array($bookmark));
-            $expected = "<a href='http://bookmark.com' title='bookmark title' alt='bookmark description'>bookmark title</a>";
-            $this->assertTrue(true);
+            $expected = "/<DT><A HREF=\"http:\/\/bookmark.com\" ".
+                    "ADD_DATE=\"\d+\" LAST_VISIT=\"\d+\" ".
+                    "LAST_MODIFIED=\"\d+\">bookmark title<\/A>/i";
+            $this->assertRegExp($expected, $html);
+        }
+
+        /**
+         * @dataProvider htmlProvider
+         */
+        function testSplitLinks($html,$length){
+            $this->assertNotNull($html);
+            /* @var \App\BusinessLogicLayer\BookmarkManager $bookmarkManager */
+            $bookmarkManager=$this->app["bookmark_manager"];
+            $arrayResult = $bookmarkManager->splitLinks($html);
+            $this->assertCount($length,$arrayResult);
+            //return $arrayResult;
+        }
+
+        /**
+         * @dataProvider linksProvider
+         */
+        function testBookmarkFromLink($htmlLink,$title,$url){
+            $bookmarkManager = $this->app["bookmark_manager"];
+            $bookmark = $bookmarkManager->bookmarkFromLink($htmlLink);
+            $this->assertEquals($bookmark->title,$title);
+            $this->assertEquals($bookmark->url,$url);
+            $this->assertEquals($bookmark->description,$title);
         }
 
         function provider() {
@@ -43,6 +83,46 @@ namespace App\BusinessLogicLayer {
             return array(
                 array($bookmark)
                 );
+        }
+
+        function linksProvider(){
+            return array(
+                array("<a href=\"http://yahoo.com\">yahoo.com</a>",
+                    "yahoo.com",
+                    "http://yahoo.com"),
+                array("<a href=\"http://google.com\">google.com</a>",
+                    "google.com",
+                    "http://google.com",
+                    ),
+                array("<a href=\"http://msn.com\">msn.com</a>",
+                    "msn.com",
+                    "http://msn.com",
+                    ),
+                );
+        }
+        
+
+        function htmlProvider(){
+            $html = <<<EOF
+            <!DOCTYPE HTML>
+            <html lang="en-US">
+            <head>
+                <meta charset="UTF-8">
+                <title></title>
+            </head>
+            <body>
+                <a href="http://yahoo.com">yahoo.com</a>
+                <a href="http://google.com">google.com</a>
+                <a href="http://msn.com">msn.com</a>
+            </body>
+            </html>
+EOF;
+            // un fichier de bookmarks réel , exporté de firefox
+            $html2 = file_get_contents(__DIR__."/files/bookmarks.html");
+            return array(
+                array($html,3),
+                array($html2,25)
+            );
         }
 
     }

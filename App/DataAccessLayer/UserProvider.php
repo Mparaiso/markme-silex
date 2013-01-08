@@ -18,23 +18,20 @@ namespace App\DataAccessLayer {
         }
 
         /**
-         * @return App\DataTransferObjects\User
+         * @return \App\DataTransferObjects\User
          */
         function create(User $user){
-            $username = $user->username;
-            $password = $user->password;
-            $email = $user->email;
-            if ($this->getByEmail($email) !== null){
-                throw new DBALException("Email $email already used", 1);
+            if ($this->getByEmail($user->email) !== null){
+                throw new DBALException("Email $this->email already used", 1);
             }
-            if ($this->getByUsername($username) !== null){
-                throw new DBALException("Username $username already taken",1);
+            if ($this->getByUsername($user->username) !== null){
+                throw new DBALException("Username $user->username already taken",1);
             }
             /** @see http://www.richardlord.net/blog/dates-in-php-and-mysql * */
             $time = $this->_getCurrentDatetime();
             $affetchedRows = $this->connection->insert(
-                'users', array('username'=>$username,
-                    'email'=>$email, 'password'=>$password, 'created_at'=>$time,
+                'users', array('username'=>$user->username,
+                    'email'=>$user->email, 'password'=>$user->password, 'created_at'=>$time,
                     'last_login'=>$time)
                 );
             $LastInsertedId = intval($this->connection->lastInsertId());
@@ -43,7 +40,7 @@ namespace App\DataAccessLayer {
         }
 
         /**
-         * @return App\DataTransferObjects\User
+         * @return \App\DataTransferObjects\User
          */
         function getByUserNameAndPassword($username,$password){
             $record = $this->connection->fetchAssoc(
@@ -66,7 +63,6 @@ namespace App\DataAccessLayer {
         }
 
         function update(User $user,$user_id){
-
             $username = $user->username;
             $email = $user->email;
             $affectedRows = $this->connection->update(
@@ -78,7 +74,7 @@ namespace App\DataAccessLayer {
         }
 
         /**
-         *  @return App\DataTransferObjects\User
+         *  @return \App\DataTransferObjects\User
          */
         function getByUsername($username){
             $record = $this->connection->fetchAssoc("SELECT * FROM users WHERE username = ?", array($username));
@@ -86,7 +82,7 @@ namespace App\DataAccessLayer {
         }
 
         /**
-         *  @return App\DataTransferObjects\User
+         *  @return \App\DataTransferObjects\User
          */
         function getByEmail($email){
             $record = $this->connection->fetchAssoc("SELECT * FROM users WHERE email = ? ", array($email));
@@ -96,7 +92,7 @@ namespace App\DataAccessLayer {
 
         
         /**
-         *  @return App\DataTransferObjects\User
+         *  @return \App\DataTransferObjects\User
          */
         function getById($user_id){
             $record = $this->connection->fetchAssoc(
@@ -109,6 +105,9 @@ namespace App\DataAccessLayer {
             return $time = date('Y-m-d H:i:s', time());
         }
 
+        /**
+         *  @return \App\DataTransferObjects\User
+         */
         function _recordToUser($record,$getPassword=false){
             if($record!=null){
                 $user = new User();
@@ -126,8 +125,6 @@ namespace App\DataAccessLayer {
             $record = get_object_vars($user);
             return $record;
         }
-
-
 
     }
 }

@@ -38,6 +38,19 @@ namespace App\BusinessLogicLayer{
             return $this->bookmarkProvider->update($bookmark);
         }
 
+        function export($user_id){
+            $bookmarks = $this->getAll(0,10000,$user_id);
+            return $this->toValidHtml($bookmarks);
+        }
+
+        function import($html,$user_id){
+            $self=$this;
+            $bookmarks=$this->fromHTML($html,$user_id);
+            return array_map(function($bookmark)use($user_id,$self){
+                return $self->create($bookmark,$user_id);
+            },$bookmarks);
+        }
+
         function toHTML(array $bookmarks){
             $time = time();
             $result = array_map(function($bookmark)use($time){
@@ -53,14 +66,49 @@ EOF;
             return implode(" ", $result);
         }
 
-        function export($user_id){
-            $bookmarks = $this->getAll(0,10000,$user_id);
-            return $this->toValidHtml($bookmarks);
+
+        /**
+         * FR : converti une chaine HTML en une liste de bookmarks
+         * @param string $html
+         * @param integer $user_id
+         * @return array
+         */
+        function fromHTML($html,$user_id){
+            $links = $this->splitLinks($html);
+            $bookmarks = array_map(array($this,"bookmarkFromLink"),$links);
+            return $bookmarks;
         }
 
-        function fromHTML($html){
-            $regexp = "/<a([^>]*)>([^<]*)<\/a>/gmi";
-            $list = array();
+        /**
+         * converti un lien html en bookmark
+         * @param type $link
+         * @return \App\DataTransferObjects\Bookmark
+         */
+        function bookmarkFromLink($link){
+            $titleR = "/<a.*>(.*)<\/a>/i";
+            preg_match($titleR, $link,$result);
+            $title = $result[1];
+            $urlR = "/href=[\"\']{1}(.*)[\"\']{1}/i";
+            preg_match($urlR, $link,$result);
+            $url = $result[1];
+            $bookmark = new Bookmark();
+            $bookmark->title = $title;
+            $bookmark->url = $url;
+            $bookmark->description = $title;
+            $bookmark->created_at = date('Y-m-d H:i:s', time());
+            $bookmark->tags = array();
+            return $bookmark;
+        }
+
+        /**
+         * extrait les liens d'un fichier html dans un tableau de liens
+         */
+        function splitLinks($html){
+              $regexp = "/<a([^>]*)>([^<]*)<\/a>/i";
+            preg_match_all($regexp,$html,$links,PREG_SET_ORDER);
+            return array_map(function($item){
+                return $item[0];
+            },$links);
         }
         
         /**

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project  default="deploy" name="upload website">
+<project  default="test" name="commit to github">
     <tstamp>
         <format property="TODAY_FR" pattern="d-MMMM-yyyy" locale="fr,FR"/>
     </tstamp>

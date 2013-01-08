@@ -11,12 +11,12 @@ namespace App\DataAccessLayer {
     class UserProviderTest extends \PHPUnit_Framework_TestCase {
 
         /**
-         * @var Silex\Application $app
+         * @var \Silex\Application $app
          */
         protected $app;
 
         /**
-         * @var App\DataAccessLayer\UserProvider $userProvider
+         * @var \App\DataAccessLayer\UserProvider $userProvider
          */
         protected $userProvider;
 
@@ -69,7 +69,13 @@ namespace App\DataAccessLayer {
          * @dataProvider provider
          */
         function testUpdate(User $user) {
-            $this->assertTrue(true);
+            // l'utilisateur crée un nouvel utilisateur puis change ses paramètres
+            $newUser = $this->userProvider->create($user);
+            $newUser->email = "superman@crimesyndicate.com";
+            $affectedRows = $this->userProvider->update($newUser,$newUser->id);
+            $this->assertEquals(1,$affectedRows);
+            $updatedUser = $this->userProvider->getById($newUser->id);
+            $this->assertEquals("superman@crimesyndicate.com",$updatedUser->email);
         }
 
         function provider() {
