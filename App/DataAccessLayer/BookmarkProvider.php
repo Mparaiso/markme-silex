@@ -134,8 +134,10 @@ use App\DataTransferObjects\Bookmark;
             $tags = $bookmark->tags;
             $this->connection->insert($this->tableName, $data);
             $lastInsertedId = intval($this->connection->lastInsertId());
+            $this->connection->close();
             foreach ($tags as $tag):
                 $this->connection->insert("tags", array("bookmark_id" => $lastInsertedId, "tag" => $tag));
+                $this->connection->close();
             endforeach;
             $bookmark->id = $lastInsertedId;
             $bookmark->user_id = $user_id;
