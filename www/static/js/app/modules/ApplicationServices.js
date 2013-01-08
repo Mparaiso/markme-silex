@@ -38,8 +38,8 @@ ApplicationServices.factory("BookmarkService", ['$http', "Url", function($http, 
         var config = {cache: true};
         var baseUrl = Url.getBase();
         return {
-            get: function(success, error) {
-                $http.get(baseUrl + "/json/bookmark", config).success(success).error(error);
+            get: function(offset,success, error) {
+                $http.get(baseUrl + "/json/bookmark?offset="+offset, config).success(success).error(error);
             },
             put: function(bookmark, success, error) {
                 $http.put(baseUrl + "/json/bookmark", bookmark).success(success).error(error);

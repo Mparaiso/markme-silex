@@ -23,8 +23,8 @@ namespace App\Controller {
          */
         function getAll(Application $app) {
             $user_id = $app["session"]->get("user_id");
-            $offset = intval($app['request']->get("offset", 0));
             $limit = 50;
+            $offset = intval($app['request']->query->get("offset", 0))*$limit;
             try {
                 $bookmarks = $app["bookmark_manager"]->getAll($offset, $limit, $user_id);
                 return $app->json(array("status" => "ok", "bookmarks" => $bookmarks));

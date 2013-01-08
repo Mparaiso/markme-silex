@@ -3,21 +3,28 @@ bookmarks.html
 EN : display a list of bookmarks
 FR : affiche la liste des marques pages
 -->
-<ul  class="thumbnails">
+<ul  class="thumbnails" data-masonry data-is-animated="true" data-reload-on="bookmarks" 
+     data-item-selector=".thumbnail.bookmark">
     <li class='thumbnail bookmark' data-ng-repeat="bookmark in bookmarks">
         <div>
              <a href='{{bookmark.url}}' title='{{bookmark.title}}' target="_blank">
-                 <img class='bookmark-image' data-ng-src="{{baseUrl}}/static/img/placeholder.gif" 
-                      alt="{{bookmark.title}}"  data-preload-image="getThumbnail(bookmark.url)" ></a> 
+                 <img class='bookmark-image'  data-ng-src="{{baseUrl}}/static/img/placeholder.gif" 
+                      alt="{{bookmark.title}}" src=""   data-preload-image="getThumbnail(bookmark.url)" /></a> 
         </div>
         <h5> <a href="{{bookmark.url}}" target='_blank'>{{bookmark.title | trim:30 }}</a></h5>
         <div title="{{bookmark.description}}" data-bst-tooltip data-placement="bottom"><small>{{ bookmark.description | trim:35 }}</small></div>
-        <div>
-            <ul class='pull-right small inline'>
+        <div >
+            <ul class=' small inline'>
                 <li><small><a data-open-modal="#{{modal_id}}" data-ng-click="editBookmark(bookmark)" href="javascript: void 0;">edit</a></small></li>
                 <li><small><a data-ng-click="delete(bookmark.id,$index)">delete</a></small></li>
             </ul>
         </div>
+        <div>
+            <a class="btn btn-mini"  href="#/bookmark/tag/{{tag}}" data-ng-repeat="tag in getTag(bookmark)">{{tag}}</a>
+        </div>
     </li>
 </ul>
+<div>
+    <button data-ng-show="bookmarks.length % 50 == 0 && bookmarks.length>0" class="btn btn-primary span12" data-ng-click="getBookmarks(offset)">Load more bookmarks.</button>
+</div>
 <span data-ng-include="baseUrl+'/static/js/app/partials/modal.html'"></span>

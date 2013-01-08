@@ -34,14 +34,16 @@ input.ng-valid.ng-dirty {
 
 .bookmark.thumbnail{
     width:210px;
+    margin-top:5px;
+    margin-bottom:10px;
 }
 
 .bookmark-image{
     width:200px;
     height:150px;
     background: #EEE;
-    margin-left:5px;
-    margin-right: 5px;
+    /*margin-left:5px;*/
+    /*margin-right: 5px;*/
 }
 .modal-body{
     max-height: none;

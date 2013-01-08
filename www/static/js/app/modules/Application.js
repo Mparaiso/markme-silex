@@ -115,17 +115,40 @@ app.controller("BookmarkController",
             ThumbnailService.setService(ThumbnailService.services.ROBOTHUMB);
 
             $scope.modal_id = "edit_modal";
+            
+            $scope.offset = 0 ;
 
             $scope.getThumbnail = ThumbnailService.getThumbnail;
 
             var successCallback = function success(data) {
                 if (data.status === "ok") {
-                    $scope.bookmarks = data.bookmarks;
+                    if($scope.bookmarks.length<=0){
+                        $scope.bookmarks = data.bookmarks;
+                    }else{
+                       $scope.bookmarks= $scope.bookmarks.concat(data.bookmarks);
+                    }
+                    $scope.offset+=1;
+                    $scope.alert.info = "";
                 } else {
                     $scope.alert.info = data.message;
                 }
             };
+        
+            $scope.getTag=function(bookmark){
+                if (typeof(bookmark.tags)=== "string")
+                    return bookmark.tags.split(",").filter(function(i){ return i!==null;});
+            };
 
+            $scope.getBookmarks = function(offset){
+                // initialization
+                $scope.alert.info ="Fetching bookmarks";
+                if ($routeParams.tagName) {
+                    BookmarkService.getByTag($routeParams.tagName, successCallback);
+                } else {
+                    BookmarkService.get(offset,successCallback);
+                }
+            };
+        
             $scope.editBookmark = function(bookmark) {
                 // edit selected bookmark
                 $scope.bookmark = angular.copy(bookmark);
@@ -137,6 +160,7 @@ app.controller("BookmarkController",
                     if (data.status === "ok") {
                         $scope.alert.info = "Bookmark " + $scope.bookmarks[index].title + " deleted successfully!";
                         $scope.bookmarks.splice(index, 1);
+                        $scope.bookmarks = $scope.bookmarks.slice();
                     } else {
                         $scope.alert.error = data.message;
                     }
@@ -147,11 +171,7 @@ app.controller("BookmarkController",
             };
 
             // initialization
-            if ($routeParams.tagName) {
-                BookmarkService.getByTag($routeParams.tagName, successCallback);
-            } else {
-                BookmarkService.get(successCallback);
-            }
+            $scope.getBookmarks($scope.offset);
         });
 
 app.controller("TagController",
