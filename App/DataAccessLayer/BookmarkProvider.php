@@ -64,7 +64,7 @@ use App\DataTransferObjects\Bookmark;
          * @return array
          */
         protected function recordArrayToBookmarkArray($array) {
-            return array_map(array($this, "recordToBookmark"), $array);
+            return @array_map(array($this, "recordToBookmark"), $array);
         }
 
         /**
