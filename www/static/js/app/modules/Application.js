@@ -9,7 +9,7 @@ app.controller("MainController",
 
             // initialization
             $scope.baseUrl = Url.getBase();
-            $scope.maxSizeUpload = $window.document.querySelector("meta[name=max_size_upload]").content;
+            $scope.maxSizeUpload = "5M";
             $scope.bookmarks = [];
             $scope.user = {};
             $scope.tags = {};
