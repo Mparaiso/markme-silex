@@ -121,7 +121,7 @@ EOF;
             $html2 = file_get_contents(__DIR__."/files/bookmarks.html");
             return array(
                 array($html,3),
-                array($html2,25)
+                array($html2,23)
             );
         }
 

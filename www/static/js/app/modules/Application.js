@@ -4,21 +4,16 @@ window.baseUrl = window.baseUrl || "";
 // EN : main module
 var app = angular.module("Application",
         ["ApplicationDirectives", "ApplicationServices", "ApplicationFilters"]);
-
 app.controller("MainController",
         function($scope, $window, UserService, BookmarkService, TagService,Url) {
 
             // initialization
             $scope.baseUrl = Url.getBase();
-
+            $scope.maxSizeUpload = $window.document.querySelector("meta[name=max_size_upload]").content;
             $scope.bookmarks = [];
-
             $scope.user = {};
-
             $scope.tags = {};
-
             $scope.alert = {};
-
             $scope.alert.info = "Application loaded successfully!";
 
             UserService.getCurrentUser(function success(data) {

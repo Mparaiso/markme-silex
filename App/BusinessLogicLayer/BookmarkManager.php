@@ -47,10 +47,25 @@ namespace App\BusinessLogicLayer{
             $self=$this;
             $bookmarks=$this->fromHTML($html,$user_id);
             return array_map(function($bookmark)use($user_id,$self){
-                return $self->create($bookmark,$user_id);
+              if($bookmark!=null)return $self->create($bookmark,$user_id);
             },$bookmarks);
         }
-
+        
+        
+        /**
+         * 
+         * FR : fonction usuelles
+         * 
+         * 
+         * 
+         * 
+         */
+        
+        /**
+         * 
+         * @param array $bookmarks
+         * @return string
+         */
         function toHTML(array $bookmarks){
             $time = time();
             $result = array_map(function($bookmark)use($time){
@@ -75,7 +90,12 @@ EOF;
          */
         function fromHTML($html,$user_id){
             $links = $this->splitLinks($html);
-            $bookmarks = array_map(array($this,"bookmarkFromLink"),$links);
+            $self= $this;
+            $bookmarks = array();
+            foreach ($links as $link) {
+              $bookmark = $self->bookmarkFromLink($link);
+              if($bookmark!=null)array_push($bookmarks, $bookmark);
+            }
             return $bookmarks;
         }
 
@@ -88,16 +108,18 @@ EOF;
             $titleR = "/<a.*>(.*)<\/a>/i";
             preg_match($titleR, $link,$result);
             $title = $result[1];
-            $urlR = "/href=[\"\']{1}(.*)[\"\']{1}/i";
+            $urlR = "/href=[\"\']{1}(http\S*)[\"\']{1}/i";
             preg_match($urlR, $link,$result);
             $url = $result[1];
-            $bookmark = new Bookmark();
-            $bookmark->title = $title;
-            $bookmark->url = $url;
-            $bookmark->description = $title;
-            $bookmark->created_at = date('Y-m-d H:i:s', time());
-            $bookmark->tags = array();
-            return $bookmark;
+            if ($url!=null && $title!=null){
+              $bookmark = new Bookmark();
+              $bookmark->title = $title;
+              $bookmark->url = $url;
+              $bookmark->description = $title;
+              $bookmark->created_at = date('Y-m-d H:i:s', time());
+              $bookmark->tags = array();
+              return $bookmark;
+            }
         }
 
         /**

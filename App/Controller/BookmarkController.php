@@ -7,9 +7,9 @@
 namespace App\Controller {
 
     use Symfony\Component\HttpFoundation\Response;
-use Silex\Application;
-use Doctrine\DBAL\DBALException;
-use App\DataTransferObjects\Bookmark;
+    use Silex\Application;
+    use Doctrine\DBAL\DBALException;
+    use App\DataTransferObjects\Bookmark;
 
     class BookmarkController extends BaseController {
 
@@ -153,16 +153,36 @@ use App\DataTransferObjects\Bookmark;
          */
         function import(Application $app) {
             $user_id = $app["session"]->get("user_id");
-            $file = $app["files"]->get("html-file");
+            $file = $app["request"]->files->get("imported_file");
+            // try to get file content
             try {
-                $bookmarks = $app["bookmarkManager"]->import($file, $user_id);
+                $app["logger"]->info("updloaded file info".print_r($file,true));
+                $filename = md5(time());
+                $oldFileName = $file->getBasename();
+                $newFile = $file->move($app["upload_dir"],$filename);
+                $html = file_get_contents($app["upload_dir"]."/".$filename);
+                unlink($newFile->getRealPath());
+            } catch (Exception $e) {
+                $app["logger"]->err($e->getMessage());
+                $app["session"]->getFlashBag()
+                ->add("error",
+                    "Error uploading file $oldFileName , no bookmark imported");
+            }
+            // try to import bookmarks from html content
+            try {
+                $bookmarks = $app["bookmark_manager"]->import($html, $user_id);
+                $app["session"]->getFlashBag()
+                ->add("notice", count($bookmarks) . " imported successfully");
+                
             } catch (DBALException $e) {
                 $app["logger"]->err($e->getMessage());
+                $app["session"]->getFlashBag()
+                ->add("error",
+                    "Error importing bookmarks , no bookmark imported");
             }
-            $app["session"]->getFlashBag()
-                    ->add("notice", count($bookmarks) . " imported successfully");
             return $app->redirect(
-                            $app["url_generator"]->generate("application"), 302);
+                $app["url_generator"]->generate("application"), 302
+                );
         }
 
     }

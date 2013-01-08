@@ -15,7 +15,12 @@
     </div>
   </div>
   <hr class='white'>
-
+  <!-- flash messages -->
+  {% endraw %}
+  <div class="flash row">
+    {% include 'common/flash-messages.twig' %}
+  </div>
+  {% raw %}
   <!-- body -->
   <div class="row ng-cloak" data-ng-cloak>
     <div class="alert alert-info" data-ng-show="alert.info">

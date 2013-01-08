@@ -26,16 +26,16 @@
 <div class="span6">
     <h4>Import bookmarks</h4>
     <p>Import bookmarks from a html file</p>
-    <form name="import_form" method="POST" action="{{baseUrl}}/json/bookmarks/import">
-        <label for="import_bookmarks"></label>
-        <input type="file" name="html-file" id="import_bookmarks">
+    <form name="import_form" enctype="multipart/form-data"  method="POST" action="{{baseUrl}}/json/bookmark/import">
+        <label for="imported_file">Maximum html file size : {{maxSizeUpload}} .</label>
+        <input accept="text/html" type="file" name="imported_file" id="imported_file">
         <label for="save"></label>
-        <input class="btn btn-success" type="button" name="save" value="Save" data-ng-disabled="import_form.$invalid">
+        <input class="btn btn-success" type="submit" name="save" value="Import file" data-ng-disabled="import_form.$invalid">
         <input class="btn " type="reset" value="Reset">
     </form>
     <h4>Export bookmarks</h4>
     <p>Save bookmarks as html file</p>
     <form action="{{baseUrl}}/json/bookmark/export" method="POST">
-        <input type="submit" value="Get bookmarks" class='btn btn-info'>
+        <input type="submit" value="Export bookmarks" class='btn btn-info'>
     </form>
 </div>

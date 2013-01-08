@@ -68,6 +68,8 @@ $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 /**
  * Services personnalisés
  */
+$app["upload_dir"] = ROOT."/upload";
+$app["max_size_upload"] = ini_get("upload_max_filesize");
 # retourne le temps actuel au format DATETIME de  MYSQL
 $app["current_time"] = function() {
             return date('Y-m-d H:i:s', time());
