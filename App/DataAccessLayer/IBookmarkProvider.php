@@ -1,13 +1,15 @@
 <?php
 
 namespace App\DataAccessLayer {
-    
+
     use App\DataTransferObjects\Bookmark;
-    
-    interface IBookmarkProvider {
+
+interface IBookmarkProvider {
+
+        public function count($user_id);
 
         public function create(Bookmark $bookmark, $user_id);
-       
+
         public function update(Bookmark $bookmark);
 
         public function delete($id, $user_id);

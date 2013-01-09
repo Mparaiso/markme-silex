@@ -8,35 +8,35 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
  * @author M.PAraiso
  */
-class BookmarkControllerTest extends WebTestCase{
+class BookmarkControllerTest extends WebTestCase {
 
-    function setUp(){
+    function setUp() {
         parent::setUp();
         $client = $this->createClient();
-        $client->request("POST", "/json/register", array(), array(), array("HTTP_Content-Type"=>"application/json"), json_encode(
-                array("username"=>"super.guy", "email"=>"super.guy@yahoo.fr", "password"=>"password")
-            )
+        $client->request("POST", "/json/register", array(), array(), array("HTTP_Content-Type" => "application/json"), json_encode(
+                        array("username" => "super.guy", "email" => "super.guy@yahoo.fr", "password" => "password")
+                )
         );
     }
 
-    function tearDown(){
+    function tearDown() {
         parent::tearDown();
         $app = $this->createApplication();
         $app["db"]->executeUpdate("DELETE FROM users");
     }
 
-    function provider(){
+    function provider() {
         return array(
             array(
                 array(
-                    array("title"=>"yahoo.com", "description"=>
-                        "yahoo's website", "url"=>"http://yahoo.fr", "private"=>1,
-                        "tags"=>array("yahoo", "advertising", "life style")),
-                    array("title"=>"google.com", "description"=>
-                        "google search engine", "url"=>"http://google.com", "private"=>0,
-                        "tags"=>array("google", "search", "popular", "advertising")),
+                    array("title" => "yahoo.com", "description" =>
+                        "yahoo's website", "url" => "http://yahoo.fr", "private" => 1,
+                        "tags" => array("yahoo", "advertising", "life style")),
+                    array("title" => "google.com", "description" =>
+                        "google search engine", "url" => "http://google.com", "private" => 0,
+                        "tags" => array("google", "search", "popular", "advertising")),
                 ),
-                array("HTTP_Content-Type"=>"application/json"),
+                array("HTTP_Content-Type" => "application/json"),
             ),
         );
     }
@@ -45,7 +45,7 @@ class BookmarkControllerTest extends WebTestCase{
      * @covers App\Controller\BookmarkController::create
      * @dataProvider provider
      */
-    public function testCreate($bookmarks, $headers){
+    public function testCreate($bookmarks, $headers) {
         # l'utilisateur crée 2 bookmarks
         $client = $this->createClient();
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
@@ -58,10 +58,10 @@ class BookmarkControllerTest extends WebTestCase{
         # @note @doctrine retrouver une valeur unique d'une colonne avec count par exemple 
         $length = $this->app["db"]->fetchColumn("SELECT COUNT(*) from bookmarks");
         $this->assertEquals($length, 2);
-        $googleBookMark = $this->app["db"]->fetchAssoc("SELECT * FROM ".
-            "bookmarks where title= :title", array("title"=>$bookmarks[1]["title"]));
-        $tags = $this->app["db"]->fetchAll(" SELECT * FROM tags ".
-            "where bookmark_id= :bookmark_id", array("bookmark_id"=>$googleBookMark["id"]));
+        $googleBookMark = $this->app["db"]->fetchAssoc("SELECT * FROM " .
+                "bookmarks where title= :title", array("title" => $bookmarks[1]["title"]));
+        $tags = $this->app["db"]->fetchAll(" SELECT * FROM tags " .
+                "where bookmark_id= :bookmark_id", array("bookmark_id" => $googleBookMark["id"]));
         $this->assertEquals(count($bookmarks[1][tags]), count($tags));
         // un utilisateur non connecté tente de crée des bookmarks
         $this->app["session"]->invalidate();
@@ -74,7 +74,7 @@ class BookmarkControllerTest extends WebTestCase{
      * @covers App\Controller\BookmarkController::delete
      * @dataProvider provider
      */
-    public function testDelete($bookmarks, $headers){
+    public function testDelete($bookmarks, $headers) {
         # l'utilisateur crée 2 bookmarks puis en efface 1
         $client = $this->createClient();
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
@@ -82,7 +82,7 @@ class BookmarkControllerTest extends WebTestCase{
         $bookmarkId = json_decode($client->getResponse()->getContent())->bookmark->user_id;
         $client->request("DELETE", "/json/bookmark/$bookmarkId", array(), array(), $headers);
         $response = $client->getResponse()->getContent();
-        $this->assertEquals($response, json_encode(array("status"=>"ok","rows"=>1)));
+        $this->assertEquals($response, json_encode(array("status" => "ok", "rows" => 1)));
         $rows = $this->app["db"]->fetchColumn("SELECT COUNT(*) FROM bookmarks");
         $this->assertEquals(1, $rows);
     }
@@ -94,7 +94,7 @@ class BookmarkControllerTest extends WebTestCase{
      * @param type $user
      * @param type $headers
      */
-    function testGetAll($bookmarks, $headers){
+    function testGetAll($bookmarks, $headers) {
         // un utilisateur obtient des bookmarks crées
         $client = $this->createClient();
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
@@ -116,11 +116,11 @@ class BookmarkControllerTest extends WebTestCase{
      * @param type $user
      * @param type $headers
      */
-    function testSearch($bookmarks, $headers){
+    function testSearch($bookmarks, $headers) {
         $client = $this->createClient();
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[1]));
-        $client->request("GET", "/json/bookmark/search", array(), array(), $headers, json_encode(array("query"=>"engine")));
+        $client->request("GET", "/json/bookmark/search", array(), array(), $headers, json_encode(array("query" => "engine")));
         $response = $client->getResponse();
         $json = json_decode($response->getContent());
         //print_r($json);
@@ -135,7 +135,7 @@ class BookmarkControllerTest extends WebTestCase{
      * @param type $user
      * @param type $headers
      */
-    function testGetByTag($bookmarks, $headers){
+    function testGetByTag($bookmarks, $headers) {
         $client = $this->createClient();
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[1]));
@@ -147,26 +147,45 @@ class BookmarkControllerTest extends WebTestCase{
         print_r($content->bookmarks);
     }
 
-    public function createApplication(){
+    public function createApplication() {
         return createApplication();
     }
 
-      /**
+    /**
      * @covers App\Controller\BookmarkController::export
      * @dataProvider provider
      */
-    public function testExport($bookmarks, $headers){
+    public function testExport($bookmarks, $headers) {
         # l'utilisateur crée 2 bookmarks
         $client = $this->createClient();
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
         $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[1]));
-        $crawler = $client->request("POST","/json/bookmark/export");
+        $crawler = $client->request("POST", "/json/bookmark/export");
         // @var Symfony\Component\HttpFoundation\Response $response 
         $response = $client->getResponse();
         $status = $response->getStatusCode();
-        $this->assertEquals(200,$status);
+        $this->assertEquals(200, $status);
         $this->assertTrue($response->isOk());
-        $this->assertCount(2,$crawler->filter("a"));
+        $this->assertCount(2, $crawler->filter("a"));
+    }
+
+    /**
+     * FR : teste la méthode count
+     * @dataProvider provider
+     * @covers App\Controller\BookmarkController::count
+     * @param array $bookmarks
+     * @param array $headers
+     */
+    public function testCount($bookmarks, $headers) {
+        // le client crée 2 bookmarks , requiert le nombre de bookmark pour l'utilisateur courant
+        $client = $this->createClient();
+        $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
+        $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[1]));
+        $client->request("POST", "/json/bookmark/count");
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $json = json_decode($response->getContent());
+        $this->assertEquals(count($bookmarks), $json->count);
     }
 
 }

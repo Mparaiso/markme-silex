@@ -154,5 +154,9 @@ EOF;
         $bottom="</DL><p></DL>";
             return $top.$this->toHTML($bookmarks).$bottom;
         }
+
+        public function count($user_id) {
+            return $this->bookmarkProvider->count($user_id);
+        }
     }
 }

@@ -196,6 +196,8 @@ $protectedRoutes->put("/json/user", "App\Controller\UserController::updateUser")
         ->before($mustBeValidJSON);
 
 // bookmarks
+$protectedRoutes->post("/json/bookmark/count","App\Controller\BookmarkController::count")
+        ->bind("count_bookmarks");
 $protectedRoutes->post("/json/bookmark/export", "App\Controller\BookmarkController::export")
         ->bind("export_bookmarks");
 $protectedRoutes->post("/json/bookmark/import", "App\Controller\BookmarkController::import")

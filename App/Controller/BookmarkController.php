@@ -7,9 +7,9 @@
 namespace App\Controller {
 
     use Symfony\Component\HttpFoundation\Response;
-    use Silex\Application;
-    use Doctrine\DBAL\DBALException;
-    use App\DataTransferObjects\Bookmark;
+use Silex\Application;
+use Doctrine\DBAL\DBALException;
+use App\DataTransferObjects\Bookmark;
 
     class BookmarkController extends BaseController {
 
@@ -17,14 +17,28 @@ namespace App\Controller {
 
         const DEL_ERR = "Cant delete Bookmark";
 
+        function count(Application $app) {
+            $user_id = $app["session"]->get("user_id");
+            $bookmarkManager = $app["bookmark_manager"];
+            /* @var  $bookmarkManager \App\BusinessLogicLayer\BookmarkManager */
+            try {
+                $count = $bookmarkManager->count($user_id);
+                return $app->json(array("status" => "ok", "count" => $count));
+            } catch (DBALException $exc) {
+                $app["logger"]->error($exc->getMessage());
+                return $app->json($this->err(self::DB_ERR));
+            }
+            return $app->json($this->err(self::REQ_ERR));
+        }
+
         /**
-         * FR : retrouver tout les bookmarks , par offset de 50;
+         * FR : retrouver tout les bookmarks , par limite de 50 ( par défaut );
          * @param \Silex\Application $app
          */
         function getAll(Application $app) {
             $user_id = $app["session"]->get("user_id");
-            $limit = 50;
-            $offset = intval($app['request']->query->get("offset", 0))*$limit;
+            $limit = intval($app["request"]->query->get("limit", 50));
+            $offset = intval($app['request']->query->get("offset", 0)) * $limit;
             try {
                 $bookmarks = $app["bookmark_manager"]->getAll($offset, $limit, $user_id);
                 return $app->json(array("status" => "ok", "bookmarks" => $bookmarks));
@@ -156,33 +170,30 @@ namespace App\Controller {
             $file = $app["request"]->files->get("imported_file");
             // try to get file content
             try {
-                $app["logger"]->info("updloaded file info".print_r($file,true));
+                $app["logger"]->info("updloaded file info" . print_r($file, true));
                 $filename = md5(time());
                 $oldFileName = $file->getBasename();
-                $newFile = $file->move($app["upload_dir"],$filename);
-                $html = file_get_contents($app["upload_dir"]."/".$filename);
+                $newFile = $file->move($app["upload_dir"], $filename);
+                $html = file_get_contents($app["upload_dir"] . "/" . $filename);
                 unlink($newFile->getRealPath());
             } catch (Exception $e) {
                 $app["logger"]->err($e->getMessage());
                 $app["session"]->getFlashBag()
-                ->add("error",
-                    "Error uploading file $oldFileName , no bookmark imported");
+                        ->add("error", "Error uploading file $oldFileName , no bookmark imported");
             }
             // try to import bookmarks from html content
             try {
                 $bookmarks = $app["bookmark_manager"]->import($html, $user_id);
                 $app["session"]->getFlashBag()
-                ->add("notice", count($bookmarks) . " imported successfully");
-                
+                        ->add("notice", count($bookmarks) . " imported successfully");
             } catch (DBALException $e) {
                 $app["logger"]->err($e->getMessage());
                 $app["session"]->getFlashBag()
-                ->add("error",
-                    "Error importing bookmarks , no bookmark imported");
+                        ->add("error", "Error importing bookmarks , no bookmark imported");
             }
             return $app->redirect(
-                $app["url_generator"]->generate("application"), 302
-                );
+                            $app["url_generator"]->generate("application"), 302
+            );
         }
 
     }

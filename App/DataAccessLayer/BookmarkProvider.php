@@ -174,11 +174,20 @@ use App\DataTransferObjects\Bookmark;
             );
             $this->connection->delete("tags", array("bookmark_id" => $bookmark->id));
             $connection = $this->connection;
-            array_walk($tags, function($el)use($connection,$bookmark) {
+            array_walk($tags, function($el)use($connection, $bookmark) {
                         $connection->insert("tags", array("bookmark_id" => $bookmark->id, "tag" => $el));
                     }
             );
             return $result;
+        }
+
+        function count($user_id) {
+            $count = $this->connection
+                    ->fetchColumn(
+                    "SELECT count(*) as count FROM " .
+                    " bookmarks WHERE user_id = ?", array($user_id)
+            );
+            return $count;
         }
 
     }
