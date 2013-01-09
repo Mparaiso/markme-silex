@@ -66,7 +66,7 @@ Directives.directive("passwordVerify", function() {
  */
 Directives.directive("masonry", function($timeout) {
     return function(scope, element, attrs) {
-        console.log(arguments);
+//        console.log(arguments);
         var options = {};
         var init = false;
         var reloadOn = null;
@@ -80,7 +80,7 @@ Directives.directive("masonry", function($timeout) {
         if (attrs["reloadOn"]) {
             reloadOn = attrs["reloadOn"];
             scope.$watch(reloadOn, function(_new, _old) {
-                console.log("execute mansonry");
+//                console.log("execute mansonry");
                 if (init === true) {
                     $timeout(function() {
                         element.masonry("reload");
@@ -131,5 +131,29 @@ Directives.directive("bstTooltip", ["$timeout", function($timeout) {
             $timeout(function() {
                 return element.tooltip();
             }, 10);
+        };
+    }]);
+
+Directives.directive("tagsInput", ["$timeout", function tagsInput($timeout) {
+        return function($scope, element, attrs) {
+            console.log(arguments);
+            var tagsInput = null;
+            $scope.$watch(attrs["tagsInput"], function(_new, _old) {
+                $timeout(function() {
+                    if (_old) {
+                        var _oldTags = _old.split(",");
+                        for (var i = 0; i < _oldTags.length; i++) {
+                            element.removeTag(_oldTags[i]);
+                        }
+                    }
+                    if (_new) {
+                        tagsInput = element.importTags(_new);
+                    }
+                });
+            });
+            $timeout(function() {
+                console.log("set tagsInput");
+                element.tagsInput();
+            });
         };
     }]);

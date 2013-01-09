@@ -12,23 +12,24 @@
     <div class="row">
         <div class="navbar ">
             <div class='navbar-inner'>
-               <span  
-               data-ng-include='baseUrl+"/static/js/app/partials/homepage-nav.html"'>
-               <!-- navigation --></span>
-               <a class='brand' href='{{baseUrl}}/'>Mark.me</a>
-           </div>
+                <span  
+                    data-ng-include='baseUrl+"/static/js/app/partials/homepage-nav.html"'>
+                    <!-- navigation --></span>
+                <a class='brand' href='{{baseUrl}}/'>Mark.me</a>
+            </div>
 
-           <hr class='white'>
-       </div>
-   </div>
-   <!-- body -->
-   <div class="row " data-ng-include="baseUrl+'/static/js/app/partials/homepage.html'">
-   </div>
-   <hr class="white">
-   <hr class="white">
-   <!-- footer -->
-   <div class="row" data-ng-include='baseUrl+"/static/js/app/partials/footer.html"'>
-   </div>
+            <hr class='white'>
+        </div>
+    </div>
+    <!-- body -->
+    <div class="row " data-ng-include="baseUrl+'/static/js/app/partials/homepage.html'">
+    </div>
+    <hr class="white">
+    <hr class="white">
+    <!-- footer -->
+    <div class="row" data-ng-include='baseUrl+"/static/js/app/partials/footer.html"'>
+    </div>
+    <div class="row">&nbsp;</div>
 </div>
 {% endraw %}
 {% endblock %}

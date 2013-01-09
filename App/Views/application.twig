@@ -1,4 +1,9 @@
 {% extends 'index.twig' %}
+{% block head_css %}
+<link rel="stylesheet" href="{{app.request.baseUrl}}/static/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{app.request.baseUrl}}/static/css/style.css">
+<link rel="stylesheet" href="{{app.request.baseUrl}}/static/vendor/jquery-tagsinput/jquery.tagsinput.css"/>
+{% endblock %}
 {% block content %}
 {% raw %}
 <div class='container' data-ng-controller="MainController">
@@ -39,6 +44,7 @@
   <!-- footer -->
   <div class="row" data-ng-include='baseUrl+"/static/js/app/partials/footer.html"'>
   </div>
+  <div class="row">&nbsp;</div>
 </div>
 {% endraw %}
 {% endblock %}
@@ -46,6 +52,7 @@
 <script type="text/javascript" src="{{app.request.baseUrl}}/static/js/jquery.min.js"></script>
 <script type="text/javascript" src="{{app.request.baseUrl}}/static/js/jquery.masonry.min.js"></script>
 <script type="text/javascript" src="{{app.request.baseUrl}}/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="{{app.request.baseUrl}}/static/vendor/jquery-tagsinput/jquery.tagsinput.min.js"></script>
 <script type="text/javascript" src="{{app.request.baseUrl}}/static/js/underscore.min.js"></script>
 <script type="text/javascript" src="{{app.request.baseUrl}}/static/js/angular.min.js"></script>
 <script type="text/javascript" src="{{app.request.baseUrl}}/static/js/app/modules/ApplicationDirectives.js"></script>

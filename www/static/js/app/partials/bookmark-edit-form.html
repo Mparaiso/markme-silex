@@ -1,7 +1,7 @@
     <form name="bookmark_form" class='form-horizontal'
-    ng-controller="BookmarkFormController" novalidate="novalidate">
-    <h5 ng-show="bookmark.id">Edit bookmark <small>{{bookmark.title}}</small></h5>
-    <h5 ng-show="!bookmark.id">Add bookmark</h5>
+    data-ng-controller="BookmarkFormController" novalidate="novalidate">
+    <h5 data-ng-show="bookmark.id">Edit bookmark <small>{{bookmark.title}}</small></h5>
+    <h5 data-ng-show="!bookmark.id">Add bookmark</h5>
     <div class="control-group">
       <label class='control-label' for="bookmark_title">Title :</label>
       <div class="controls">
@@ -30,14 +30,14 @@
       </div>
       <label class='control-label' for="bookmark_tags">Tags :</label>
       <div class="controls">
-        <textarea placeholder='sport, music, software' name="bookmark_tags" 
+        <input placeholder='sport, music, software' name="bookmark_tags" 
         data-ng-model="bookmark.tags"
-        id="bookmark_tags" cols="30" rows="10" class="span4"></textarea>
+        id="bookmark_tags" class="span4"  data-tags-input="bookmark.tags" />
       </div>
     </div>
-    <input type="hidden" ng-model="bookmark.id" name="bookmark_id">
+    <input type="hidden" data-ng-model="bookmark.id" name="bookmark_id">
     <div class='controls '>
-      <input ng-click="save(bookmark)" ng-disabled="bookmark_form.$invalid" class="btn btn-primary"type="submit" value="Save" data-dismiss="modal">
+      <input data-ng-click="save(bookmark)" data-ng-disabled="bookmark_form.$invalid" class="btn btn-primary" type="submit" value="Save" data-dismiss="modal">
       <input class="btn" type="reset" value="Reset">
       <input class='btn' type="button" value="Cancel" data-dismiss="modal">
     </div>
