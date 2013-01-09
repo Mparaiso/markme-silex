@@ -10,7 +10,7 @@ ApplicationServices.factory("Url", function() {
 });
 /** manage user API calls **/
 ApplicationServices.factory("UserService", ['$http', '$window', 'Url',
-    function($http, $window, Url) {
+    function UserService($http, $window, Url) {
         var config = {cache: true};
         var baseUrl = Url.getBase();
         return {
@@ -34,17 +34,17 @@ ApplicationServices.factory("UserService", ['$http', '$window', 'Url',
 ]);
 
 /** manage bookmark API calls **/
-ApplicationServices.factory("BookmarkService", ['$http', "Url", function($http, Url) {
+ApplicationServices.factory("BookmarkService", ['$http', "Url", function BookmarkService($http, Url) {
         var config = {cache: true};
         var baseUrl = Url.getBase();
         return {
-            get: function(offset,success, error) {
+            "get": function(offset,success, error) {
                 $http.get(baseUrl + "/json/bookmark?offset="+offset, config).success(success).error(error);
             },
-            put: function(bookmark, success, error) {
+            "put": function(bookmark, success, error) {
                 $http.put(baseUrl + "/json/bookmark", bookmark).success(success).error(error);
             },
-            post: function(bookmark, success, error) {
+            "post": function(bookmark, success, error) {
                 $http.post(baseUrl + "/json/bookmark", bookmark).success(success).error(error);
             },
             "delete": function(id, success, error) {
@@ -54,12 +54,14 @@ ApplicationServices.factory("BookmarkService", ['$http', "Url", function($http, 
             "getByTag": function(tagName, success, error) {
                 $http.get(baseUrl + "/json/bookmark/tag/" + tagName, config).success(success).error(error);
             },
-            bookmark: {}
+            "count":function(success,error){
+                $http.post(baseUrl+"/json/bookmark/count").success(success).error(error);
+            }
         };
     }]);
 
 /** manage tag API calls **/
-ApplicationServices.factory("TagService", ["$http", "Url", function($http, Url) {
+ApplicationServices.factory("TagService", ["$http", "Url", function TagService($http, Url) {
         var config = {cache: true};
         var baseUrl = Url.getBase();
         return {
