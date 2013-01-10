@@ -91,11 +91,11 @@ Directives.directive("masonry", function($timeout) {
         // init masonry
         element.ready(
                 function() {
-                    element.imagesLoaded(function() {
+                    //element.imagesLoaded(function() {
                         element.masonry(options);
                         init = true;
                         element.css({"display": oldDisplay});
-                    });
+                    //});
                 });
     };
 });
