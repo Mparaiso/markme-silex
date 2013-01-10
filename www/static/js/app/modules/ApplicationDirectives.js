@@ -77,7 +77,7 @@ Directives.directive("masonry", function($timeout) {
             options.columnWidth = attrs["columnWidth"];
         if (attrs["isAnimated"])
             options.isAnimated = true;
-        // reload when model is updated
+        // reload when given model is updated
         if (attrs["reloadOn"]) {
             reloadOn = attrs["reloadOn"];
             scope.$watch(reloadOn, function(_new, _old) {
