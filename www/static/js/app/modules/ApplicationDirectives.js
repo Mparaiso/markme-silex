@@ -66,7 +66,6 @@ Directives.directive("passwordVerify", function() {
  */
 Directives.directive("masonry", function($timeout) {
     return function(scope, element, attrs) {
-//        console.log(arguments);
         var options = {};
         var init = false;
         var reloadOn = null;
@@ -74,24 +73,23 @@ Directives.directive("masonry", function($timeout) {
         element.css({"display": "none"});
         if (attrs['itemSelector'])
             options.itemSelector = attrs['itemSelector'];
-        //if (attrs['columnWidth'])
-        //    options.columnWidth = 230; //
+        if (attrs['columnWidth'])
+            options.columnWidth = attrs["columnWidth"];
         if (attrs["isAnimated"])
             options.isAnimated = true;
         // reload when model is updated
         if (attrs["reloadOn"]) {
             reloadOn = attrs["reloadOn"];
             scope.$watch(reloadOn, function(_new, _old) {
-//                console.log("execute mansonry");
                 if (init === true) {
                     $timeout(function() {
                         element.masonry("reload");
-                    });
+                    },10);
                 }
-            });
+            },true);
         }
         // init masonry
-        $timeout(
+        element.ready(
                 function() {
                     element.imagesLoaded(function() {
                         element.masonry(options);
