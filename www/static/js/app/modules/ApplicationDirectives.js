@@ -1,4 +1,4 @@
-var Directives = angular.module("ApplicationDirectives", []);
+var Directives = angular.module("ApplicationDirectives", ["ApplicationServices"]);
 
 /* FR : utilise le plugin bootstrap pop-over
  */
@@ -136,7 +136,7 @@ Directives.directive("bstTooltip", ["$timeout", function($timeout) {
     }]);
 
 /** allow jquery.tags-input plugin use **/
-Directives.directive("tagsInput", ["$timeout", function tagsInput($timeout) {
+Directives.directive("tagsInput", ["$timeout", "Url", function tagsInput($timeout, Url) {
         return function($scope, element, attrs) {
             var tagsInput = null;
             var model = attrs["ngModel"];
@@ -157,7 +157,19 @@ Directives.directive("tagsInput", ["$timeout", function tagsInput($timeout) {
             $timeout(function() {
                 element.tagsInput({
                     "onAddTag": applyCallback,
-                    "onRemoveTag": applyCallback
+                    "onRemoveTag": applyCallback,
+                    autocomplete_url: Url.getBase() + '/json/autocomplete',
+                    autocomplete: {selectFirst: true, width: '100px', autoFill: true, highlight: false,
+                        dataType: "json",
+                        parse: function(data) {
+                            var rows = [];
+                            for (var i = 0; i < data.tags.length; i++) {
+                                var tag = data.tags[i].tag;
+                                rows[rows.length] = {data: [tag], value: tag, result: tag};
+                            }
+                            return rows;
+                        }
+                    }
                 });
             });
         };

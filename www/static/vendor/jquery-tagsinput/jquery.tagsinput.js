@@ -221,12 +221,17 @@
 			var markup = '<div id="'+id+'_tagsinput" class="tagsinput"><div id="'+id+'_addTag">';
 			
 			if (settings.interactive) {
-				markup = markup + '<input id="'+id+'_tag" value="" data-default="'+settings.defaultText+'" />';
+				markup = markup + '<input id="'+id+'_tag" autocomplete="off" value="" data-default="'+settings.defaultText+'" />';
 			}
 			
 			markup = markup + '</div><div class="tags_clear"></div></div>';
 			
 			$(markup).insertAfter(this);
+
+      // Copy the data-* attributes from original input to the fake one
+      $.each([].filter.call(this.attributes, function(at) { return /^data-/.test(at.name); }), function(idx,attr){
+        $(data.fake_input).attr(attr.name, attr.value);
+      });
 
 			$(data.holder).css('width',settings.width);
 			$(data.holder).css('min-height',settings.height);
@@ -271,13 +276,13 @@
 							return false;
 						});
 					}
-				
-					
 				} else {
 						// if a user tabs out of the field, create a new tag
 						// this is only available if autocomplete is not used.
-						$(data.fake_input).bind('blur',data,function(event) { 
+						$(data.fake_input).bind('blur change',data,function(event) {
 							var d = $(this).attr('data-default');
+              if( event.type == 'blur' && $('.typeahead').is(':visible') ){ return false; }
+              if( event.type == 'change' && event.originalEvent !== undefined ){ return true; }
 							if ($(event.data.fake_input).val()!='' && $(event.data.fake_input).val()!=d) { 
 								if( (event.data.minChars <= $(event.data.fake_input).val().length) && (!event.data.maxChars || (event.data.maxChars >= $(event.data.fake_input).val().length)) )
 									$(event.data.real_input).addTag($(event.data.fake_input).val(),{focus:true,unique:(settings.unique)});

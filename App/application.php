@@ -68,7 +68,7 @@ $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 /**
  * Services personnalisés
  */
-$app["upload_dir"] = ROOT."/upload";
+$app["upload_dir"] = ROOT . "/upload";
 $app["max_size_upload"] = ini_get("upload_max_filesize");
 # retourne le temps actuel au format DATETIME de  MYSQL
 $app["current_time"] = function() {
@@ -198,7 +198,7 @@ $protectedRoutes->put("/json/user", "App\Controller\UserController::updateUser")
 // bookmarks
 $protectedRoutes->get("/json/bookmark/search", "App\Controller\BookmarkController::search")
         ->bind("search_bookmarks");
-$protectedRoutes->post("/json/bookmark/count","App\Controller\BookmarkController::count")
+$protectedRoutes->post("/json/bookmark/count", "App\Controller\BookmarkController::count")
         ->bind("count_bookmarks");
 $protectedRoutes->post("/json/bookmark/export", "App\Controller\BookmarkController::export")
         ->bind("export_bookmarks");
@@ -218,10 +218,11 @@ $protectedRoutes->get("/json/bookmark/tag/{tagName}", "App\Controller\BookmarkCo
 
 
 // tags
+$protectedRoutes->get("/json/autocomplete", "App\Controller\TagController::autocomplete")
+        ->bind("search_tag");
 $protectedRoutes->get("/json/tag", "App\Controller\TagController::get")
         ->bind("get_tags");
-$protectedRoutes->get("/json/tag/{tag}", "App\Controller\TagController::autocomplete")
-        ->bind("search_tag");
+
 
 // installation les routes protégées
 $app->mount("/", $protectedRoutes);

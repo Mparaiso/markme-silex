@@ -26,8 +26,8 @@ namespace App\BusinessLogicLayer{
          * retourne une liste de tags suivant leurs nom
          * @return array
          */
-        function search($expression,$user_id){
-            return $this->tagProvider->search($expression,$user_id);
+        function search($expression,$limit,$user_id){
+            return $this->tagProvider->search($expression,$limit,$user_id);
         }
 
     }

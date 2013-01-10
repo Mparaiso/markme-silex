@@ -25,10 +25,12 @@ use Doctrine\DBAL\DBALException;
         /**
          * retourne une liste de tags suivant leurs nom
          */
-        function autocomplete(Application $app, $tag){
+        function autocomplete(Application $app){
             $user_id = $app["session"]->get("user_id");
+            $q = $app["request"]->query->get("q");
+            $limit = $app["request"]->query->get("limit",10);
             try{
-                $tags = $app["tag_manager"]->search($tag,$user_id);
+                $tags = $app["tag_manager"]->search($q,$limit,$user_id);
                 return $app->json(array("status"=>"ok", "tags"=>$tags), 200);
             } catch (DBALException $e){
                 $app["logger"]->err($e->getMessage());

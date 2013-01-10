@@ -24,12 +24,13 @@ namespace  App\DataAccessLayer {
             return $this->recordArrayToTagArray($tags);
         }
 
-        function search($expression,$user_id){
+        function search($expression,$limit,$user_id){
             $tag = "%".$expression."%";
+            $limit = intval($limit);
             $tags = $this->connection->fetchAll("SELECT DISTINCT tag FROM ".
                 "tags INNER JOIN bookmarks ".
                 "ON bookmarks.id = tags.bookmark_id WHERE ".
-                " user_id = :id AND tag LIKE :tag ", 
+                " user_id = :id AND tag LIKE :tag LIMIT $limit ", 
                 array("id"=>$user_id, "tag"=>$tag));
             return $this->recordArrayToTagArray($tags);
         }
