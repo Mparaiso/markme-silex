@@ -71,7 +71,7 @@ namespace App\Controller{
             $client = $this->createClient();
             $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[0]));
             $client->request("POST", "/json/bookmark", array(), array(), $headers, json_encode($bookmarks[1]));
-            $client->request("GET", "/json/tag/pop");
+            $client->request("GET", "/json/autocomplete",array("q"=>po));
             $response = $client->getResponse();
             $json = json_decode($response->getContent());
             $this->assertEquals(1, count($json->tags));
@@ -80,7 +80,7 @@ namespace App\Controller{
             $ad->count = null;
             $ad->bookmark_id=null;
             $this->assertTrue(in_array($ad, $json->tags));
-            $client->request("GET", "/json/tag/oo");
+            $client->request("GET", "/json/autocomplete",array("q"=>oo));
             $response2 = $client->getResponse();
             $json = json_decode($response2->getContent());
             $this->assertEquals(2, count($json->tags));
