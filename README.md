@@ -37,6 +37,8 @@ inspired by bookmark.ly : http://bookmarkly.com/
     + MARKME_DB_HOST ( exemple : locahost )
     + MARKME_DB_USERNAME (database username )
     + MARKME_DB_PASSWORD (database password )
+    + MARKME_SALT a salt for password encryption ( a sentence , whatever )
+    + MARKME_ENVIRONMENT production or development
 
 + the webroot is the www folder
 
