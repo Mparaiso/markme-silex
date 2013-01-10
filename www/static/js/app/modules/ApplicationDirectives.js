@@ -84,9 +84,9 @@ Directives.directive("masonry", function($timeout) {
                 if (init === true) {
                     $timeout(function() {
                         element.masonry("reload");
-                    },10);
+                    }, 10);
                 }
-            },true);
+            }, true);
         }
         // init masonry
         element.ready(
@@ -145,10 +145,15 @@ Directives.directive("tagsInput", ["$timeout", function tagsInput($timeout) {
             };
             $scope.$watch(model, function(_new, _old) {
                 $timeout(function() {
+                    console.log("watch", arguments);
                     if (_new && _new.split) {
+                        // force tagsInput value to _new
                         tagsInput = element.importTags(_new);
+                    }else{
+                        // force tagsInput to be empty
+                        tagsInput = element.importTags("");
                     }
-                });
+                }, true);
             });
             $timeout(function() {
                 element.tagsInput({

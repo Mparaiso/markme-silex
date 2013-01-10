@@ -83,14 +83,7 @@ app.controller("MainController",
                 });
             };
 
-            $scope.getByTag = function(tagName) {
-                // EN : get user bookmarks by tag
-                BookmarkService.getByTag(tagName, function success(data) {
-                    $scope.bookmarks = data.bookmarks;
-                }, function error() {
-                    console.log(arguments);
-                });
-            };
+
 
 
             $scope.getTags = function() {
@@ -211,7 +204,12 @@ app.controller("BookmarkController",
 
             $scope.editBookmark = function(bookmark) {
                 // edit selected bookmark
+                console.log(bookmark);
+                if (!bookmark.tags) {
+                    bookmark.tags = [];
+                }
                 $scope.bookmark = angular.copy(bookmark);
+
             };
 
             $scope.save = function(bookmark) {
