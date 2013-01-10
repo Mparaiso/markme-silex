@@ -170,25 +170,30 @@ use App\DataTransferObjects\Bookmark;
             $user_id = $app["session"]->get("user_id");
             $file = $app["request"]->files->get("imported_file");
             // try to get file content
-            try {
-                $app["logger"]->info("updloaded file info" . print_r($file, true));
-                $filename = md5(time());
-                $oldFileName = $file->getBasename();
-                $newFile = $file->move($app["upload_dir"], $filename);
-                $html = file_get_contents($app["upload_dir"] . "/" . $filename);
-                unlink($newFile->getRealPath());
-            } catch (Exception $e) {
-                $app["logger"]->err($e->getMessage());
-                $app["session"]->getFlashBag()
-                        ->add("error", "Error uploading file $oldFileName , no bookmark imported");
-            }
-            // try to import bookmarks from html content
-            try {
-                $bookmarks = $app["bookmark_manager"]->import($html, $user_id);
-                $app["session"]->getFlashBag()
-                        ->add("notice", count($bookmarks) . " imported successfully");
-            } catch (DBALException $e) {
-                $app["logger"]->err($e->getMessage());
+            if ($file) {
+                try {
+                    $app["logger"]->info("updloaded file info" . print_r($file, true));
+                    $filename = md5(time());
+                    $oldFileName = $file->getBasename();
+                    $newFile = $file->move($app["upload_dir"], $filename);
+                    $html = file_get_contents($app["upload_dir"] . "/" . $filename);
+                    unlink($newFile->getRealPath());
+                } catch (Exception $e) {
+                    $app["logger"]->err($e->getMessage());
+                    $app["session"]->getFlashBag()
+                            ->add("error", "Error uploading file $oldFileName , no bookmark imported");
+                }
+                // try to import bookmarks from html content
+                try {
+                    $bookmarks = $app["bookmark_manager"]->import($html, $user_id);
+                    $app["session"]->getFlashBag()
+                            ->add("notice", count($bookmarks) . " imported successfully");
+                } catch (DBALException $e) {
+                    $app["logger"]->err($e->getMessage());
+                    $app["session"]->getFlashBag()
+                            ->add("error", "Error importing bookmarks , no bookmark imported");
+                }
+            } else {
                 $app["session"]->getFlashBag()
                         ->add("error", "Error importing bookmarks , no bookmark imported");
             }
