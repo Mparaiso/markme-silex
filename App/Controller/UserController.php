@@ -22,8 +22,8 @@ class UserController extends BaseController{
      */
     function register(Application $app){
         $username = $app['request']->get("username");
-        $password = md5($app['request']->get("password") + $username + $app['salt']);
         $email = $app['request']->get("email");
+        $password = md5($app['request']->get("password").$app['salt']);
         if ($username AND $password AND $email){
             if ($this->_emailExists($app, $email) !== false){
                 return $app->json($this->err(self::EMAIL_ERR));
@@ -55,7 +55,7 @@ class UserController extends BaseController{
      */
     function login(Application $app){
         $username = $app['request']->get("username");
-        $password = $app["request"]->get("password") ? md5($username + $app['request']->get("password") + $app["salt"]) : null;
+        $password = $app["request"]->get("password") ? md5( $app['request']->get("password") . $app["salt"]) : null;
         if ($username AND $password):
             try{
                 $user = $app["db"]->fetchAssoc("SELECT id, username, email FROM users WHERE username = :username AND password = :password", array(
