@@ -32,7 +32,7 @@ $app = new Silex\Application();
  * 
  */
 $loader->add("App", ROOT);
-$app["debug"] = getenv("ENVIRONMENT") === "Production" ? false : true;
+$app["debug"] = getenv("MARKME_ENVIRONMENT") === "production" ? false : true;
 //used for session and password hashes
 $app['salt'] = getenv("MARKME_SALT");
 // enregistrement de DoctrineServiceProvider
