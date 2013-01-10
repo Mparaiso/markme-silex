@@ -1,23 +1,23 @@
 <!DOCTYPE HTML>
 <html lang="en-US" >
-<head>
-    <meta charset="UTF-8">
-    <meta name="base_url" content="{{ app['request'].getBaseUrl() }}">
-    <meta name="description" content="online bookmark manager">
-    <meta name="keywords" content="html5,web application,webapp,bookmark,bookmarks,application,utility,organizer,manager">
-    <meta name="author" content="M.Paraiso">
-    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="PUBLIC">
-    <title>Markme : Organize your bookmarks online</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="base_url" content="{{ app['request'].getBaseUrl() }}">
+        <meta name="description" content="online bookmark manager">
+        <meta name="keywords" content="html5,web application,webapp,bookmark,bookmarks,application,utility,organizer,manager">
+        <meta name="author" content="M.Paraiso">
+        <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="PUBLIC">
+        <title>Markme : Organize your bookmarks online</title>
     {% block head_css %}
     {% endblock %}
     {% block head_scripts %}
     {% endblock %}
-</head>
-<body data-ng-app="Application">
+    </head>
+    <body data-ng-app="Application">
     {% block content %}
     {% endblock %}
     {% block bottom_scripts %}
-        {% include 'common/ga.twig' %}
     {% endblock %}
-</body>
-</html>
+    {% include 'common/ga.twig' %}
+        </body>
+    </html>
