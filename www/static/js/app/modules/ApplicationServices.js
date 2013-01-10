@@ -32,8 +32,8 @@ ApplicationServices.factory("UserService", ['$http', '$window', 'Url',
         };
     }
 ]);
-/** manage bookmark API calls **/
-ApplicationServices.factory("BookmarkService", ['$http', "Url", function BookmarkService($http, Url) {
+/** Manage Bookmarks data layer access **/
+ApplicationServices.factory("BookmarkProvider", ['$http', "Url", function BookmarkProvider($http, Url) {
         var config = {cache: false};
         var baseUrl = Url.getBase();
         return {
@@ -94,3 +94,140 @@ ApplicationServices.factory("ThumbnailService", function() {
         }
     };
 });
+// manage notifications and alerts @todo implement
+ApplicationServices.factory("AlertManager", function() {
+    return{
+        info: "",
+        error: "",
+        success: ""
+    };
+});
+// manage  Bookmarks business logic
+ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", function BookmarkManager(BookmarkProvider) {
+        // creating a bookmark was successfull
+        var successCreate = function(data) {
+            if (data.status === "ok") {
+                // replace the old bookmark with the new one.
+                if (data.bookmark) {
+                    data.bookmark.tags = data.bookmark.tags.join(",");
+                    BookmarkManager.bookmarks.unshift(data.bookmark);
+                }
+            } else {
+                console.log("error creating bookmark status err", data);
+            }
+        };
+        // updating a bookmark was successfull
+        var successSave = function(data) {
+            // creating or updating a bookmark was successfull
+            if (data.status === "ok") {
+                // replace the old bookmark with the new one.
+                if (data.bookmark) {
+                    var index = BookmarkManager.bookmarks.getIndexOf(function(bookmark) {
+                        // convert any string to number (+n)
+                        return (+bookmark.id) === (+data.bookmark.id);
+                    });
+                    if (index >= 0) {
+                        console.log("bookmark found");
+                        BookmarkManager.bookmarks[index] = data.bookmark;
+                        if (data.bookmark.tags.join) {
+                            BookmarkManager.bookmarks[index].tags = data.bookmark.tags.join(",");
+                        }
+                    }
+                }
+            } else {
+                console.log("error saving , status err ", data);
+            }
+        };
+        // error saving a bookmark
+        var errorSave = function(data) {
+            console.log("request error saving", data);
+        };
+        // success getting bookmarks
+        var successGet = function(data) {
+            // get bookmarks request is successfull
+            if (data.status === "ok") {
+                console.log("success");
+                if (BookmarkManager.bookmarks.length === 0) {
+                    BookmarkManager.bookmarks = data.bookmarks;
+                } else {
+                    BookmarkManager.bookmarks.append(data.bookmarks);
+                }
+                if (data.count) {
+                    BookmarkManager.count = data.count;
+                }
+                BookmarkManager.offset += 1;
+            } else {
+                console.log("get status = error", data.message);
+            }
+        };
+        // error getting bookmarks
+        var errorGet = function(data) {
+            console.log("request error fetching bookmarks", data);
+        };
+        var BookmarkManager = {
+            "bookmarks": [],
+            "offset": 0,
+            "limit": 20,
+            "count": 0,
+            "get": function(offset, limit, success, error) {
+                if (offset === 0) {
+                    this.bookmarks = [];
+                }
+                return BookmarkProvider.get(offset, limit,
+                        function _success(data) {
+                            successGet(data);
+                            if (success)
+                                success(data);
+                        },
+                        function _error(data) {
+                            if (error)
+                                error(data);
+                        }
+                );
+            },
+            "getByTag": function(tagName, success, error) {
+                this.bookmarks = [];
+                return BookmarkProvider.getByTag(tagName, function(data) {
+                    successGet(data);
+                    if (success)
+                        success(data);
+                }, function(data) {
+                    errorGet(data);
+                    if (error)
+                        error(data);
+                });
+            },
+            "save": function(bookmark, success, error) {
+                if (bookmark.id) {
+                    //edit
+                    BookmarkProvider.put(bookmark,
+                            function _successSave(data) {
+                                // continuation (goto)
+                                successSave.apply(data);
+                                if (success)
+                                    success.apply(data);
+                            },
+                            function _errorSave(data) {
+                                // continuation (goto)
+                                errorSave.apply(data);
+                                if (error)
+                                    error.apply(data);
+                            });
+                } else {
+                    //create
+                    BookmarkProvider.post(bookmark,
+                            function _successPost(data) {
+                                successCreate(data);
+                                if (success)
+                                    success(data);
+                            },
+                            function _errorPost(data) {
+                                errorSave(data);
+                                if (error)
+                                    error(data);
+                            });
+                }
+            }
+        };
+        return BookmarkManager;
+    }]);

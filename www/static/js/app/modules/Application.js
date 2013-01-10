@@ -23,15 +23,13 @@ Array.prototype.append = function(arr) {
 var app = angular.module("Application",
         ["ApplicationDirectives", "ApplicationServices", "ApplicationFilters"]);
 app.controller("MainController",
-        function($scope, $window, UserService, BookmarkService, TagService, Url) {
+        function($scope, $window, UserService, BookmarkManager, BookmarkProvider, TagService, Url) {
 
             // initialization
             $scope.baseUrl = Url.getBase();
             $scope.maxSizeUpload = "5M";
-            $scope.bookmarks = [];
-            $scope.offset = 0;
-            $scope.limit = 20;
-            $scope.count = 0;
+            $scope.BookmarkManager = BookmarkManager;
+
             $scope.user = {};
             $scope.tags = {};
             $scope.alert = {};
@@ -46,10 +44,6 @@ app.controller("MainController",
                 // creating or updating a bookmark was successfull
                 if (data.status === "ok") {
                     $scope.alert.info = "Bookmark saved successfully";
-                    // replace the old bookmark with the new one.
-                    if (data.bookmark) {
-                        //$scope.bookmarks.push(data.bookmark);
-                    }
                 } else {
                     $scope.alert.error = data.message;
                 }
@@ -57,7 +51,6 @@ app.controller("MainController",
             };
 
             var errorSave = function() {
-                console.log(arguments);
                 $scope.alert.error = "Something went wrong bookmark could not be saved";
             };
 
@@ -67,7 +60,7 @@ app.controller("MainController",
                 bookmark.tags = bookmark.tags.split(",").filter(function(x) {
                     return x !== "";
                 });
-                BookmarkService.post(bookmark, successSave, errorSave);
+                BookmarkManager.save(bookmark, successSave, errorSave);
                 $scope.alert.info = "Saving bookmark " + bookmark.title + ", please wait...";
             };
 
@@ -75,16 +68,6 @@ app.controller("MainController",
                 // edit new bookmark
                 $scope.bookmark = {};
             };
-
-            $scope.getBookmarks = function() {
-                // EN : get user bookmarks
-                BookmarkService.get(function success(data) {
-                    $scope.bookmarks = data.bookmarks;
-                });
-            };
-
-
-
 
             $scope.getTags = function() {
                 // EN : get user tags
@@ -117,91 +100,45 @@ app.controller("NavigationController", ["$scope", "$route",
     }
 ]);
 
-app.controller("BookmarkFormController", ["$scope", "BookmarkService",
-    function($scope, BookmarkService) {
+app.controller("BookmarkFormController", ["$scope", "BookmarkProvider",
+    function($scope, BookmarkProvider) {
 
     }]);
 
 app.controller("BookmarkController",
-        function BookmarkController($scope, $routeParams, BookmarkService, ThumbnailService) {
+        function BookmarkController($scope, $routeParams, BookmarkManager, BookmarkProvider, ThumbnailService) {
 
             // configure le service
-
             ThumbnailService.setService(ThumbnailService.services.ROBOTHUMB);
-
-            $scope.modal_id = "edit_modal";
-
-            $scope.fetchingBookmarks = false;
-
             $scope.getThumbnail = ThumbnailService.getThumbnail;
-
-            var successSave = function(data) {
-                // creating or updating a bookmark was successfull
-                if (data.status === "ok") {
-                    $scope.alert.info = "Bookmark saved successfully";
-                    // replace the old bookmark with the new one.
-                    if (data.bookmark) {
-                        var index = $scope.bookmarks.getIndexOf(function(bookmark) {
-                            // convert any string to number (+n)
-                            return (+bookmark.id) === (+data.bookmark.id);
-                        });
-                        if (index >= 0) {
-                            console.log("bookmark found");
-                            $scope.bookmarks[index] = data.bookmark;
-                            if (data.bookmark.tags.join) {
-                                $scope.bookmarks[index].tags = data.bookmark.tags.join(",");
-                            }
-
-                        }
-                    }
-                } else {
-                    $scope.alert.error = data.message;
-                }
-
-            };
-
-            var errorSave = function(data) {
-                $scope.alert.error = data.message;
-            };
-
+            $scope.BookmarkManager = BookmarkManager;
+            $scope.modal_id = "edit_modal";
+            $scope.fetchingBookmarks = false;
             var successGet = function success(data) {
                 if (data.status === "ok") {
-                    if ($scope.bookmarks.length === 0) {
-                        $scope.bookmarks = data.bookmarks;
-
-                    } else {
-                        $scope.bookmarks.append(data.bookmarks);
-                    }
-
-                    if (data.count) {
-                        $scope.count = data.count;
-                    }
-                    $scope.offset += 1;
+                    console.log(data);
                     $scope.alert.info = "";
                 } else {
                     $scope.alert.info = data.message;
                 }
                 $scope.fetchingBookmarks = false;
             };
-
             $scope.splitTagString = function(bookmark) {
                 if (typeof(bookmark.tags) === "string")
                     return bookmark.tags.split(",").filter(function(i) {
                         return i !== null;
                     });
             };
-
             $scope.getBookmarks = function(offset, limit) {
                 // initialization
                 $scope.alert.info = "Fetching bookmarks";
                 $scope.fetchingBookmarks = true;
                 if ($routeParams.tagName) {
-                    BookmarkService.getByTag($routeParams.tagName, successGet);
+                    BookmarkManager.getByTag($routeParams.tagName, successGet);
                 } else {
-                    BookmarkService.get(offset, limit, successGet);
+                    BookmarkManager.get(offset, limit, successGet);
                 }
             };
-
             $scope.editBookmark = function(bookmark) {
                 // edit selected bookmark
                 console.log(bookmark);
@@ -211,22 +148,28 @@ app.controller("BookmarkController",
                 $scope.bookmark = angular.copy(bookmark);
 
             };
-
             $scope.save = function(bookmark) {
-                bookmark.tags = bookmark.tags.split(",").filter(function(x) {
-                    return x !== "";
-                });
-                BookmarkService.put(bookmark, successSave, errorSave);
+                bookmark.tags = $scope.splitTagString(bookmark);
+                $scope.BookmarkManager.save(bookmark,
+                        function success(data) {
+                            if (data.status === "ok") {
+                                $scope.alert.info = "Bookmark saved successfully";
+                            } else {
+                                $scope.alert.error = data.message;
+                            }
+                        },
+                        function error(data) {
+                            $scope.alert.error = data.message;
+                        });
                 $scope.alert.info = "Saving bookmark " + bookmark.title + ", please wait...";
             };
-
             $scope.delete = function(id, index) {
-                $scope.alert.info = "Deleting " + $scope.bookmarks[index].title + "...";
-                BookmarkService.delete(id, function success(data) {
+                $scope.alert.info = "Deleting " + $scope.BookmarkManager.bookmarks[index].title + "...";
+                BookmarkProvider.delete(id, function success(data) {
                     if (data.status === "ok") {
-                        $scope.alert.info = "Bookmark " + $scope.bookmarks[index].title + " deleted successfully!";
-                        $scope.bookmarks.splice(index, 1);
-                        $scope.bookmarks = $scope.bookmarks.slice();
+                        $scope.alert.info = "Bookmark " + $scope.BookmarkManager.bookmarks[index].title + " deleted successfully!";
+                        $scope.BookmarkManager.bookmarks.splice(index, 1);
+                        $scope.BookmarkManager.bookmarks = $scope.BookmarkManager.bookmarks.slice();
                     } else {
                         $scope.alert.error = data.message;
                     }
@@ -235,9 +178,9 @@ app.controller("BookmarkController",
                     $scope.alert.error = "Something went wrong during bookmark deletion.";
                 });
             };
-
             // initialization
-            $scope.getBookmarks($scope.offset, $scope.limit);
+            BookmarkManager.offset = 0;
+            $scope.getBookmarks($scope.BookmarkManager.offset, $scope.BookmarkManager.limit);
         });
 
 app.controller("TagController",

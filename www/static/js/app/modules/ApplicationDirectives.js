@@ -145,11 +145,10 @@ Directives.directive("tagsInput", ["$timeout", function tagsInput($timeout) {
             };
             $scope.$watch(model, function(_new, _old) {
                 $timeout(function() {
-                    console.log("watch", arguments);
                     if (_new && _new.split) {
                         // force tagsInput value to _new
                         tagsInput = element.importTags(_new);
-                    }else{
+                    } else {
                         // force tagsInput to be empty
                         tagsInput = element.importTags("");
                     }

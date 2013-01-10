@@ -3,9 +3,9 @@ bookmarks.html
 EN : display a list of bookmarks
 FR : affiche la liste des marques pages
 -->
-<ul  class="thumbnails" data-masonry data-is-animated="true" data-reload-on="bookmarks" 
+<ul  class="thumbnails" data-masonry data-is-animated="true" data-reload-on="BookmarkManager.bookmarks" 
      data-item-selector=".thumbnail.bookmark">
-    <li class='thumbnail bookmark' data-ng-repeat="bookmark in bookmarks">
+    <li class='thumbnail bookmark' data-ng-repeat="bookmark in BookmarkManager.bookmarks">
         <div>
              <a href='{{bookmark.url}}' title='{{bookmark.title}}' target="_blank">
                  <img class='bookmark-image'  data-ng-src="{{baseUrl}}/static/img/placeholder.gif" 
@@ -25,7 +25,7 @@ FR : affiche la liste des marques pages
     </li>
 </ul>
 <div>
-    <button data-ng-show="(offset*limit)<count" 
-            class="btn btn-primary span12" data-ng-disabled="fetchingBookmarks" data-ng-click="getBookmarks(offset,limit)">Load more bookmarks.</button>
+    <button data-ng-show="(BookmarkManager.offset*BookmarkManager.limit)<BookmarkManager.count" 
+            class="btn btn-primary span12" data-ng-disabled="fetchingBookmarks" data-ng-click="getBookmarks(BookmarkManager.offset,BookmarkManager.limit)">Load more bookmarks.</button>
 </div>
 <span data-ng-include="baseUrl+'/static/js/app/partials/modal.html'"></span>
