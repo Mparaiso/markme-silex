@@ -70,6 +70,8 @@ Directives.directive("masonry", function($timeout) {
         var options = {};
         var init = false;
         var reloadOn = null;
+        var oldDisplay = element.css("display");
+        element.css({"display": "none"});
         if (attrs['itemSelector'])
             options.itemSelector = attrs['itemSelector'];
         //if (attrs['columnWidth'])
@@ -94,6 +96,7 @@ Directives.directive("masonry", function($timeout) {
                     element.imagesLoaded(function() {
                         element.masonry(options);
                         init = true;
+                        element.css({"display": oldDisplay});
                     });
                 });
     };
@@ -134,26 +137,26 @@ Directives.directive("bstTooltip", ["$timeout", function($timeout) {
         };
     }]);
 
+/** allow jquery.tags-input plugin use **/
 Directives.directive("tagsInput", ["$timeout", function tagsInput($timeout) {
         return function($scope, element, attrs) {
-            console.log(arguments);
             var tagsInput = null;
-            $scope.$watch(attrs["tagsInput"], function(_new, _old) {
+            var model = attrs["ngModel"];
+            var applyCallback = function() {
+                $scope.$apply(model + "='" + element.val() + "'");
+            };
+            $scope.$watch(model, function(_new, _old) {
                 $timeout(function() {
-                    if (_old) {
-                        var _oldTags = _old.split(",");
-                        for (var i = 0; i < _oldTags.length; i++) {
-                            element.removeTag(_oldTags[i]);
-                        }
-                    }
-                    if (_new) {
+                    if (_new && _new.split) {
                         tagsInput = element.importTags(_new);
                     }
                 });
             });
             $timeout(function() {
-                console.log("set tagsInput");
-                element.tagsInput();
+                element.tagsInput({
+                    "onAddTag": applyCallback,
+                    "onRemoveTag": applyCallback
+                });
             });
         };
     }]);

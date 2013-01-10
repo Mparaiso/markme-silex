@@ -20,11 +20,12 @@ FR : affiche la liste des marques pages
             </ul>
         </div>
         <div>
-            <a class="btn btn-mini"  href="#/bookmark/tag/{{tag}}" data-ng-repeat="tag in getTag(bookmark)">{{tag}}</a>
+            <a class="btn btn-mini"  href="#/bookmark/tag/{{tag}}" data-ng-repeat="tag in splitTagString(bookmark)">{{tag}}</a>
         </div>
     </li>
 </ul>
 <div>
-    <button data-ng-show="bookmarks.length % 50 == 0 && bookmarks.length>0" class="btn btn-primary span12" data-ng-click="getBookmarks(offset)">Load more bookmarks.</button>
+    <button data-ng-show="(offset*limit)<count" 
+            class="btn btn-primary span12" data-ng-disabled="fetchingBookmarks" data-ng-click="getBookmarks(offset,limit)">Load more bookmarks.</button>
 </div>
 <span data-ng-include="baseUrl+'/static/js/app/partials/modal.html'"></span>

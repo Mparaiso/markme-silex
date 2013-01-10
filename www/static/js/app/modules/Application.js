@@ -1,16 +1,27 @@
 window.baseUrl = window.baseUrl || "";
-
+// get item's index according to a predicate, returns -1 if not found
+Array.prototype.getIndexOf = function(callback) {
+    for (var i = 0; i < this.length; i++) {
+        if (callback(this[i]) === true) {
+            return i;
+        }
+    }
+    return -1;
+};
 // FR : module principal
 // EN : main module
 var app = angular.module("Application",
         ["ApplicationDirectives", "ApplicationServices", "ApplicationFilters"]);
 app.controller("MainController",
-        function($scope, $window, UserService, BookmarkService, TagService,Url) {
+        function($scope, $window, UserService, BookmarkService, TagService, Url) {
 
             // initialization
             $scope.baseUrl = Url.getBase();
             $scope.maxSizeUpload = "5M";
             $scope.bookmarks = [];
+            $scope.offset = 0;
+            $scope.limit = 20;
+            $scope.count = 0;
             $scope.user = {};
             $scope.tags = {};
             $scope.alert = {};
@@ -22,8 +33,24 @@ app.controller("MainController",
             // end init.
 
             var success = function(data) {
+                console.log("success data", data);
+                // creating or updating a bookmark was successfull
                 if (data.status === "ok") {
                     $scope.alert.info = "Bookmark saved successfully";
+                    // replace the old bookmark with the new one.
+                    if (data.bookmark) {
+                        var index = $scope.bookmarks.getIndexOf(function(bookmark) {
+                            return bookmark.id == data.bookmark.id;
+                        });
+                        if (index >= 0) {
+                            console.log("bookmark found");
+                            $scope.bookmarks[index] = data.bookmark;
+                            if (data.bookmark.tags.join) {
+                                $scope.bookmarks[index].tags = data.bookmark.tags.join(",");
+                            }
+
+                        }
+                    }
                 } else {
                     $scope.alert.error = data.message;
                 }
@@ -87,7 +114,7 @@ app.controller("MainController",
                 UserService.logout(function success(data) {
                     if (data.status === "ok") {
                         $scope.info = "User logged out";
-                        $window.location = $scope.baseUrl+"/";
+                        $window.location = $scope.baseUrl + "/";
                     }
                 }, function error() {
                     console.log(arguments);
@@ -113,45 +140,42 @@ app.controller("BookmarkController",
             // configure le service
 
             ThumbnailService.setService(ThumbnailService.services.ROBOTHUMB);
-
-            $scope.modal_id = "edit_modal";
-            
-            $scope.offset = 0 ;
-
             $scope.getThumbnail = ThumbnailService.getThumbnail;
 
-            var successCallback = function success(data) {
-                if (data.status === "ok") {
-                    if($scope.bookmarks.length<=0){
-                        $scope.bookmarks = data.bookmarks;
-                    }else{
-                       $scope.bookmarks= $scope.bookmarks.concat(data.bookmarks);
-                    }
-                    $scope.offset+=1;
-                    $scope.alert.info = "";
-                } else {
-                    $scope.alert.info = data.message;
-                }
-            };
-        
-            $scope.getTag=function(bookmark){
-                if (typeof(bookmark.tags)=== "string")
-                    return bookmark.tags.split(",").filter(function(i){ return i!==null;});
+            $scope.modal_id = "edit_modal";
+
+            $scope.fetchingBookmarks = false;
+
+
+            $scope.splitTagString = function(bookmark) {
+                if (typeof(bookmark.tags) === "string")
+                    return bookmark.tags.split(",").filter(function(i) {
+                        return i !== null;
+                    });
             };
 
-            $scope.getBookmarks = function(offset){
+            $scope.getBookmarks = function(offset, limit) {
                 // initialization
-                $scope.alert.info ="Fetching bookmarks";
+                $scope.alert.info = "Fetching bookmarks";
+                $scope.fetchingBookmarks = true;
                 if ($routeParams.tagName) {
                     BookmarkService.getByTag($routeParams.tagName, successCallback);
                 } else {
-                    BookmarkService.get(offset,successCallback);
+                    BookmarkService.get(offset, limit, successCallback);
                 }
             };
-        
+
             $scope.editBookmark = function(bookmark) {
                 // edit selected bookmark
                 $scope.bookmark = angular.copy(bookmark);
+            };
+
+            $scope.save = function(bookmark) {
+                bookmark.tags = bookmark.tags.split(",").filter(function(x) {
+                    return x !== "";
+                });
+                BookmarkService.put(bookmark, success, error);
+                $scope.alert.info = "Saving bookmark " + bookmark.title + ", please wait...";
             };
 
             $scope.delete = function(id, index) {
@@ -171,7 +195,7 @@ app.controller("BookmarkController",
             };
 
             // initialization
-            $scope.getBookmarks($scope.offset);
+            $scope.getBookmarks($scope.offset, $scope.limit);
         });
 
 app.controller("TagController",
@@ -189,7 +213,7 @@ app.controller("TagController",
         });
 
 app.controller("HomeController",
-        function($scope,Url) {
+        function($scope, Url) {
             $scope.baseUrl = Url.getBase();
             $scope.user = $scope.user || {};
             $scope.response = {};
@@ -202,25 +226,25 @@ app.controller("HomeController",
             };
         });
 
-app.controller("LoginController",["$scope", "$window", "UserService",
-        function($scope, $window, UserService) {
-            $scope.error = "";
-            $scope.info = "";
-            $scope.login = function(user) {
-                $scope.info = "login please wait";
-                UserService.login(user, function success(data) {
-                    if (data.status === "ok") {
-                        $scope.info = "redirecting to application";
-                        $window.location = $scope.baseUrl+"/application";
-                    } else {
-                        $scope.error = data.message;
-                    }
-                }, function error() {
-                    console.log(arguments);
-                    $scope.error = "Something went wrong";
-                });
-            };
-        }]);
+app.controller("LoginController", ["$scope", "$window", "UserService",
+    function($scope, $window, UserService) {
+        $scope.error = "";
+        $scope.info = "";
+        $scope.login = function(user) {
+            $scope.info = "login please wait";
+            UserService.login(user, function success(data) {
+                if (data.status === "ok") {
+                    $scope.info = "redirecting to application";
+                    $window.location = $scope.baseUrl + "/application";
+                } else {
+                    $scope.error = data.message;
+                }
+            }, function error() {
+                console.log(arguments);
+                $scope.error = "Something went wrong";
+            });
+        };
+    }]);
 
 app.controller("RegisterController",
         function($scope, $http, $window, UserService) {

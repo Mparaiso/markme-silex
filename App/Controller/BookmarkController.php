@@ -41,7 +41,8 @@ use App\DataTransferObjects\Bookmark;
             $offset = intval($app['request']->query->get("offset", 0)) * $limit;
             try {
                 $bookmarks = $app["bookmark_manager"]->getAll($offset, $limit, $user_id);
-                return $app->json(array("status" => "ok", "bookmarks" => $bookmarks));
+                $count = $app["bookmark_manager"]->count($user_id);
+                return $app->json(array("status" => "ok", "bookmarks" => $bookmarks, "count" => $count));
             } catch (DBALException $exc) {
                 $app["logger"]->err($exc->getMessage());
                 return $app->json($this->err(self::DB_ERR));
@@ -57,7 +58,8 @@ use App\DataTransferObjects\Bookmark;
             $user_id = $app["session"]->get("user_id");
             try {
                 $bookmarks = $app["bookmark_manager"]->getByTag($tagName, $user_id);
-                return $app->json(array("status" => "ok", "bookmarks" => $bookmarks));
+                $count = count($bookmarks);
+                return $app->json(array("status" => "ok", "bookmarks" => $bookmarks, "count" => $count));
             } catch (DBALException $e) {
                 $app["logger"]->err($e->getMessage());
                 return $app->json($this->err(self::DB_ERR));
@@ -75,7 +77,8 @@ use App\DataTransferObjects\Bookmark;
             $query = $app["request"]->get("query");
             try {
                 $bookmarks = $app["bookmark_manager"]->search($query, $user_id);
-                return $app->json(array("status" => "ok", "bookmarks" => $bookmarks));
+                $count = count($bookmarks);
+                return $app->json(array("status" => "ok", "bookmarks" => $bookmarks, "count" => $count));
             } catch (DBALException $exc) {
                 $app["logger"]->err($exc->getMessage());
                 return $app->json($this->err(self::DB_ERR));
@@ -121,10 +124,8 @@ use App\DataTransferObjects\Bookmark;
             $bookmark->title = $request->get("title");
             $bookmark->description = $request->get("description");
             $bookmark->tags = $request->get("tags");
-//            $app["logger"]->info("bookmark = ".json_encode($bookmark));
             try {
                 $result = $app["bookmark_manager"]->update($bookmark);
-                $app["logger"]->info("update result = $result");
                 return $app->json(array("status" => "ok", "bookmark" => $bookmark));
             } catch (DBALException $exc) {
                 $app["logger"]->err($exc->getMessage());
