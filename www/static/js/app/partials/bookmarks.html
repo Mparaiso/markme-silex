@@ -24,6 +24,9 @@ FR : affiche la liste des marques pages
         </div>
     </li>
 </ul>
+<div data-ng-hide="BookmarkManager.bookmarks">
+    <h1 class="muted centered span8 offset2 italic not-found">No Bookmark found , please add a new one , or import bookmarks with the account menu</h1>
+</div> 
 <div>
     <button data-ng-show="(BookmarkManager.offset*BookmarkManager.limit)<BookmarkManager.count" 
             class="btn btn-primary span12" data-ng-disabled="fetchingBookmarks" data-ng-click="getBookmarks(BookmarkManager.offset,BookmarkManager.limit)">Load more bookmarks.</button>

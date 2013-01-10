@@ -36,7 +36,10 @@ ApplicationServices.factory("UserService", ['$http', '$window', 'Url',
 ApplicationServices.factory("BookmarkProvider", ['$http', "Url", function BookmarkProvider($http, Url) {
         var config = {cache: false};
         var baseUrl = Url.getBase();
-        return {
+        var BookmarkProvider = {
+            "search": function(keyword, success, error) {
+                $http.get(baseUrl + "/json/bookmark/search?&query=" + keyword).success(success).error(error);
+            },
             "get": function(offset, limit, success, error) {
                 $http.get(baseUrl + "/json/bookmark?offset=" + offset + "&limit=" + limit, config).success(success).error(error);
             },
@@ -56,6 +59,7 @@ ApplicationServices.factory("BookmarkProvider", ['$http', "Url", function Bookma
                 $http.post(baseUrl + "/json/bookmark/count").success(success).error(error);
             }
         };
+        return BookmarkProvider;
     }]);
 /** manage tag API calls **/
 ApplicationServices.factory("TagService", ["$http", "Url", function TagService($http, Url) {
@@ -167,8 +171,22 @@ ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", function Boo
         var BookmarkManager = {
             "bookmarks": [],
             "offset": 0,
-            "limit": 20,
+            "limit": 35,
             "count": 0,
+            "search": function(keyword, success, error) {
+                var self = this;
+                self.bookmarks = [];
+                return BookmarkProvider.search(keyword,
+                        function _success(data) {
+                            successGet(data);
+                            success(data);
+                        },
+                        function _error(data) {
+                            errorGet(data);
+                            error(data);
+                        }
+                );
+            },
             "get": function(offset, limit, success, error) {
                 if (offset === 0) {
                     this.bookmarks = [];
@@ -186,12 +204,13 @@ ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", function Boo
                 );
             },
             "getByTag": function(tagName, success, error) {
-                this.bookmarks = [];
-                return BookmarkProvider.getByTag(tagName, function(data) {
+                var self = this;
+                return BookmarkProvider.getByTag(tagName, function _success(data) {
+                    self.bookmarks = [];
                     successGet(data);
                     if (success)
                         success(data);
-                }, function(data) {
+                }, function _success(data) {
                     errorGet(data);
                     if (error)
                         error(data);
@@ -203,15 +222,15 @@ ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", function Boo
                     BookmarkProvider.put(bookmark,
                             function _successSave(data) {
                                 // continuation (goto)
-                                successSave.apply(data);
+                                successSave(data);
                                 if (success)
-                                    success.apply(data);
+                                    success(data);
                             },
                             function _errorSave(data) {
                                 // continuation (goto)
-                                errorSave.apply(data);
+                                errorSave(data);
                                 if (error)
-                                    error.apply(data);
+                                    error(data);
                             });
                 } else {
                     //create

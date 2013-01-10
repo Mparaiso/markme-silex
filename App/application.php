@@ -196,6 +196,8 @@ $protectedRoutes->put("/json/user", "App\Controller\UserController::updateUser")
         ->before($mustBeValidJSON);
 
 // bookmarks
+$protectedRoutes->get("/json/bookmark/search", "App\Controller\BookmarkController::search")
+        ->bind("search_bookmarks");
 $protectedRoutes->post("/json/bookmark/count","App\Controller\BookmarkController::count")
         ->bind("count_bookmarks");
 $protectedRoutes->post("/json/bookmark/export", "App\Controller\BookmarkController::export")
@@ -213,8 +215,7 @@ $protectedRoutes->delete("/json/bookmark/{id}", "App\Controller\BookmarkControll
 $protectedRoutes->get("/json/bookmark", "App\Controller\BookmarkController::getAll")
         ->bind("get_bookmarks");
 $protectedRoutes->get("/json/bookmark/tag/{tagName}", "App\Controller\BookmarkController::getByTag");
-$protectedRoutes->get("/json/bookmark/search", "App\Controller\BookmarkController::search")
-        ->before($mustBeValidJSON);
+
 
 // tags
 $protectedRoutes->get("/json/tag", "App\Controller\TagController::get")

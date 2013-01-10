@@ -1,4 +1,4 @@
-<span ng-controller="NavigationController">
+<span data-ng-controller="NavigationController">
     <ul class='nav pull-right' >
         <li data-ng-show="user.username"><a class='sans disabled disable'>Welcome {{user.username}}</a></li>
         <li ><a href="#bookmark"  >Bookmarks</a></li>
@@ -7,5 +7,11 @@
         <li ><a href="#account">Account</a></li>
         <li><a data-ng-click="logout()">Logout</a></li>
     </ul>
+    <form class="navbar-form pull-right">
+        <div class="input-append">
+            <input type="text" data-ng-model="search" placeholder="search a word" class="span2">
+            <button type="submit" ng-click="find(search)" class="btn muted"><i class="icon icon-search"></i></button>
+        </div>
+    </form>
     <span data-ng-include="baseUrl+'/static/js/app/partials/modal.html'"></span>
 </span>

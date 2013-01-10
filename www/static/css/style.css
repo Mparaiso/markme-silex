@@ -61,3 +61,13 @@ div.tagsinput span.tag{
 div.tagsinput span.tag a {
     color:rgb(10, 77, 139);
 }
+
+/** 
+**/
+.not-found{
+    color:#EEE;
+}
+
+.main{
+    min-height: 400px;
+}
