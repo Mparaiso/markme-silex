@@ -34,7 +34,7 @@ $app = new Silex\Application();
 $loader->add("App", ROOT);
 $app["debug"] = getenv("ENVIRONMENT") === "Production" ? false : true;
 //used for session and password hashes
-$app['salt'] = "yMeb2v7+hnJxEWpG/SgytDv57qKEg5Uw1t2I9dNmd/o=";
+$app['salt'] = getenv("MARKME_SALT");
 // enregistrement de DoctrineServiceProvider
 $app->register(new DoctrineServiceProvider(), array("db.options" => array(
         "driver" => getenv("MARKME_DB_DRIVER"),
