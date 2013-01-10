@@ -205,8 +205,8 @@ ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", function Boo
             },
             "getByTag": function(tagName, success, error) {
                 var self = this;
+                self.bookmarks = [];
                 return BookmarkProvider.getByTag(tagName, function _success(data) {
-                    self.bookmarks = [];
                     successGet(data);
                     if (success)
                         success(data);

@@ -84,18 +84,16 @@ Directives.directive("masonry", function($timeout) {
                 if (init === true) {
                     $timeout(function() {
                         element.masonry("reload");
-                    }, 10);
+                    });
                 }
             }, true);
         }
         // init masonry
         element.ready(
                 function() {
-                    //element.imagesLoaded(function() {
-                        element.masonry(options);
-                        init = true;
-                        element.css({"display": oldDisplay});
-                    //});
+                    element.css({"display": oldDisplay});
+                    element.masonry(options);
+                    init = true;
                 });
     };
 });
