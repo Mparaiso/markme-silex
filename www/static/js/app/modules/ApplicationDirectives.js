@@ -84,7 +84,7 @@ Directives.directive("masonry", function($timeout) {
                 if (init === true) {
                     $timeout(function() {
                         element.masonry("reload");
-                    });
+                    },100);
                 }
             }, true);
         }
@@ -97,6 +97,8 @@ Directives.directive("masonry", function($timeout) {
                 });
         scope.$on("$destroy", function() {
             init = false;
+            console.log("destroy",arguments);
+            return false;
         });
     };
 });

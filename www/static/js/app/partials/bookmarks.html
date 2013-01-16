@@ -25,7 +25,7 @@ FR : affiche la liste des marques pages
         </div>
     </li>
 </ul>
-<div data-ng-hide="BookmarkManager.bookmarks">
+<div data-ng-hide="!BookmarkManager.bookmarks.length==0">
     <h1 class="muted centered span8 offset2 italic not-found">No Bookmark found , please add a new one , or import bookmarks with the account menu</h1>
 </div> 
 <div>
