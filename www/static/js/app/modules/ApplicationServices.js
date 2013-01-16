@@ -154,14 +154,10 @@ ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", "$log",
             // get bookmarks request is successfull
             if (data.status === "ok") {
                 $log.info("success");
-                BookmarkManager.bookmarks = [];
-                data.bookmarks.forEach(function(bookmark) {
-                    BookmarkManager.bookmarks.push(bookmark);
-                });
+                BookmarkManager.bookmarks = data.bookmarks;
                 if (data.count) {
                     BookmarkManager.count = parseInt(data.count, 10);
                 }
-                BookmarkManager.offset += 1;
             } else {
                 $log.info("get status = error", data.message);
             }

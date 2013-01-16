@@ -42,7 +42,11 @@ use App\DataTransferObjects\Bookmark;
             try {
                 $bookmarks = $app["bookmark_manager"]->getAll($offset, $limit, $user_id);
                 $count = $app["bookmark_manager"]->count($user_id);
-                return $app->json(array("status" => "ok", "bookmarks" => $bookmarks, "count" => intval($count)));
+                return $app->json(array(
+                            "status" => "ok",
+                            "bookmarks" => $bookmarks,
+                            "count" => intval($count))
+                );
             } catch (DBALException $exc) {
                 $app["logger"]->err($exc->getMessage());
                 return $app->json($this->err(self::DB_ERR));
