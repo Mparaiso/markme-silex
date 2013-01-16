@@ -103,7 +103,8 @@ $app["sql_logger"] = $app->share(function($app) {
  * 
  */
 # transforme le corps d'une requete json en données de formulaire classique
-$app->before(function(Request $req) {
+$app->before(function(Request $req) use($app) {
+            $app["logger"]->info(print_r($req->request,true));
             if (0 === strpos($req->headers->get('Content-Type'), 'application/json')):
                 $data = json_decode($req->getContent(), true);
                 $req->request->replace(is_array($data) ? $data : array());

@@ -95,6 +95,9 @@ Directives.directive("masonry", function($timeout) {
                     element.masonry(options);
                     init = true;
                 });
+        scope.$on("$destroy", function() {
+            init = false;
+        });
     };
 });
 

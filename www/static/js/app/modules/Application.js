@@ -23,7 +23,7 @@ Array.prototype.append = function(arr) {
 var app = angular.module("Application",
         ["ApplicationDirectives", "ApplicationServices", "ApplicationFilters"]);
 app.controller("MainController",
-        function($scope, $window, UserService, BookmarkManager, BookmarkProvider, TagService, Url) {
+        function($scope, $window, UserService, BookmarkManager, Url) {
 
             // initialization
             $scope.baseUrl = Url.getBase();
@@ -34,7 +34,7 @@ app.controller("MainController",
             $scope.tags = {};
             $scope.alert = {};
             $scope.alert.info = "Application loaded successfully!";
-            
+
 
             UserService.getCurrentUser(function success(data) {
                 $scope.user = data.user;
@@ -70,17 +70,6 @@ app.controller("MainController",
                 $scope.bookmark = {};
             };
 
-            $scope.getTags = function() {
-                // EN : get user tags
-                // FR : obtenir les tags d'un utilisateur
-                TagService.get(function success(data) {
-                    console.log(data);
-                    $scope.tags = data.tags;
-                }, function error() {
-                    console.log("error", arguments);
-                });
-            };
-
             $scope.logout = function() {
                 $scope.info = "Logout user ...";
                 UserService.logout(function success(data) {
@@ -95,20 +84,18 @@ app.controller("MainController",
             };
         });
 
-app.controller("NavigationController", ["$scope", "$routeParams","$location",
-    function NavigationController($scope, $routeParams,$location) {
+app.controller("NavigationController", ["$scope", "$routeParams", "$location",
+    function NavigationController($scope, $routeParams, $location) {
         $scope.modal_id = "add_modal";
         $scope.search = $routeParams.search;
-        $scope.find = function(search){
-          // @note @angular dynamicaly change the current page route without refreshing the page
-          $location.path('/bookmark/search/'+search);
+        $scope.find = function(search) {
+            // @note @angular dynamicaly change the current page route without refreshing the page
+            $location.path('/bookmark/search/' + search);
         };
     }
 ]);
 
-app.controller("BookmarkFormController", ["$scope", "BookmarkProvider",
-    function($scope, BookmarkProvider) {
-
+app.controller("BookmarkFormController", ["$scope", "BookmarkProvider", function($scope, BookmarkProvider) {
     }]);
 
 app.controller("BookmarkController",
@@ -171,9 +158,9 @@ app.controller("BookmarkController",
                         });
                 $scope.alert.info = "Saving bookmark " + bookmark.title + ", please wait...";
             };
-            $scope.delete = function(id, index) {
+            $scope.remove = function(id, index) {
                 $scope.alert.info = "Deleting " + $scope.BookmarkManager.bookmarks[index].title + "...";
-                BookmarkProvider.delete(id, function success(data) {
+                BookmarkProvider.remove(id, function success(data) {
                     if (data.status === "ok") {
                         $scope.alert.info = "Bookmark " + $scope.BookmarkManager.bookmarks[index].title + " deleted successfully!";
                         $scope.BookmarkManager.bookmarks.splice(index, 1);
@@ -187,8 +174,6 @@ app.controller("BookmarkController",
                 });
             };
             // initialization
-            BookmarkManager.offset = 0;
-            $scope.getBookmarks($scope.BookmarkManager.offset, $scope.BookmarkManager.limit);
         });
 
 app.controller("TagController",
@@ -276,15 +261,16 @@ app.controller("AccountController", ["$scope", "UserService",
 
 app.config(['$routeProvider',
     function($routeProvider) {
-        $routeProvider.when("/bookmark", {
-            templateUrl: "static/js/app/partials/bookmarks.html",
-            controller: "BookmarkController"
-        });
+
         $routeProvider.when("/bookmark/tag/:tagName", {
             templateUrl: "static/js/app/partials/bookmarks.html",
             controller: "BookmarkController"
         });
         $routeProvider.when("/bookmark/search/:search", {
+            templateUrl: "static/js/app/partials/bookmarks.html",
+            controller: "BookmarkController"
+        });
+        $routeProvider.when("/bookmark", {
             templateUrl: "static/js/app/partials/bookmarks.html",
             controller: "BookmarkController"
         });
@@ -297,6 +283,7 @@ app.config(['$routeProvider',
             templateUrl: "static/js/app/partials/account.html",
             controller: "AccountController"
         });
+
         $routeProvider.otherwise({redirectTo: "/bookmark"});
     }]);
 

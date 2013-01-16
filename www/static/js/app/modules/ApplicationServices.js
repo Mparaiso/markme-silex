@@ -1,6 +1,7 @@
 //service concernant la gestion d'un utilisateur
 
 var ApplicationServices = angular.module("ApplicationServices", []);
+// manage root url configuration
 ApplicationServices.factory("Url", function() {
     return{
         getBase: function() {
@@ -8,9 +9,9 @@ ApplicationServices.factory("Url", function() {
         }
     };
 });
-/** manage user API calls **/
-ApplicationServices.factory("UserService", ['$http', '$window', 'Url',
-    function UserService($http, $window, Url) {
+// manage users business logic
+ApplicationServices.factory("UserService", ['$http', 'Url',
+    function UserService($http, Url) {
         var config = {cache: true};
         var baseUrl = Url.getBase();
         return {
@@ -32,13 +33,13 @@ ApplicationServices.factory("UserService", ['$http', '$window', 'Url',
         };
     }
 ]);
-/** Manage Bookmarks data layer access **/
+// Manage bookmarks API calls
 ApplicationServices.factory("BookmarkProvider", ['$http', "Url", function BookmarkProvider($http, Url) {
-        var config = {cache: false};
+        var config = {};
         var baseUrl = Url.getBase();
         var BookmarkProvider = {
-            "search": function(keyword, success, error) {
-                $http.get(baseUrl + "/json/bookmark/search?&query=" + keyword).success(success).error(error);
+            "search": function(keyword) {
+                return $http.get(baseUrl + "/json/bookmark/search?&query=" + keyword);
             },
             "get": function(offset, limit, success, error) {
                 $http.get(baseUrl + "/json/bookmark?offset=" + offset + "&limit=" + limit, config).success(success).error(error);
@@ -49,7 +50,7 @@ ApplicationServices.factory("BookmarkProvider", ['$http', "Url", function Bookma
             "post": function(bookmark, success, error) {
                 $http.post(baseUrl + "/json/bookmark", bookmark).success(success).error(error);
             },
-            "delete": function(id, success, error) {
+            "remove": function(id, success, error) {
                 $http['delete'](baseUrl + "/json/bookmark/" + id).success(success).error(error);
             },
             "getByTag": function(tagName, success, error) {
@@ -61,7 +62,7 @@ ApplicationServices.factory("BookmarkProvider", ['$http', "Url", function Bookma
         };
         return BookmarkProvider;
     }]);
-/** manage tag API calls **/
+// manage tag API calls
 ApplicationServices.factory("TagService", ["$http", "Url", function TagService($http, Url) {
         var config = {cache: true};
         var baseUrl = Url.getBase();
@@ -71,6 +72,7 @@ ApplicationServices.factory("TagService", ["$http", "Url", function TagService($
             }
         };
     }]);
+// manage thumbnail generation
 ApplicationServices.factory("ThumbnailService", function() {
     return {
         setService: function(serviceCallback) {
@@ -107,7 +109,8 @@ ApplicationServices.factory("AlertManager", function() {
     };
 });
 // manage  Bookmarks business logic
-ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", function BookmarkManager(BookmarkProvider) {
+ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", "$log",
+    function BookmarkManager(BookmarkProvider, $log) {
         // creating a bookmark was successfull
         var successCreate = function(data) {
             if (data.status === "ok") {
@@ -150,18 +153,17 @@ ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", function Boo
         var successGet = function(data) {
             // get bookmarks request is successfull
             if (data.status === "ok") {
-                console.log("success");
-                if (BookmarkManager.bookmarks.length === 0) {
-                    BookmarkManager.bookmarks = data.bookmarks;
-                } else {
-                    BookmarkManager.bookmarks.append(data.bookmarks);
-                }
+                $log.info("success");
+                BookmarkManager.bookmarks = [];
+                data.bookmarks.forEach(function(bookmark) {
+                    BookmarkManager.bookmarks.push(bookmark);
+                });
                 if (data.count) {
-                    BookmarkManager.count = data.count;
+                    BookmarkManager.count = parseInt(data.count, 10);
                 }
                 BookmarkManager.offset += 1;
             } else {
-                console.log("get status = error", data.message);
+                $log.info("get status = error", data.message);
             }
         };
         // error getting bookmarks
@@ -176,11 +178,11 @@ ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", function Boo
             "search": function(keyword, success, error) {
                 var self = this;
                 self.bookmarks = [];
-                return BookmarkProvider.search(keyword,
+                return BookmarkProvider.search(keyword).success(
                         function _success(data) {
                             successGet(data);
                             success(data);
-                        },
+                        }).error(
                         function _error(data) {
                             errorGet(data);
                             error(data);
@@ -188,12 +190,10 @@ ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", function Boo
                 );
             },
             "get": function(offset, limit, success, error) {
-                if (offset === 0) {
-                    this.bookmarks = [];
-                }
+                var self = this;
                 return BookmarkProvider.get(offset, limit,
                         function _success(data) {
-                            successGet(data);
+                            successGet.call(self, data);
                             if (success)
                                 success(data);
                         },
@@ -205,6 +205,7 @@ ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", function Boo
             },
             "getByTag": function(tagName, success, error) {
                 var self = this;
+                self.offset = 0;
                 self.bookmarks = [];
                 return BookmarkProvider.getByTag(tagName, function _success(data) {
                     successGet(data);

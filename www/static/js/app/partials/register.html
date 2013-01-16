@@ -1,14 +1,18 @@
 <!--
 registration form
 -->
-<form ng-controller="RegisterController" name="form_register" action="javascript: void 0;" class='form' novalidate>
+<form data-ng-controller="RegisterController" name="form_register" action="javascript: void 0;" class='form' novalidate>
     <p class='lead'>Register, it's fast and free !</p>
     <div data-ng-show="error" class='alert alert-error'>{{error}}</div>
-    <input data-ng-model='user.username' type="text" name='username' placeholder='username' required>
-    <input data-ng-model='user.email' type="email" name='email' placeholder='email' required >
-    <input data-ng-model='user.password' type="password" name='password' placeholder='password' required >
+    <label for="register_username">Username</label>
+    <input data-ng-model='user.username' type="text" id="register_username" name='username' placeholder='username' required>
+    <label for="email">Email</label>
+    <input data-ng-model='user.email' type="email" id="email" name='email' placeholder='email' required >
+    <label for="register_password">Password</label>
+    <input data-ng-model='user.password' type="password" id="register_password" name='password' placeholder='password' required >
+    <label for="confirm_password">Confirm Password</label>
     <input data-ng-model='user.password_verify' 
-           type="password" name='confirm_password' 
+           type="password" name='confirm_password' id="confirm_password"
            placeholder='confirm password' required data-password-verify="user.password" >
     <label for="register-submit">
         <input name='submit' id="register-submit" 

@@ -3,6 +3,8 @@ bookmarks.html
 EN : display a list of bookmarks
 FR : affiche la liste des marques pages
 -->
+<span data-ng-init="BookmarkManager.bookmarks=[];BookmarkManager.offset=0;getBookmarks(BookmarkManager.offset,BookmarkManager.limit);
+"></span>
 <ul  class="thumbnails" data-masonry data-is-animated="true" data-reload-on="BookmarkManager.bookmarks" 
      data-item-selector=".thumbnail.bookmark">
     <li class='thumbnail bookmark' data-ng-repeat="bookmark in BookmarkManager.bookmarks">
@@ -16,7 +18,7 @@ FR : affiche la liste des marques pages
         <div >
             <ul class=' small inline'>
                 <li><small><a data-open-modal="#{{modal_id}}" data-ng-click="editBookmark(bookmark)" href="javascript: void 0;">edit</a></small></li>
-                <li><small><a data-ng-click="delete(bookmark.id,$index)">delete</a></small></li>
+                <li><small><a data-ng-click="remove(bookmark.id,$index)">delete</a></small></li>
             </ul>
         </div>
         <div>

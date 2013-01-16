@@ -166,7 +166,7 @@ use App\DataTransferObjects\Bookmark;
             $data["title"] = $bookmark->title;
             $data["description"] = $bookmark->description;
             $data["url"] = $bookmark->url;
-            $tags = $bookmark->tags;
+            $tags = is_array($bookmark->tags) ? $bookmark->tags : array();
             $result = $this->connection->update(
                     $this->tableName, $data, array(
                 "user_id" => $bookmark->user_id, "id" => $bookmark->id
@@ -174,10 +174,9 @@ use App\DataTransferObjects\Bookmark;
             );
             $this->connection->delete("tags", array("bookmark_id" => $bookmark->id));
             $connection = $this->connection;
-            array_walk($tags, function($el)use($connection, $bookmark) {
-                        $connection->insert("tags", array("bookmark_id" => $bookmark->id, "tag" => $el));
-                    }
-            );
+            foreach ($tags as $tag) {
+                $connection->insert("tags", array("bookmark_id" => $bookmark->id, "tag" =>  $tag));
+            }
             return $result;
         }
 
