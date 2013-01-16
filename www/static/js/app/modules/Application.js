@@ -99,8 +99,8 @@ app.controller("BookmarkFormController", ["$scope", "BookmarkProvider", function
     }]);
 
 app.controller("BookmarkController",
-        function BookmarkController($scope, $routeParams, BookmarkManager, BookmarkProvider, ThumbnailService) {
-
+        function BookmarkController($scope, $log, $routeParams, BookmarkManager, BookmarkProvider, ThumbnailService) {
+            $log.info("BookmarkController init");
             // configure le service
             ThumbnailService.setService(ThumbnailService.services.ROBOTHUMB);
             $scope.getThumbnail = ThumbnailService.getThumbnail;
@@ -124,6 +124,8 @@ app.controller("BookmarkController",
             };
             $scope.getBookmarks = function(offset, limit) {
                 // initialization
+                if ($scope.fetchingBookmarks === true)
+                    return;
                 $scope.alert.info = "Fetching bookmarks";
                 $scope.fetchingBookmarks = true;
                 if ($routeParams.tagName) {
@@ -174,11 +176,14 @@ app.controller("BookmarkController",
                 });
             };
             // initialization
+            BookmarkManager.bookmarks = [];
+            BookmarkManager.offset = 0;
+            $scope.getBookmarks($scope.BookmarkManager.offset, $scope.BookmarkManager.limit);
         });
 
 app.controller("TagController",
-        function TagController($scope, $routeParams, TagService) {
-
+        function TagController($scope, $log, TagService) {
+            $log.info("TagController init");
             var successCallback = function success(data) {
                 if (data.status === "ok") {
                     $scope.tags = data.tags;

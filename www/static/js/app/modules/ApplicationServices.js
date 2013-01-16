@@ -120,7 +120,7 @@ ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", "$log",
                     BookmarkManager.bookmarks.unshift(data.bookmark);
                 }
             } else {
-                console.log("error creating bookmark status err", data);
+                $log.log("error creating bookmark status err", data);
             }
         };
         // updating a bookmark was successfull
@@ -134,7 +134,7 @@ ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", "$log",
                         return (+bookmark.id) === (+data.bookmark.id);
                     });
                     if (index >= 0) {
-                        console.log("bookmark found");
+                        $log.log("bookmark found");
                         BookmarkManager.bookmarks[index] = data.bookmark;
                         if (data.bookmark.tags.join) {
                             BookmarkManager.bookmarks[index].tags = data.bookmark.tags.join(",");
@@ -142,21 +142,22 @@ ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", "$log",
                     }
                 }
             } else {
-                console.log("error saving , status err ", data);
+                $log.log("error saving , status err ", data);
             }
         };
         // error saving a bookmark
         var errorSave = function(data) {
-            console.log("request error saving", data);
+            $log.log("request error saving", data);
         };
         // success getting bookmarks
         var successGet = function(data) {
             // get bookmarks request is successfull
             if (data.status === "ok") {
                 $log.info("success");
-                BookmarkManager.bookmarks = data.bookmarks;
+                BookmarkManager.bookmarks.append(data.bookmarks);
                 if (data.count) {
                     BookmarkManager.count = parseInt(data.count, 10);
+                    BookmarkManager.offset+=1;
                 }
             } else {
                 $log.info("get status = error", data.message);
@@ -164,7 +165,7 @@ ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", "$log",
         };
         // error getting bookmarks
         var errorGet = function(data) {
-            console.log("request error fetching bookmarks", data);
+            $log.log("request error fetching bookmarks", data);
         };
         var BookmarkManager = {
             "bookmarks": [],
@@ -187,9 +188,13 @@ ApplicationServices.factory("BookmarkManager", ["BookmarkProvider", "$log",
             },
             "get": function(offset, limit, success, error) {
                 var self = this;
+                if (self.offset === 0) {
+                    self.bookmarks = [];
+                }
+                $log.log(self.offset);
                 return BookmarkProvider.get(offset, limit,
                         function _success(data) {
-                            successGet.call(self, data);
+                            successGet(data);
                             if (success)
                                 success(data);
                         },
