@@ -37,9 +37,12 @@ namespace  App\DataAccessLayer {
 
         protected function recordToTag($record){
             $tag = new Tag();
-            $tag->bookmark_id = $record["bookmark_id"];
+            if(isset($record["bookmark_id"])){
+               $tag->bookmark_id = $record["bookmark_id"];
+            }
             $tag->tag = $record["tag"];
-            $tag->count = $record["count"];
+
+            isset($record["count"]) AND $tag->count = $record["count"];
             return $tag;
         }
 

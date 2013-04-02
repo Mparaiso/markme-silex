@@ -34,17 +34,17 @@ namespace App\Controller {
             $this->assertTrue($client->getResponse()->isOk());
             
             /**
-            $this->assertCount(1, $crawler->filter(
-                    "h1.title:contains('Hello Silex !')"));
-            $this->assertCount(1, $crawler->filter("body"));
-
-            $crawler = $client->request("GET", "/Marc");
-            $this->assertCount(1, $crawler->filter(
-                    "h1.title:contains('Hello Marc !')"));
-
-            $crawler = $client->request("GET", "/Marc Prades");
-            $this->assertCount(1, $crawler->filter(
-                    "h1.title:contains('Hello Marc Prades !')"));
+             *   $this->assertCount(1, $crawler->filter(
+             *           "h1.title:contains('Hello Silex !')"));
+             *   $this->assertCount(1, $crawler->filter("body"));
+             *
+             *   $crawler = $client->request("GET", "/Marc");
+             *   $this->assertCount(1, $crawler->filter(
+             *           "h1.title:contains('Hello Marc !')"));
+             *
+             *    $crawler = $client->request("GET", "/Marc Prades");
+             *    $this->assertCount(1, $crawler->filter(
+             *            "h1.title:contains('Hello Marc Prades !')"));
              * 
              */
         }
@@ -52,4 +52,4 @@ namespace App\Controller {
     }
 
 }
-?>
+

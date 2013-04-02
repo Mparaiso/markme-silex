@@ -20,7 +20,7 @@ namespace App\BusinessLogicLayer {
             parent::setUp();
             $this->app = createApplication();
             $this->userProvider = new UserProvider($this->app["db"]);
-            $this->userManager = new UserManager($this->userProvider,$app["salt"]);
+            $this->userManager = new UserManager($this->userProvider,$this->app["salt"]);
         }
 
         function testConstruct(){

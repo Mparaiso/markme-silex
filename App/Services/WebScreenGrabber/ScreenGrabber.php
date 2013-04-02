@@ -18,7 +18,7 @@ namespace App\Services\WebScreenGrabber{
             $result = array();
             foreach ($headers as $value){
                 $split = preg_split("/:/", $value, 2);
-                $result[$split[0]] = $split[1];
+                if(count($split)>2)$result[$split[0]] = $split[1];
             }
             return $result;
         }
@@ -50,9 +50,7 @@ namespace App\Services\WebScreenGrabber{
          * @return \App\Services\WebScreenGrabber\ScreenGrabberResponse
          */
         protected function doRequest($url,array $context = array()){
-            if (!isset($context)){
-                $streamContent = stream_context_create($context);
-            }
+            $streamContent = stream_context_create($context);
             $image = file_get_contents($url, false, $streamContent);
             $responseHeaders = $this->splitHeaders($http_response_header);
 

@@ -95,11 +95,10 @@ app.controller("NavigationController", ["$scope", "$routeParams", "$location",
     }
 ]);
 
-app.controller("BookmarkFormController", ["$scope", "BookmarkProvider", function($scope, BookmarkProvider) {
-    }]);
+app.controller("BookmarkFormController", ["$scope", "BookmarkProvider", function() {}]);
 
 app.controller("BookmarkController",
-        function BookmarkController($scope, $log, $routeParams, BookmarkManager, BookmarkProvider, ThumbnailService) {
+        function BookmarkController($scope, $log, $routeParams,BookmarkManager, BookmarkProvider, ThumbnailService) {
             $log.info("BookmarkController init");
             // configure le service
             ThumbnailService.setService(ThumbnailService.services.ROBOTHUMB);
@@ -230,7 +229,7 @@ app.controller("LoginController", ["$scope", "$window", "UserService",
     }]);
 
 app.controller("RegisterController",
-        function($scope, $http, $window, UserService) {
+        function($scope, $window, UserService) {
             $scope.user = {};
             $scope.register = function(user) {
                 if (user.password !== user.password_verify) {

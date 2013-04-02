@@ -62,7 +62,7 @@ class BookmarkControllerTest extends WebTestCase {
                 "bookmarks where title= :title", array("title" => $bookmarks[1]["title"]));
         $tags = $this->app["db"]->fetchAll(" SELECT * FROM tags " .
                 "where bookmark_id= :bookmark_id", array("bookmark_id" => $googleBookMark["id"]));
-        $this->assertEquals(count($bookmarks[1][tags]), count($tags));
+        $this->assertEquals(count($bookmarks[1]['tags']), count($tags));
         // un utilisateur non connecté tente de crée des bookmarks
         $this->app["session"]->invalidate();
         $client->restart();
@@ -144,7 +144,7 @@ class BookmarkControllerTest extends WebTestCase {
         $content = json_decode($response->getContent(), true);
         $this->assertEquals(2, count($content['bookmarks']));
         $this->assertEquals($bookmarks[0]["title"], $content["bookmarks"][0]["title"]);
-        print_r($content->bookmarks);
+        //print_r($content->bookmarks);
     }
 
     public function createApplication() {

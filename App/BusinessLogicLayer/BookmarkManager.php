@@ -110,7 +110,8 @@ EOF;
             $title = $result[1];
             $urlR = "/href=[\"\']{1}(http\S*)[\"\']{1}/i";
             preg_match($urlR, $link,$result);
-            $url = $result[1];
+           
+            $url = @$result[1];
             if ($url!=null && $title!=null){
               $bookmark = new Bookmark();
               $bookmark->title = $title;
@@ -119,7 +120,8 @@ EOF;
               $bookmark->created_at = date('Y-m-d H:i:s', time());
               $bookmark->tags = array();
               return $bookmark;
-            }
+            
+          }
         }
 
         /**

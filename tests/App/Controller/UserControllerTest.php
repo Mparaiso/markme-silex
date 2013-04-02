@@ -83,7 +83,7 @@ namespace App\Controller {
                             )
                     )
             );
-            $this->app["session"]->invalidate;
+            $this->app["session"]->invalidate();
             $client->restart();
             $client->request("POST", "/json/login", array(), array(), array(
                 "HTTP_Content-Type" => "application/json"
