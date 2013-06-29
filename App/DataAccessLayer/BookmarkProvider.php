@@ -172,6 +172,9 @@ use App\DataTransferObjects\Bookmark;
                 "user_id" => $bookmark->user_id, "id" => $bookmark->id
                     )
             );
+            if($result == 0 ){
+                throw new \Exception("bookmark not found , cannot be updated");
+            }
             $this->connection->delete("tags", array("bookmark_id" => $bookmark->id));
             $connection = $this->connection;
             foreach ($tags as $tag) {
