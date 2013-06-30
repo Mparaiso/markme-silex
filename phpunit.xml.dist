@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding="UTF-8"?>
 <phpunit backupGlobals='false'
-    bootstrap="./tests/bootstrap.php"
+    bootstrap="./tests-php/bootstrap.php"
     backupStaticAttributes="false"
     convertNoticesToExceptions="true"
     convertWarningsToExceptions="true"
@@ -9,7 +9,7 @@
     syntaxCheck="false">
     <testsuites>
         <testsuite name="MarkMe test suit">
-            <directory>./tests/</directory>
+            <directory>./tests-php/</directory>
         </testsuite>
     </testsuites>
 </phpunit>
