@@ -10,11 +10,12 @@ Online bookmark manager
 
 inspired by bookmark.ly : http://bookmarkly.com/
 
-### DEMO : http://markme.alwaysdata.net
+## LIVE DEMO : http://markme.herokuapp.com/
 
 + Bookmark sites fast
 + Add description and tags
 + Import and Export your bookmarks from and to popular browsers
++ bookmark's screenshots
 + Search and filter through you bookmarks
 + Access your bookmarks anywhere!
 

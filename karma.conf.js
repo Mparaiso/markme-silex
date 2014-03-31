@@ -4,12 +4,12 @@ basePath = './';
 files = [
     JASMINE,
     JASMINE_ADAPTER,
-    'www/static/js/jquery.min.js',
-    'www/static/vendor/angular/angular.js',
-    'www/static/vendor/angular/angular-*.js',
-    'www/static/js/app/modules/Application.js',
-    'www/static/js/**/*.js',
-    'www/static/vendor/**/*.js',
+    'web/static/js/jquery.min.js',
+    'web/static/vendor/angular/angular.js',
+    'web/static/vendor/angular/angular-*.js',
+    'web/static/js/app/modules/Application.js',
+    'web/static/js/**/*.js',
+    'web/static/vendor/**/*.js',
     'tests-javascript/unit/**/*.js'
 ];
 
