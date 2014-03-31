@@ -1,12 +1,13 @@
 .DS_Store
-cache/*
+cache
 *.tmp
 *.cloud
 *.sh
 *.idea
-log/*
-vendor/*
-nbproject/* 
+log
+vendor
+nbproject
+.idea
 *.sublime-project
 *.sublime-workspace
 PRIVATEDEVNOTES.md

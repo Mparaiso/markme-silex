@@ -1,4 +1,6 @@
 push:
 	@git add .
 	@git commit -am"$(message) `date`"
-.PHONY: push
+deploy:
+	@git push heroku master
+.PHONY: push deploy
