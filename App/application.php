@@ -47,12 +47,12 @@ $app->register(new DoctrineServiceProvider(), array("db.options" => array(
 // enregistrement de Twig
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     "twig.path" => array(ROOT . "/App/Views/"), "twig.options" => array(
-        "cache" => ROOT . "/cache/",
+        "cache" => ROOT . "/temp/twig",
     ),
 ));
 // enregistrement de monolog pour log des infos
 $app->register(new \Silex\Provider\MonologServiceProvider(), array(
-    "monolog.logfile" => ROOT . "/log/access.log",
+    "monolog.logfile" => ROOT . "/temp/access.log",
     "monolog.name" => "markme",
 ));
 // FR : enregistrement de SessionServiceProvider
