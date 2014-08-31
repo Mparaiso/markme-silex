@@ -51,10 +51,10 @@ class __TwigTemplate_702afe22538e14976e30a0eecc816ab5bd8e1b8e800b94ac2c6d3b36064
         // line 25
         echo "        ";
         $this->displayBlock('bottom_scripts', $context, $blocks);
-        // line 27
+        // line 29
         echo "        ";
         $this->env->loadTemplate("common/ga.twig")->display($context);
-        // line 28
+        // line 30
         echo "    </body>
 </html>";
     }
@@ -84,7 +84,9 @@ class __TwigTemplate_702afe22538e14976e30a0eecc816ab5bd8e1b8e800b94ac2c6d3b36064
     public function block_bottom_scripts($context, array $blocks = array())
     {
         // line 26
-        echo "        ";
+        echo "            <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700' rel='stylesheet' type='text/css'>
+            <link href='http://fonts.googleapis.com/css?family=Domine:400,700' rel='stylesheet' type='text/css'>
+        ";
     }
 
     public function getTemplateName()
@@ -99,6 +101,6 @@ class __TwigTemplate_702afe22538e14976e30a0eecc816ab5bd8e1b8e800b94ac2c6d3b36064
 
     public function getDebugInfo()
     {
-        return array (  87 => 26,  84 => 25,  80 => 24,  77 => 23,  73 => 15,  70 => 14,  66 => 13,  63 => 12,  58 => 28,  55 => 27,  52 => 25,  50 => 23,  41 => 16,  38 => 14,  36 => 12,  23 => 1,);
+        return array (  87 => 26,  84 => 25,  80 => 24,  77 => 23,  73 => 15,  70 => 14,  66 => 13,  58 => 30,  55 => 29,  52 => 25,  50 => 23,  36 => 12,  23 => 1,  63 => 12,  60 => 19,  43 => 13,  41 => 16,  38 => 14,  33 => 3,  30 => 2,);
     }
 }

@@ -3,14 +3,14 @@
         <li data-ng-show="user.username"><a class='sans disabled disable'>Welcome {{user.username}}</a></li>
         <li><a href="#/bookmark">Bookmarks</a></li>
         <li><a href="#/tag">Tags</a></li>
-        <li><a href="javascript:void 0;" ng-click="addBookmark()" data-open-modal="#bookmark-edit">Add a
+        <li><a href="javascript:void 0;" ng-click="create()" >Add a
                 Bookmark</a></li>
         <li><a href="#/account">Settings</a></li>
         <li><a href="/logout">Logout</a></li>
     </ul>
     <form class="navbar-form navbar-right">
         <div class="input-group">
-            <input type="text" data-ng-model="search" placeholder="search a word" class="form-control">
+            <input name="search" type="text" data-ng-model="search" placeholder="search a word" class=" form-control">
 
             <div class="input-group-btn">
                 <button type="submit" ng-click="find(search)" class="btn btn-default muted"><i
@@ -27,3 +27,4 @@
         </div>
     </div>
 </div>
+<span data-ng-include="baseUrl + '/static/js/app/partials/modal.html'"></span>

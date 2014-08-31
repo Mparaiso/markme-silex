@@ -5,8 +5,7 @@ namespace MarkMe\Service {
     use MarkMe\Entity\Bookmark as BookmarkEntity;
     use MarkMe\Entity\User as UserEntity;
 
-    interface BookmarkInterface
-    {
+    interface BookmarkInterface {
 
         public function count(UserEntity $user);
 
@@ -16,11 +15,15 @@ namespace MarkMe\Service {
 
         public function delete(BookmarkEntity $bookmark);
 
-        public function search($query, UserEntity $user);
+        public function search($query, UserEntity $user, $limit, $offset);
 
-        public function getByTag($tagName, UserEntity $user);
+        public function findByTag($tagName, UserEntity $user, $limit, $offset);
 
-        function getAll($offset, $limit, UserEntity $user);
+        function getAll( UserEntity $user,$limit,$offset);
+
+        function searchTags($tags, UserEntity $user, $limit = 10);
+
+        function getAllTags(UserEntity $user, $limit = 30);
     }
 
 }

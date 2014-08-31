@@ -177,10 +177,11 @@ class User extends \MarkMe\Entity\User implements \Doctrine\ORM\Proxy\Proxy
         return parent::__toString();
     }
 
-    public function jsonSerialize()
+    public function normalize(\Symfony\Component\Serializer\Normalizer\NormalizerInterface $normalizer, $format = NULL, array $context = array (
+))
     {
         $this->__load();
-        return parent::jsonSerialize();
+        return parent::normalize($normalizer, $format, $context);
     }
 
 

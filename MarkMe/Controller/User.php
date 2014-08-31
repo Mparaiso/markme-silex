@@ -41,7 +41,7 @@ class User
     {
         /** @var \MarkMe\App $app */
 
-        $user = $app->security->getToken();
+        $user = $app->security->getToken()->getUser();
         if (NULL == $user) {
             $app->session->invalidate();
             return new Response($app->serializer->serialize(array('status' => 404, 'message' => 'user not found'), 'json'),

@@ -1,4 +1,4 @@
-var Directives = angular.module("ApplicationDirectives", ["ApplicationServices"])
+angular.module("ApplicationDirectives", ["ApplicationServices"])
         .directive("popOver", function() {
             /* FR : utilise le plugin bootstrap pop-over
              */
@@ -54,45 +54,43 @@ var Directives = angular.module("ApplicationDirectives", ["ApplicationServices"]
                     }, 10);
                 };
             }])
-        .directive("tagsInput", ["$timeout", "Url", function tagsInput($timeout, Url) {
-                /** allow jquery.tags-input plugin use **/
-                return function($scope, element, attrs) {
-                    var tagsInput = null;
-                    var model = attrs["ngModel"];
-                    var applyCallback = function() {
-                        $scope.$apply(model + "='" + element.val() + "'");
+        .directive("tagsInput", function tagsInput($timeout) {
+            /** allow jquery.tags-input plugin use **/
+            return {
+                scope: {
+                    tagsInput: '=',
+                    autoCompleteUrl: '@',
+                    onChange: '&',
+                    width: '@',
+                    autoCompleteParse: '&'
+                },
+                link: function($scope, element, attrs) {
+                    var update = function() {
+                        $scope.tagsInput = element.val().split(',');
+                        $scope.$apply();
                     };
-                    $scope.$watch(model, function(_new, _old) {
-                        $timeout(function() {
-                            if (_new && _new.split) {
-                                // force tagsInput value to _new
-                                tagsInput = element.importTags(_new);
-                            } else {
-                                // force tagsInput to be empty
-                                tagsInput = element.importTags("");
-                            }
-                        }, true);
-                    });
+
                     $timeout(function() {
                         element.tagsInput({
-                            "onAddTag": applyCallback,
-                            "onRemoveTag": applyCallback,
-                            autocomplete_url: '/json/autocomplete',
+                            width: $scope.width || undefined,
+                            onAddTag: update,
+                            onRemoveTag: update,
+                            autocomplete_url: $scope.autoCompleteUrl || undefined,
+                            onChange: $scope.onChange() || undefined,
                             autocomplete: {selectFirst: true, width: "auto", autoFill: true, highlight: false,
                                 dataType: "json",
-                                parse: function(data) {
-                                    var rows = [];
-                                    for (var i = 0; i < data.tags.length; i++) {
-                                        var tag = data.tags[i].tag;
-                                        rows[rows.length] = {data: [tag], value: tag, result: tag};
-                                    }
-                                    return rows;
-                                }
+                                parse: $scope.autoCompleteParse()
+                            }
+                        });
+                        $scope.$watch('tagsInput', function(_new) {
+                            if (_new) {
+                                element.importTags(_new.join(','));
                             }
                         });
                     });
-                };
-            }])
+                }
+            };
+        })
         .directive('masonry', function($timeout) {
             return {
                 scope: {
@@ -144,9 +142,8 @@ var Directives = angular.module("ApplicationDirectives", ["ApplicationServices"]
             };
             this.showModal = function(name) {
                 var modal = this.findModalByName(name);
-                console.log('modal', modal);
                 if (modal) {
-                    return modal.el.modal('toggle');
+                    return modal.el.modal('show');
                 }
             };
             this.hideModal = function(name) {
@@ -214,8 +211,8 @@ var Directives = angular.module("ApplicationDirectives", ["ApplicationServices"]
                         id: $scope.modalId,
                         'aria-labelledby': attributes.ariaLabelledBy
                     });
-                    element.addClass('modal');
                     element.addClass('fade');
+                    element.addClass('modal');
                     $timeout(function() {
                         mpModalService.register($scope.modalId, element);
                         $scope.$on('$destroy', function() {

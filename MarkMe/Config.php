@@ -81,8 +81,8 @@ class Config implements \Silex\ServiceProviderInterface {
         # session management
         $app->register(new SessionServiceProvider(), array(
             "session.storage.options" => array(
-                "httponly" => true,
-                "domain" => "markme.app"
+                "cookie_httponly" => true,
+                "id" => "markme"
             ),
         ));
 
@@ -223,20 +223,20 @@ class Config implements \Silex\ServiceProviderInterface {
         $json->put('/user', 'controller.user:updateUser')->bind('user_update_current');
 
         #bookmarks
-        $json->get('/bookmark', 'controller.bookmark:findByUser')->bind('bookmark_find_by_current_user');
+        $json->get('/bookmark', 'controller.bookmark:index')->bind('bookmark_index');
         $json->post('/bookmark', 'controller.bookmark:create')->bind('create_bookmark');
-        $json->get('/bookmark/search', 'controller.bookmark:search')->bind('bookmark.search');
+        $json->get('/bookmark/search', 'controller.bookmark:search')->bind('bookmark_search');
         $json->post('/bookmark/count', 'controller.bookmark:count')->bind('bookmark.count');
         $json->post('/bookmark/export', 'controller.bookmark:export')->bind('bookmark.export');
         $json->post('/bookmark/import', 'controller.bookmark:import')->bind('bookmark.import');
         $json->put('/bookmark/{id}', 'controller.bookmark:update')->bind('update_bookmark');
         $json->delete('/bookmark/{id}', 'controller.bookmark:delete')->bind('delete_bookmark');
-        $json->get('/bookmark/{id}', 'controller.bookmark:read')->bind('read_bookmark');
-        $json->get('/bookmark/tag/{tagName}', 'controller.bookmark:getByTag');
+        $json->get('/bookmark/{id}', 'controller.bookmark:read')->bind('bookmark_read');
+        $json->get('/tag/{tags}', 'controller.bookmark:findByTags')->bind('bookmark_findByTags');
 
         # tags 
-        $json->get('autocomplete', 'controller.tag:autocomplete')->bind('search_tag');
-        $json->get('tag', 'controller.tag:get')->bind('get_tags');
+        $json->get('autocomplete', 'controller.tag:search')->bind('search_tag');
+        $json->get('tag', 'controller.tag:index')->bind('get_tags');
 
         $app->mount('/json', $json);
     }

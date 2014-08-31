@@ -1,12 +1,13 @@
 <?php
 
-
 use MarkMe\App;
+use Symfony\Component\Debug\ErrorHandler;
+use Symfony\Component\Debug\ExceptionHandler;
 
-date_default_timezone_set('Europe/Paris') ;
+date_default_timezone_set('Europe/Paris');
 
-$autoload = require_once __DIR__.'/../vendor/autoload.php';
-$autoload->add('MarkMe',__DIR__."/../");
+$autoload = require_once __DIR__ . '/../vendor/autoload.php';
+$autoload->add('MarkMe', __DIR__ . "/../");
 
 # router for php builtin server router
 
@@ -16,5 +17,9 @@ if (php_sapi_name() === 'cli-server' && is_file($filename)) {
 }
 
 $debug = getenv('PHP_ENV') == "production" ? FALSE : TRUE;
+
+ErrorHandler::register();
+ExceptionHandler::register($debug);
+
 $app = new App(array('debug' => $debug));
 $app->run();

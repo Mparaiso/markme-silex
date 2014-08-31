@@ -1,47 +1,36 @@
 <?php
 
-namespace MarkMe\Controller {
+namespace MarkMe\Controller;
 
-    use Silex\Application;
-    use Doctrine\DBAL\DBALException;
+use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
-    class Tag
-    {
+class Tag {
 
-        /**
-         * obtient la liste des $tags d'un utilisateur
-         */
-        function get(Application $app)
-        {
-            $user_id = $app["session"]->get("user_id");
-            try {
-                $tags = $app["tag_manager"]->get($user_id);
-                return $app->json(array("status" => "ok", "tags" => $tags), 200);
-            } catch (DBALException $e) {
-                $app["logger"]->err($e->getMessage());
-                return $app->json($this->err(self::DB_ERR));
-            }
-            return $app->json($this->err(self::REQ_ERR));
-        }
+    /**
+     * get all tags for a user
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $req
+     * @return string
+     */
+    function index(Application $app, Request $req) {
+        $user = $app->security->getToken()->getUser();
+        $tags = $app->bookmarks->getAllTags($user);
+        return $app->serializer->serialize(array("status" => "ok", "tags" => $tags), 'json');
+    }
 
-        /**
-         * retourne une liste de tags suivant leurs nom
-         */
-        function autocomplete(Application $app)
-        {
-            $user_id = $app["session"]->get("user_id");
-            $q = $app["request"]->query->get("q");
-            $limit = $app["request"]->query->get("limit", 10);
-            try {
-                $tags = $app["tag_manager"]->search($q, $limit, $user_id);
-                return $app->json(array("status" => "ok", "tags" => $tags), 200);
-            } catch (DBALException $e) {
-                $app["logger"]->err($e->getMessage());
-                return $app->json($this->err(self::DB_ERR));
-            }
-            return $app->json($this->err(self::REQ_ERR));
-        }
-
+    /**
+     * search for tags
+     * @param \Silex\Application $app
+     * @param \Symfony\Component\HttpFoundation\Request $req
+     * @return string
+     */
+    function search(Application $app, Request $req) {
+        $user = $app->security->getToken()->getUser();
+        $q = $req->query->get("q");
+        $limit = $req->query->get("limit", 10);
+        $tags = $app->bookmarks->searchTags($q, $user, $limit);
+        return $app->serializer->serialize(array("status" => "ok", "tags" => $tags), 'json');
     }
 
 }

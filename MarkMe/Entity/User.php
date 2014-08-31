@@ -3,12 +3,15 @@
 namespace MarkMe\Entity {
 
     #use  MarkMe\Entity\Role as RoleEntity;
+
     use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     #use Symfony\Component\Security\Core\Role\Role;
     use Symfony\Component\Security\Core\User\UserInterface;
     use Symfony\Component\Validator\Constraints\Email;
     use Symfony\Component\Validator\Constraints\Length;
     use Symfony\Component\Validator\Mapping\ClassMetadata;
+    use \Symfony\Component\Serializer\Normalizer\NormalizableInterface;
+    use \Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
     /**
      * Class User
@@ -17,8 +20,8 @@ namespace MarkMe\Entity {
      * @Table(name="users")
      * @HasLifecycleCallbacks
      */
-    class User implements UserInterface, \JsonSerializable
-    {
+    class User implements UserInterface, NormalizableInterface {
+
         /**
          * @Column(name="id",type="integer",length=11,unique=true)
          * @Id
@@ -26,38 +29,45 @@ namespace MarkMe\Entity {
          * @var integer
          */
         private $id;
+
         /**
          * @Column(name="username",type="string",length=100,unique=true)
          * @Index
          * @var string
          */
         private $username;
+
         /**
          * @Column(name="email",type="string",length=100,unique=true)
          * @Index
          * @var string
          */
         private $email;
+
         /**
          * @Column(name="password",type="string")
          * @var string
          */
         private $password;
+
         /**
          * @Column(name="created_at",type="datetime")
          * @var \DateTime
          */
         private $created_at;
+
         /**
          * @Column(name="updated_at",type="datetime")
          * @var \DateTime
          */
         private $updated_at;
+
         /**
          * @Column(name="salt",type="string",length=200)
          * @var string
          */
         private $salt;
+
         /**
          * @Column(name="last_login",type="datetime")
          * @var \DateTime
@@ -70,8 +80,7 @@ namespace MarkMe\Entity {
          */
         private $bookmarks;
 
-        function __construct()
-        {
+        function __construct() {
             $this->bookmarks = array();
         }
 
@@ -91,8 +100,7 @@ namespace MarkMe\Entity {
          *
          * @return Role[] The user roles
          */
-        public function getRoles()
-        {
+        public function getRoles() {
             return array('ROLE_USER');
         }
 
@@ -104,8 +112,7 @@ namespace MarkMe\Entity {
          *
          * @return string The password
          */
-        public function getPassword()
-        {
+        public function getPassword() {
             return $this->password;
         }
 
@@ -116,8 +123,7 @@ namespace MarkMe\Entity {
          *
          * @return string|null The salt
          */
-        public function getSalt()
-        {
+        public function getSalt() {
             return $this->salt;
         }
 
@@ -126,8 +132,7 @@ namespace MarkMe\Entity {
          *
          * @return string The username
          */
-        public function getUsername()
-        {
+        public function getUsername() {
             return $this->username;
         }
 
@@ -137,137 +142,120 @@ namespace MarkMe\Entity {
          * This is important if, at any given point, sensitive information like
          * the plain-text password is stored on this object.
          */
-        public function eraseCredentials()
-        {
+        public function eraseCredentials() {
             $this->password = null;
+            $this->salt = null;
         }
 
         /**
          * @param \DateTime $created_at
          */
-        public function setCreatedAt($created_at)
-        {
+        public function setCreatedAt($created_at) {
             $this->created_at = $created_at;
         }
 
         /**
          * @return \DateTime
          */
-        public function getCreatedAt()
-        {
+        public function getCreatedAt() {
             return $this->created_at;
         }
 
         /**
          * @param string $email
          */
-        public function setEmail($email)
-        {
+        public function setEmail($email) {
             $this->email = $email;
         }
 
         /**
          * @return string
          */
-        public function getEmail()
-        {
+        public function getEmail() {
             return $this->email;
         }
 
         /**
          * @param int $id
          */
-        public function setId($id)
-        {
+        public function setId($id) {
             $this->id = $id;
         }
 
         /**
          * @return int
          */
-        public function getId()
-        {
+        public function getId() {
             return $this->id;
         }
 
         /**
          * @param \DateTime $last_login
          */
-        public function setLastLogin($last_login)
-        {
+        public function setLastLogin($last_login) {
             $this->last_login = $last_login;
         }
 
         /**
          * @return \DateTime
          */
-        public function getLastLogin()
-        {
+        public function getLastLogin() {
             return $this->last_login;
         }
 
         /**
          * @param \DateTime $updated_at
          */
-        public function setUpdatedAt($updated_at)
-        {
+        public function setUpdatedAt($updated_at) {
             $this->updated_at = $updated_at;
         }
 
         /**
          * @return \DateTime
          */
-        public function getUpdatedAt()
-        {
+        public function getUpdatedAt() {
             return $this->updated_at;
         }
 
         /**
          * @param string $password
          */
-        public function setPassword($password)
-        {
+        public function setPassword($password) {
             $this->password = $password;
         }
 
         /**
          * @param string $salt
          */
-        public function setSalt($salt)
-        {
+        public function setSalt($salt) {
             $this->salt = $salt;
         }
 
         /**
          * @param string $username
          */
-        public function setUsername($username)
-        {
+        public function setUsername($username) {
             $this->username = $username;
         }
 
         /**
          * @param \MarkMe\Entity\Bookmark[] $bookmarks
          */
-        public function setBookmarks($bookmarks)
-        {
+        public function setBookmarks($bookmarks) {
             $this->bookmarks = $bookmarks;
         }
 
         /**
          * @return \MarkMe\Entity\Bookmark[]
          */
-        public function getBookmarks()
-        {
+        public function getBookmarks() {
             return $this->bookmarks;
         }
-
 
         /**
          * @PrePersist
          */
-        function prePersist()
-        {
+        function prePersist() {
             $this->setUpdatedAt(new \DateTime());
             $this->setLastLogin(new \DateTime());
             if ($this->getCreatedAt() == null) {
@@ -275,31 +263,22 @@ namespace MarkMe\Entity {
             }
         }
 
-        function __toString()
-        {
+        function __toString() {
             return $this->getUsername();
         }
 
-
-        /**
-         * (PHP 5 &gt;= 5.4.0)<br/>
-         * Specify data which should be serialized to JSON
-         * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
-         * @return mixed data which can be serialized by <b>json_encode</b>,
-         * which is a value of any type other than a resource.
-         */
-        public function jsonSerialize()
-        {
-            return get_object_vars($this);
-        }
-
-        public static function loadValidatorMetadata(ClassMetadata $metadata)
-        {
+        public static function loadValidatorMetadata(ClassMetadata $metadata) {
             $metadata->addConstraint(new UniqueEntity(array('fields' => 'email')));
             $metadata->addConstraint(new UniqueEntity(array('fields' => 'username')));
             $metadata->addPropertyConstraint('username', new Length(array('min' => 5, 'max' => 100)));
             $metadata->addPropertyConstraint('email', new Length(array('min' => 8, 'max' => 100)));
             $metadata->addPropertyConstraint('email', new Email());
         }
+
+        public function normalize(NormalizerInterface $normalizer, $format = null, array $context = array()) {
+            return get_object_vars($this);
+        }
+
     }
+
 }

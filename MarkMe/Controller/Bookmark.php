@@ -21,7 +21,7 @@ class Bookmark {
                         ), 'json');
     }
 
-    function findByUser(Application $app) {
+    function index(Application $app) {
         /* @var $app \MarkMe\App  */
         $user = $app->security->getToken()->getUser();
         $limit = intval($app["request"]->query->get("limit", 50));
@@ -35,10 +35,12 @@ class Bookmark {
                         ), 'json');
     }
 
-    function findByUserAndByTag(Application $app, $tagName) {
+    function findByTags(Application $app, Request $req, $tags) {
         /* @var \MarkMe\App $app */
-        $user = $app->security->getToken();
-        $bookmarks = $app->tags->findWhereUserHasBookmark($user, $tagName);
+        $user = $app->security->getToken()->getUser();
+        $limit = $req->query->get("limit", 100);
+        $offset = $req->query->get("offset", 0);
+        $bookmarks = $app->bookmarks->findByTag($tags, $user, $limit, $offset * $limit);
         return $app->serializer->serialize(array('status' => 200, 'bookmarks' => $bookmarks), 'json');
     }
 
@@ -46,18 +48,20 @@ class Bookmark {
      * trouver par tag,description ou titre
      * @param \Silex\Application $app
      */
-    function searchWithinUserBookmarks(Request $request, Application $app) {
+    function search(Request $request, Application $app) {
         /* @var \MarkMe\App $app */
-        $user = $app->security->getToken();
-        $bookmarks = $app->bookmarks->search($request->get('query', ""), $user);
+        $user = $app->security->getToken()->getUser();
+        $limit = $request->query->get('limit', 100);
+        $offset = $request->query->get('offset', 0);
+        $bookmarks = $app->bookmarks->search($request->get('q', ""), $user, $limit, $offset * $limit);
         return $app->serializer->serialize(array('status' => 200, 'bookmarks' => $bookmarks), 'json');
     }
 
-    function create(Application $app) {
+    function create(Application $app, Request $req) {
         /* @var \MarkMe\App $app */
-        $bookmark = $app->serializer->deserialize(file_get_contents("php://input"), '\MarkMe\Entity\Bookmark', 'json');
+        $bookmark = $app->serializer->deserialize($req->getContent(), '\MarkMe\Entity\Bookmark', 'json');
         /* @var \MarkMe\Entity\Bookmark $bookmark */
-        $bookmark->setUser($app->security->getToken());
+        $bookmark->setUser($app->security->getToken()->getUser());
         $bookmark->setPrivate(true);
         $app->bookmarks->create($bookmark);
         return $app->serializer->serialize(array('status' => 200, 'bookmark' => $bookmark), 'json');
@@ -69,7 +73,7 @@ class Bookmark {
         return $app->serializer->serialize(array('status' => 200, 'bookmark' => $bookmark), 'json');
     }
 
-    function update(Application $app) {
+    function update(Application $app, Request $req) {
         /* @var \MarkMe\App $app */
         $user = $app->security->getToken()->getUser();
         /* @var \MarkMe\Entity\Bookmark $bookmark */
@@ -77,12 +81,11 @@ class Bookmark {
         if ($bookmark == NULL) {
             return new Response($app->serializer->serialize(array('status' => 404, 'message' => 'not found'), 'json'), 404);
         }
-        $bookmark->setTitle($app->request->get('title'));
-        $bookmark->setDescription($app->request->get('description'));
-        $bookmark->setUrl($app->request->get('url'));
-        foreach ($app->request->get('tags') as $tag) {
-            $bookmark->addTag($app->tags->fromName($tag, false));
-        }
+        $candidate = json_decode($req->getContent(), true);
+        $bookmark->setTitle($candidate['title']);
+        $bookmark->setDescription($candidate['description']);
+        $bookmark->setUrl($candidate['url']);
+        $bookmark->setTags($candidate['tags']);
         $app->bookmarks->update($bookmark);
         return $app->serializer->serialize(array('status' => 200, 'bookmark' => $bookmark), 'json');
     }

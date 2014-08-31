@@ -1,5 +1,5 @@
-<ul class='inline thumbnails'>
-    <li data-ng-repeat="tag in tags">
-        <span class='thumbnail'><a href="#/bookmark/tag/{{tag.tag}}">{{tag.tag}} x {{tag.count}}</a></span> 
-    </li>
-</ul>
+<div class=' thumbnails'>
+    <h3 class="inline" data-ng-repeat="tag in Tags.tags">
+        <span ><a class='label label-default' href="#/tag/{{tag}}">{{tag}} </a></span> 
+    </h3>
+</div>
