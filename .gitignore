@@ -12,3 +12,4 @@ nbproject
 *.sublime-workspace
 PRIVATEDEVNOTES.md
 trash
+temp/*
