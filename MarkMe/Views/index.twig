@@ -1,0 +1,57 @@
+{% extends 'layout.twig' %}
+{% block head_css %}
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+{% endblock %}
+{% block content %}
+    <!--navbar -->
+    {% include 'include/navbar.twig' %}
+    <!-- header -->
+    <div class="container">
+        <!-- homepage.hmtl -->
+        <main class='row'>
+            <div class="jumbotron col-md-8">
+                <h2 class='sans'>
+                    Online bookmark manager.
+                </h2>
+                <ul>
+                    <li>Bookmark sites fast</li>
+                    <li>Add description and tags</li>
+                    <li>Import and Export your bookmarks from and to popular browsers</li>
+                    <li>Search and filter through your bookmarks</li>
+                    <li>Access your bookmarks anywhere!</li>
+                </ul>
+                <form {{ form_enctype(form) }} action="{{ app.url_generator.generate('index') }}" method="POST"
+                                               class='form'>
+                    <fieldset>
+                        <legend>Register, it's fast and free !</legend>
+                        {%include 'include/form.twig'%}
+                        <div class="form-group">
+                                <input class="btn btn-default" type="reset" />
+                                <input class='btn btn-success'
+                                       type="submit">
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <img class='thumbnail pull-right' data-ng-src='/static/img/abime.jpg' src="http://placehold.it/320x240"
+                     alt="">
+            </div>
+        </main>
+        <footer class="row">
+            {% include 'include/footer.twig' %}
+        </footer>
+    </div>
+{% endblock %}
+{% block bottom_scripts %}
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/bower_components/lodash/dist/lodash.min.js"></script>
+    <script type="text/javascript" src="/bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="/bower_components/angular-route/angular-route.min.js"></script>
+    <script type="text/javascript" src="/static/js/app/modules/Application.js"></script>
+    <script type="text/javascript" src="/static/js/app/modules/ApplicationFilters.js"></script>
+    <script type="text/javascript" src="/static/js/app/modules/ApplicationDirectives.js"></script>
+    <script type="text/javascript" src="/static/js/app/modules/ApplicationServices.js"></script>
+{% endblock %}

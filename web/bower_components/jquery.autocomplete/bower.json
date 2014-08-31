@@ -1,0 +1,12 @@
+{
+  "name": "jquery.autocomplete",
+  "version": "0.1.0",
+  "main": "jquery.autocomplete.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "docs",
+    "lib"
+  ]
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="title" content="Markme">
+        <meta name="description" content="online bookmark manager">
+        <meta name="keywords"
+              content="html5,web application,webapp,bookmark,bookmarks,application,utility,organizer,manager">
+        <meta name="author" content="M.Paraiso">
+        <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="PUBLIC">
+        <title>Markme : Organize your bookmarks online</title>
+        {% block head_css %}
+        {% endblock %}
+        {% block head_scripts %}
+        {% endblock %}
+    </head>
+    <body data-ng-app="markme">
+        <noscript>
+        <h1 class="alert alert-danger" style="text-align: center;">
+            Please enable Javascript.
+        </h1>
+        </noscript>
+        {% block content %}
+        {% endblock %}
+        {% block bottom_scripts %}
+        {% endblock %}
+        {% include 'common/ga.twig' %}
+    </body>
+</html>

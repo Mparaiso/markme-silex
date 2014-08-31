@@ -4,32 +4,41 @@ EN : display a list of bookmarks
 FR : affiche la liste des marques pages
 -->
 <span ></span>
-<ul  class="thumbnails" data-masonry data-is-animated="true" data-reload-on="BookmarkManager.bookmarks" 
-     data-item-selector=".thumbnail.bookmark">
-    <li class='thumbnail bookmark' data-ng-repeat="bookmark in BookmarkManager.bookmarks">
+<section 
+         data-masonry="Bookmarks.bookmarks"  
+         data-gutter="30" data-column-width='200' 
+         data-item-selector="div.bookmark">
+    <div class=' thumbnail bookmark' data-ng-repeat="bookmark in Bookmarks.bookmarks">
         <div>
-             <a href='{{bookmark.url}}' title='{{bookmark.title}}' target="_blank">
-                 <img class='bookmark-image'  data-ng-src="{{baseUrl}}/static/img/placeholder.gif" 
-                      alt="{{bookmark.title}}" src=""   data-preload-image="getThumbnail(bookmark.url)" /></a> 
+            <a href='{{bookmark.url}}' title='{{bookmark.url}}' target="_blank">
+                <img class='bookmark-image'  data-ng-src="/static/img/placeholder.gif" 
+                     title="{{bookmark.description}}" data-bst-tooltip data-placement="bottom"
+                     alt="{{bookmark.url}}" src=""   data-preload-image="getThumbnail(bookmark.url)" /></a> 
+            <h4 class="ellipsis" >
+                <a href="{{bookmark.url}}" target='_blank' >{{ bookmark.title|capitalize  }}</a>
+            </h4>
+            <div>
+                <button  class="btn btn-default btn-xs" data-ng-click="edit(bookmark)">Edit </button>
+                &nbsp;
+                <button  class="btn btn-default btn-xs" data-ng-click="remove(bookmark)">Delete</button>
+            </div>
+            <div>
+                <a class="btn btn-mini"  href="#/bookmark/tag/{{tag.name}}" data-ng-repeat="tag in bookmark.tag">{{tag.name}}</a>
+            </div>
         </div>
-        <h5> <a href="{{bookmark.url}}" target='_blank'>{{bookmark.title | trim:30 }}</a></h5>
-        <div title="{{bookmark.description}}" data-bst-tooltip data-placement="bottom"><small>{{ bookmark.description | trim:35 }}</small></div>
-        <div >
-            <ul class=' small inline'>
-                <li><small><a data-open-modal="#{{modal_id}}" data-ng-click="editBookmark(bookmark)" href="javascript: void 0;">edit</a></small></li>
-                <li><small><a data-ng-click="remove(bookmark.id,$index)">delete</a></small></li>
-            </ul>
-        </div>
-        <div>
-            <a class="btn btn-mini"  href="#/bookmark/tag/{{tag}}" data-ng-repeat="tag in splitTagString(bookmark)">{{tag}}</a>
-        </div>
-    </li>
-</ul>
-<div data-ng-hide="!BookmarkManager.bookmarks.length==0">
+    </div>
+</section>
+<div data-ng-if="Bookmarks.bookmarks.length === 0">
     <h1 class="muted centered span8 offset2 italic not-found">No Bookmark found , please add a new one , or import bookmarks with the account menu</h1>
 </div> 
-<div>
-    <button data-ng-show="(BookmarkManager.offset*BookmarkManager.limit)<BookmarkManager.count" 
-            class="btn btn-primary span12" data-ng-disabled="fetchingBookmarks" data-ng-click="getBookmarks(BookmarkManager.offset,BookmarkManager.limit)">Load more bookmarks.</button>
-</div>
-<span data-ng-include="baseUrl+'/static/js/app/partials/modal.html'"></span>
+<section class="text-center">
+    <hr />
+    <button 
+        data-ng-show="Bookmarks.bookmarks.length > 0 && (lastBookmarkBatch.length % limit) === 0" 
+        class="btn btn-primary btn-lg" 
+        data-ng-disabled="fetchingBookmarks" 
+        data-ng-click="nextBookmarkPage()">Load more bookmarks.
+    </button>
+</section>
+<span data-ng-include="baseUrl + '/static/js/app/partials/modal.html'"></span>
+<h1>&nbsp;</h1>

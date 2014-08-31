@@ -1,41 +1,103 @@
-<div class="span6">
-    <h4>Account</h4>
-    <form name="account_form">
-        <label for="user_email">Email :</label>
-        <input type="text" name="email" data-ng-model='user_config.email' id="user_email" required>
-        <label for="user_username">Username :</label>
-        <input type="text" name="username" data-ng-model="user_config.username" id="user_username" required>
-        <label for="save"></label>
-        <input class="btn btn-success" type="button" value="Save" name="save" data-ng-disabled="account_form.$invalid">
-        <input class="btn " type="reset" value="Reset">
+<div class="col-md-6">
+    <form name="account_form" class="form-horizontal">
+        <fieldset>
+            <legend>Account</legend>
+            <div class="form-group">
+                <label for="user_email" class="control-label col-sm-3">Email :</label>
+
+                <div class="col-sm-9">
+                    <input type="text" name="email" data-ng-model='user_config.email' id="user_email"
+                           class="form-control"
+                           required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="user_username" class="control-label col-sm-3">Username :</label>
+
+                <div class="col-sm-9">
+                    <input type="text" name="username" class="form-control" data-ng-model="user_config.username"
+                           id="user_username" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="control-label col-sm-3"></label>
+
+                <div class="col-sm-9">
+                    <input class="btn btn-success" type="button" value="Save" name="save"
+                           data-ng-disabled="account_form.$invalid">
+                    <input class="btn " type="reset" value="Reset">
+                </div>
+            </div>
+        </fieldset>
     </form>
+
     <hr>
-    <h4>Change password</h4>
-    <form action="password_form">
-        <label for="user_old_password">Old Password : </label>
-        <input type="password" name="username" data-ng-model="user_config.old_password" required id="user_old_password">
-        <label for="user_new_password">New Password : </label>
-        <input type="password" name="username" data-ng-model="user_config.password" required id="user_new_password">
-        <label for="user_new_verify_password">New Password verify: </label>
-        <input type="password" name="username" data-ng-model="user_config.verify_password" id="user_new_verify_password" required data-password-verify="user_config.password">
-        <label for="save"></label>
-        <input class="btn btn-success" type="button" name="save" value="Save" data-ng-disabled="password_form.$invalid">
-        <input class="btn " type="reset" value="Reset">
+
+    <form name="password_form" class="form-horizontal">
+        <fieldset disabled>
+            <legend>Change password</legend>
+            <div class="form-group">
+                <label class="control-label col-sm-3" for="user_old_password">Old Password : </label>
+
+                <div class="col-sm-9">
+                    <input type="password" class="form-control" name="username" data-ng-model="user_config.old_password"
+                           required
+                           id="user_old_password">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3" for="user_new_password">New Password : </label>
+
+                <div class="col-sm-9">
+                    <input class="form-control" type="password" name="username" data-ng-model="user_config.password"
+                           required id="user_new_password">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3" for="user_new_verify_password">New Password verify: </label>
+
+                <div class="col-sm-9">
+                    <input type="password" name="username" data-ng-model="user_config.verify_password"
+                           id="user_new_verify_password" class="form-control"
+                           required data-password-verify="user_config.password">
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label for="save" class="control-label col-sm-3"></label>
+
+                <div class="col-sm-9">
+                    <input class="btn btn-success" type="button" name="save" value="Save"
+                           data-ng-disabled="password_form.$invalid">
+                    <input class="btn " type="reset" value="Reset">
+                </div>
+            </div>
+        </fieldset>
     </form>
 </div>
-<div class="span6">
-    <h4>Import bookmarks</h4>
-    <p>Import bookmarks from a html file</p>
-    <form name="import_form" enctype="multipart/form-data"  method="POST" action="{{baseUrl}}/json/bookmark/import">
-        <label for="imported_file">Maximum html file size : {{maxSizeUpload}} .</label>
-        <input accept="text/html" type="file" name="imported_file" id="imported_file">
-        <label for="save"></label>
-        <input class="btn btn-success" type="submit" name="save" value="Import file" data-ng-disabled="import_form.$invalid">
-        <input class="btn " type="reset" value="Reset">
+<div class="col-md-6">
+
+    <form name="import_form" enctype="multipart/form-data" method="POST" action="{{baseUrl}}/json/bookmark/import">
+        <fieldset>
+            <legend>Import bookmarks</legend>
+            <p>Import bookmarks from a html file</p>
+            <label for="imported_file">Maximum html file size : {{maxSizeUpload}} .</label>
+            <input accept="text/html" type="file" class="btn btn-default" name="imported_file" id="imported_file">
+            <label for="save"></label>
+            <input class="btn btn-success" type="submit" name="save" value="Import file"
+                   data-ng-disabled="import_form.$invalid">
+            <input class="btn " type="reset" value="Reset">
+        </fieldset>
+
     </form>
-    <h4>Export bookmarks</h4>
-    <p>Save bookmarks as html file</p>
+    <hr>
+
     <form action="{{baseUrl}}/json/bookmark/export" method="POST">
-        <input type="submit" value="Export bookmarks" class='btn btn-info'>
+        <fieldset>
+            <legend>Export bookmarks</legend>
+            <p>Save bookmarks as html file</p>
+            <input type="submit" value="Export bookmarks" class='btn btn-info'>
+
+        </fieldset>
     </form>
 </div>

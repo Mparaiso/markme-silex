@@ -1,0 +1,15 @@
+{#
+ MarkMe/Views/include/navbar.twig
+#}
+<div class="navbar navbar-default">
+    <div class="container">
+        <div class='navbar-header'>
+            <a class='navbar-brand brand' href='/'>Mark.me</a>
+        </div>
+        <ul class="navbar-nav navbar-right nav">
+            <li>
+                <a href="{{ app.url_generator.generate('login') }}">Login</a>
+            </li>
+        </ul>
+    </div>
+</div>

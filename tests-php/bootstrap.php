@@ -1,23 +1,27 @@
 <?php
 
-/** charge l'autoloader pour les tests * */
-if(! defined("ROOT")):
-    define("ROOT", dirname(__DIR__));
-endif;
+/** charge l'autoloader pour les tests **/
 
-require(__DIR__ . "/../vendor/autoload.php");
+$autoload = require(__DIR__ . "/../vendor/autoload.php");
+$autoload->add("", __DIR__);
+$autoload->add("MarkMe", __DIR__ . '/../');
 
-/**
- * crée une application et configure celle-ci.
- * @return Silex\Application
- */
-function createApplication() {
-    putenv("MARKME_DB_DRIVER=pdo_sqlite");
-    $schema = file_get_contents(ROOT . '/Database/schema.sqlite.sql');
-    $app = require ROOT . '/App/application.php';
-    $app["debug"] = true;
-    $app["exception_handler"]->disable();
-    $app["session.test"] = true;
-    $app["db"]->exec($schema);
-    return $app;
+class Bootstrap
+{
+
+    /**
+     * crée une application et configure celle-ci.
+     * @return Silex\Application
+     */
+    static function createApplication()
+    {
+        putenv("MARKME_DB_DRIVER=pdo_sqlite");
+        $app = new \MarkMe\App(array('debug' => true));
+        $app["debug"] = true;
+        $app["exception_handler"]->disable();
+        $app["session.test"] = true;
+        $app->boot();
+        return $app;
+    }
+
 }

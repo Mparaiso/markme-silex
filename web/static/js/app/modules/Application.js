@@ -1,5 +1,5 @@
 window.baseUrl = window.baseUrl || "";
-Array.prototype.getIndexOf = function(callback) {
+Array.prototype.getIndexOf = Array.prototype.getIndexOf || function(callback) {
     for (var i = 0; i < this.length; i++) {
         if (callback(this[i]) === true) {
             return i;
@@ -8,7 +8,7 @@ Array.prototype.getIndexOf = function(callback) {
     return -1;
 };
 
-Array.prototype.append = function(arr) {
+Array.prototype.append = Array.prototype.append || function(arr) {
     if (!arr instanceof Array) {
         throw arr + " must be an instance of Array";
     }
@@ -18,22 +18,23 @@ Array.prototype.append = function(arr) {
     return this;
 };
 
-// FR : module principal
-// EN : main module
-var app = angular.module("Application",
-        ["ApplicationDirectives", "ApplicationServices", "ApplicationFilters"]);
-app.controller("MainController",
-        function($scope, $window, UserService, BookmarkManager, Url) {
+/**
+ * EN : main module
+ * FR : module principal.
+ */
+angular.module("markme", ["ApplicationDirectives", "ApplicationServices", "ApplicationFilters", 'ngRoute'])
+        .value('Alert', {})
+        .controller("MainCtrl", function($scope, $window, UserService, Bookmarks, Alert, ThumbnailService) {
 
             // initialization
-            $scope.baseUrl = Url.getBase();
+            ThumbnailService.setService(ThumbnailService.services.ROBOTHUMB);
             $scope.maxSizeUpload = "5M";
-            $scope.BookmarkManager = BookmarkManager;
+            $scope.Bookmarks = Bookmarks;
 
             $scope.user = {};
             $scope.tags = {};
-            $scope.alert = {};
-            $scope.alert.info = "Application loaded successfully!";
+            $scope.Alert = Alert;
+            Alert.info = "Application loaded successfully!";
 
 
             UserService.getCurrentUser(function success(data) {
@@ -55,16 +56,6 @@ app.controller("MainController",
                 $scope.alert.error = "Something went wrong bookmark could not be saved";
             };
 
-            $scope.save = function(bookmark) {
-                // EN : save bookmark currently edited
-                console.log(bookmark);
-                bookmark.tags = bookmark.tags.split(",").filter(function(x) {
-                    return x !== "";
-                });
-                BookmarkManager.save(bookmark, successSave, errorSave);
-                $scope.alert.info = "Saving bookmark " + bookmark.title + ", please wait...";
-            };
-
             $scope.addBookmark = function() {
                 // edit new bookmark
                 $scope.bookmark = {};
@@ -82,106 +73,75 @@ app.controller("MainController",
                     $scope.error = "Something went wrong";
                 });
             };
-        });
-
-app.controller("NavigationController", ["$scope", "$routeParams", "$location",
-    function NavigationController($scope, $routeParams, $location) {
-        $scope.modal_id = "add_modal";
-        $scope.search = $routeParams.search;
-        $scope.find = function(search) {
-            // @note @angular dynamicaly change the current page route without refreshing the page
-            $location.path('/bookmark/search/' + search);
-        };
-    }
-]);
-
-app.controller("BookmarkFormController", ["$scope", "BookmarkProvider", function() {}]);
-
-app.controller("BookmarkController",
-        function BookmarkController($scope, $log, $routeParams,BookmarkManager, BookmarkProvider, ThumbnailService) {
-            $log.info("BookmarkController init");
-            // configure le service
-            ThumbnailService.setService(ThumbnailService.services.ROBOTHUMB);
+        })
+        .controller("NavigationCtrl", ["$scope", "$routeParams", "$location", function NavigationController($scope, $routeParams, $location) {
+                $scope.modal_id = "add_modal";
+                $scope.search = $routeParams.search;
+                $scope.find = function(search) {
+                    // @note @angular dynamicaly change the current page route without refreshing the page
+                    $location.path('/bookmark/search/' + search);
+                };
+            }
+        ])
+        .controller("BookmarkCtrl", function BookmarkCtrl($scope, mpModalService, $routeParams, Alert, Bookmarks, ThumbnailService) {
             $scope.getThumbnail = ThumbnailService.getThumbnail;
-            $scope.BookmarkManager = BookmarkManager;
-            $scope.modal_id = "edit_modal";
-            $scope.fetchingBookmarks = false;
-            var successGet = function success(data) {
-                if (data.status === "ok") {
-                    console.log("success get from BookmarkController", data);
-                    $scope.alert.info = "";
-                } else {
-                    $scope.alert.info = data.message;
-                }
-                $scope.fetchingBookmarks = false;
+            $scope.editBookmarkModalId = 'bookmark-edit';
+            $scope.Bookmarks = Bookmarks;
+            $scope.edit = function(bookmark) {
+                Bookmarks.current = angular.copy(bookmark);
+                Bookmarks.current.tags = Bookmarks.current.tags || [];
+                mpModalService.showModal('bookmark-edit');
             };
-            $scope.splitTagString = function(bookmark) {
-                if (typeof(bookmark.tags) === "string")
-                    return bookmark.tags.split(",").filter(function(i) {
-                        return i !== null;
-                    });
-            };
-            $scope.getBookmarks = function(offset, limit) {
-                // initialization
-                if ($scope.fetchingBookmarks === true)
-                    return;
-                $scope.alert.info = "Fetching bookmarks";
-                $scope.fetchingBookmarks = true;
-                if ($routeParams.tagName) {
-                    BookmarkManager.getByTag($routeParams.tagName, successGet);
-                } else if ($routeParams.search) {
-                    BookmarkManager.search($routeParams.search, successGet);
-                } else {
-                    BookmarkManager.get(offset, limit, successGet);
-                }
-            };
-            $scope.editBookmark = function(bookmark) {
-                // edit selected bookmark
-                console.log(bookmark);
-                if (!bookmark.tags) {
-                    bookmark.tags = [];
-                }
-                $scope.bookmark = angular.copy(bookmark);
-
-            };
-            $scope.save = function(bookmark) {
-                bookmark.tags = $scope.splitTagString(bookmark);
-                $scope.BookmarkManager.save(bookmark,
-                        function success(data) {
-                            if (data.status === "ok") {
-                                $scope.alert.info = "Bookmark saved successfully";
-                            } else {
-                                $scope.alert.error = data.message;
-                            }
-                        },
-                        function error(data) {
-                            $scope.alert.error = data.message;
+            $scope.remove = function(bookmark) {
+                Alert.info = "Deleting %s ...".replace("%s", bookmark.title);
+                return Bookmarks.remove(bookmark)
+                        .then(function() {
+                            Alert.info = "Bookmark %s removed.".replace("%s", bookmark.title);
+                        })
+                        .catch(function() {
+                            Alert.danger = "Error removing bookmark %s .".replace("%s", bookmark.title);
                         });
-                $scope.alert.info = "Saving bookmark " + bookmark.title + ", please wait...";
             };
-            $scope.remove = function(id, index) {
-                $scope.alert.info = "Deleting " + $scope.BookmarkManager.bookmarks[index].title + "...";
-                BookmarkProvider.remove(id, function success(data) {
-                    if (data.status === "ok") {
-                        $scope.alert.info = "Bookmark " + $scope.BookmarkManager.bookmarks[index].title + " deleted successfully!";
-                        $scope.BookmarkManager.bookmarks.splice(index, 1);
-                        $scope.BookmarkManager.bookmarks = $scope.BookmarkManager.bookmarks.slice();
-                    } else {
-                        $scope.alert.error = data.message;
-                    }
-                }, function error() {
-                    console.log("error", arguments);
-                    $scope.alert.error = "Something went wrong during bookmark deletion.";
-                });
+            $scope.nextBookmarkPage = function() {
+                $scope.fetchingBookmarks = true;
+                return $scope.listBookmarks(++$scope.offset, $scope.limit);
             };
-            // initialization
-            BookmarkManager.bookmarks = [];
-            BookmarkManager.offset = 0;
-            $scope.getBookmarks($scope.BookmarkManager.offset, $scope.BookmarkManager.limit);
-        });
+            $scope.listBookmarks = function(offset, limit) {
+                $scope.fetchingBookmarks = true;
+                return $scope.Bookmarks.list(offset, limit)
+                        .then(function(lastBookmarkBatch) {
+                            Alert.info = "";
+                            $scope.lastBookmarkBatch = lastBookmarkBatch;
+                        })
+                        .catch(function() {
+                            Alert.error = "Something went wrong!";
+                        })
+                        .finally(function() {
+                            $scope.fetchingBookmarks = false;
+                        });
+            };
+            $scope.offset = 0;
+            $scope.limit = 25;
+            $scope.fetchingBookmarks = true;
+            $scope.listBookmarks($scope.offset, $scope.limit);
+        })
+        .controller('BookmarkFormCtrl', function($scope, Bookmarks, Alert) {
+            $scope.Bookmarks = Bookmarks;
+            $scope.save = function(bookmark) {
+                Alert.info = "Saving bookmark " + Bookmarks.current.title + ", please wait...";
+                Bookmarks.save(bookmark)
+                        .then(function(bookmark) {
+                            Alert.info = "";
+                        })
+                        .catch(function() {
+                            Alert.danger = "Error saving bookmark";
+                        })
+                        .finally(function() {
 
-app.controller("TagController",
-        function TagController($scope, $log, TagService) {
+                        });
+            }
+        })
+        .controller("TagController", function TagController($scope, $log, TagService) {
             $log.info("TagController init");
             var successCallback = function success(data) {
                 if (data.status === "ok") {
@@ -192,44 +152,26 @@ app.controller("TagController",
             };
 
             TagService.get(successCallback);
-        });
-
-app.controller("HomeController",
-        function($scope, Url) {
-            $scope.baseUrl = Url.getBase();
-            $scope.user = $scope.user || {};
-            $scope.response = {};
-            $scope.title = "Mark.me";
-            $scope.year = new Date().getFullYear();
-            $scope.login = function(user) {
-                $scope.response.status = "error";
-                $scope.response.message = "Username or password invalid";
-                return console.log(user);
-            };
-        });
-
-app.controller("LoginController", ["$scope", "$window", "UserService",
-    function($scope, $window, UserService) {
-        $scope.error = "";
-        $scope.info = "";
-        $scope.login = function(user) {
-            $scope.info = "login please wait";
-            UserService.login(user, function success(data) {
-                if (data.status === "ok") {
-                    $scope.info = "redirecting to application";
-                    $window.location = $scope.baseUrl + "/application";
-                } else {
-                    $scope.error = data.message;
-                }
-            }, function error() {
-                console.log(arguments);
-                $scope.error = "Something went wrong";
-            });
-        };
-    }]);
-
-app.controller("RegisterController",
-        function($scope, $window, UserService) {
+        })
+        .controller("LoginController", ["$scope", "$window", "UserService", function($scope, $window, UserService) {
+                $scope.error = "";
+                $scope.info = "";
+                $scope.login = function(user) {
+                    $scope.info = "login please wait";
+                    UserService.login(user, function success(data) {
+                        if (data.status === "ok") {
+                            $scope.info = "redirecting to application";
+                            $window.location = $scope.baseUrl + "/application";
+                        } else {
+                            $scope.error = data.message;
+                        }
+                    }, function error() {
+                        console.log(arguments);
+                        $scope.error = "Something went wrong";
+                    });
+                };
+            }])
+        .controller("RegisterController", function($scope, $window, UserService) {
             $scope.user = {};
             $scope.register = function(user) {
                 if (user.password !== user.password_verify) {
@@ -247,47 +189,43 @@ app.controller("RegisterController",
                     });
                 }
             };
-        });
+        })
+        .controller("AccountController", ["$scope", "UserService", function AccountController($scope, UserService) {
+                $scope.user_config = {};
+                UserService.getCurrentUser(function(data) {
+                    if (data.status === "ok") {
+                        $scope.user_config = data.user;
+                    } else {
+                        $scope.alert.error = "Could not get user infos.";
+                    }
+                }, function() {
+                    $scope.alert.error = "Could not get user infos.";
+                });
+            }])
+        .config(['$routeProvider',
+            function($routeProvider) {
 
-app.controller("AccountController", ["$scope", "UserService",
-    function AccountController($scope, UserService) {
-        $scope.user_config = {};
-        UserService.getCurrentUser(function(data) {
-            if (data.status === "ok") {
-                $scope.user_config = data.user;
-            } else {
-                $scope.alert.error = "Could not get user infos.";
-            }
-        }, function() {
-            $scope.alert.error = "Could not get user infos.";
-        });
-    }]);
+                $routeProvider.when("/bookmark/tag/:tagName", {
+                    templateUrl: "static/js/app/partials/bookmarks.html",
+                    controller: "BookmarkCtrl"
+                });
+                $routeProvider.when("/bookmark/search/:search", {
+                    templateUrl: "static/js/app/partials/bookmarks.html",
+                    controller: "BookmarkCtrl"
+                });
+                $routeProvider.when("/bookmark", {
+                    templateUrl: "static/js/app/partials/bookmarks.html",
+                    controller: "BookmarkCtrl"
+                });
+                $routeProvider.when("/tag", {
+                    templateUrl: "static/js/app/partials/tags.html",
+                    controller: "TagController"
+                });
 
-app.config(['$routeProvider',
-    function($routeProvider) {
+                $routeProvider.when("/account", {
+                    templateUrl: "static/js/app/partials/account.html",
+                    controller: "AccountController"
+                });
 
-        $routeProvider.when("/bookmark/tag/:tagName", {
-            templateUrl: "static/js/app/partials/bookmarks.html",
-            controller: "BookmarkController"
-        });
-        $routeProvider.when("/bookmark/search/:search", {
-            templateUrl: "static/js/app/partials/bookmarks.html",
-            controller: "BookmarkController"
-        });
-        $routeProvider.when("/bookmark", {
-            templateUrl: "static/js/app/partials/bookmarks.html",
-            controller: "BookmarkController"
-        });
-        $routeProvider.when("/tag", {
-            templateUrl: "static/js/app/partials/tags.html",
-            controller: "TagController"
-        });
-
-        $routeProvider.when("/account", {
-            templateUrl: "static/js/app/partials/account.html",
-            controller: "AccountController"
-        });
-
-        $routeProvider.otherwise({redirectTo: "/bookmark"});
-    }]);
-
+                $routeProvider.otherwise({redirectTo: "/bookmark"});
+            }]);

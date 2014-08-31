@@ -1,25 +1,28 @@
-body{
+body {
     background: #F9F9F9;
 }
-.brand,.sans{
-    font-family: Georgia,Times,serif;
+
+.brand, .sans {
+    font-family: Georgia, Times, serif;
     font-weight: bold;
 }
-.italic{
+
+.italic {
     font-style: italic;
 }
 
-ul{
+ul {
     list-style-type: square;
 }
 
-.white{
-    color:#FFF;
+.white {
+    color: #FFF;
 }
 
-hr.white{
+hr.white {
     border-color: #FFF;
 }
+
 .popover {
     width: auto;
 }
@@ -32,42 +35,58 @@ input.ng-valid.ng-dirty {
     background-color: #E8FFE8;
 }
 
-.bookmark.thumbnail{
-    width:210px;
-    margin-top:5px;
-    margin-bottom:10px;
+.bookmark.thumbnail {
+    width: 210px;
+    margin-top: 5px;
+    margin-bottom: 10px;
     border-color: #DDD;
 }
 
-.bookmark-image{
-    width:200px;
-    height:150px;
+.bookmark-image {
+    width: 200px;
+    height: 150px;
     background: #EEE;
 }
 
-.modal-body{
+.modal-body {
     max-height: none;
 }
+
 /* ne pas montrer les élements avant que l'app soit chargée */
 [ng\:cloak], [ng-cloak], .ng-cloak {
     display: none;
 }
+
 /* tagsinput */
-div.tagsinput span.tag{
-    color:rgb(10, 77, 139);
+div.tagsinput span.tag {
+    color: rgb(10, 77, 139);
     border: 1px solid rgb(15, 122, 136);
     background: rgb(198, 208, 247);
 }
+
 div.tagsinput span.tag a {
-    color:rgb(10, 77, 139);
+    color: rgb(10, 77, 139);
 }
 
 /** 
 **/
-.not-found{
-    color:#EEE;
+.not-found {
+    color: #EEE;
 }
 
-.main{
-    min-height: 400px;
+main {
+    min-height: 600px;
+}
+footer{
+    min-height: 160px;
+}
+
+.link{
+    cursor:pointer;
+}
+.ellipsis{
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }

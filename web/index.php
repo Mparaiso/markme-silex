@@ -3,7 +3,9 @@
 
 use MarkMe\App;
 
-$autoload = require(__DIR__.'/../vendor/autoload.php');
+date_default_timezone_set('Europe/Paris') ;
+
+$autoload = require_once __DIR__.'/../vendor/autoload.php';
 $autoload->add('MarkMe',__DIR__."/../");
 
 # router for php builtin server router

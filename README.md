@@ -16,7 +16,7 @@ inspired by bookmark.ly : http://bookmarkly.com/
 + Add description and tags
 + Import and Export your bookmarks from and to popular browsers
 + bookmark's screenshots
-+ Search and filter through you bookmarks
++ Search and filter through your bookmarks
 + Access your bookmarks anywhere!
 
 #### INSTALLATION

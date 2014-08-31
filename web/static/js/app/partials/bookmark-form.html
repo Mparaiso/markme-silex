@@ -1,0 +1,55 @@
+<form name="bookmark_form" role='form'
+      novalidate="novalidate" data-ng-controller="BookmarkFormCtrl">
+    <h5 data-ng-show="Bookmark.current.id">Edit bookmark
+        <small>{{Bookmarks.current.title}}</small>
+    </h5>
+    <h5 data-ng-show="!Bookmarks.current.id">Add bookmark</h5>
+
+    <div class="form-group">
+        <label for="bookmark_title">Title :</label>
+        <input type="text" placeholder="title"
+               name="bookmark_title"
+               class="form-control"
+               autocomplete="on"
+               data-ng-model='Bookmarks.current.title'
+               id="bookmark_title" required>
+    </div>
+
+
+    <div class="form-group">
+        <label for="bookmark_url">Url :</label>
+        <input type="url" placeholder="http://exemple.com" autocomplete="on"
+               name="bookmark_url"
+               data-valid-url
+               class="form-control"
+               data-ng-model="Bookmarks.current.url"
+               id="bookmark_url" required>
+    </div>
+
+    <div class="form-group">
+        <label for="bookmark_description">Description :</label>
+
+        <input type="text" placeholder="description" autocomplete="on"
+               name="bookmark_description"
+               class="form-control"
+               data-ng-model="Bookmarks.current.description"
+               id="bookmark_description" required>
+    </div>
+
+    <div class="form-group">
+        <label class='control-label' for="bookmark_tags">Tags :<br/> <i class="text-muted mute">press enter after each
+                tag.</i></label>
+
+        <input placeholder='sport, music, software' name="bookmark_tags"
+               data-ng-model="Bookmarks.current.tags"
+               id="bookmark_tags" class="form-control" data-tags-input="Bookmarks.current.tags"/>
+    </div>
+    <input type="hidden" data-ng-model="Bookmarks.current.id" name="bookmark_id">
+
+    <div class='form-group '>
+        <input data-ng-click="save(Bookmark.current)" data-ng-disabled="bookmark_form.$invalid||bookmark_form.$pristine" class="btn btn-primary"
+               type="submit" value="Save" data-dismiss="modal">
+        <input class="btn" type="reset" value="Reset">
+        <input class='btn' type="button" value="Cancel" data-dismiss="modal">
+    </div>
+</form>

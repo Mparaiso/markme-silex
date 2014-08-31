@@ -1,0 +1,48 @@
+{% extends 'layout.twig' %}
+{% block head_css %}
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+{% endblock %}
+{% block content %}
+    {#navbar#}
+    {% include 'include/navbar.twig' %}
+    {#content#}
+    <div class='container'>
+        <main class="row jumbotron">
+            <div class="col-sm-6">
+                <form method="POST" action="{{ app.url_generator.generate('login-check') }}" role="form">
+                    <fieldset>
+                        <legend>Please sign in.</legend>
+                        {% if error %}
+                            <div class="alert alert-danger">
+                                {{ error }}
+                            </div>
+                        {% endif %}
+                        {%include 'include/form.twig'%}
+                        <div class="form-group">
+                            <input type="reset" class="btn btn-default"/>
+                            <input type="submit" class="btn btn-success"/>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </main>
+        <footer class="row">
+            {% include 'include/footer.twig' %}
+        </footer>
+    </div>
+{% endblock %}
+{% block bottom_scripts %}
+    {{ parent() }}
+    {#
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/bower_components/lodash/dist/lodash.min.js"></script>
+    <script type="text/javascript" src="/bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="/bower_components/angular-route/angular-route.min.js"></script>
+    <script type="text/javascript" src="/static/js/app/modules/Application.js"></script>
+    <script type="text/javascript" src="/static/js/app/modules/ApplicationFilters.js"></script>
+    <script type="text/javascript" src="/static/js/app/modules/ApplicationDirectives.js"></script>
+    <script type="text/javascript" src="/static/js/app/modules/ApplicationServices.js"></script>
+    #}
+{% endblock %}

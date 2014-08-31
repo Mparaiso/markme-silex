@@ -1,0 +1,22 @@
+{
+  "name": "jquery.autocomplete",
+  "main": "jquery.autocomplete.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "docs",
+    "lib"
+  ],
+  "homepage": "https://github.com/julien-c/jQueryAutocompletePlugin",
+  "_release": "2950b0e8df",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "2950b0e8df8380bf1fd09d0b0ae5bfdf83d60a2a"
+  },
+  "_source": "git://github.com/julien-c/jQueryAutocompletePlugin.git",
+  "_target": "*",
+  "_originalSource": "jquery.autocomplete",
+  "_direct": true
+}

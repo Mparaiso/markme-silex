@@ -1,3 +1,6 @@
+# run php tests
+test:
+	@phpunit
 commit:
 	@git add .
 	@git commit -am"$(message) `date`"
@@ -7,4 +10,7 @@ deploy:
 	@git push heroku master
 test-angular:
 	@karma start
-.PHONY: commit deploy test-angular push
+# start php server
+start:
+	@php -S localhost:3000 -t web web/index.php &
+.PHONY: commit deploy test-angular push test start
