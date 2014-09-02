@@ -16,7 +16,7 @@ if (php_sapi_name() === 'cli-server' && is_file($filename)) {
     return false;
 }
 
-$debug = getenv('PHP_ENV') == "production" ? FALSE : TRUE;
+$debug = getenv('MARKME_ENVIRONMENT') == "production" ? FALSE : TRUE;
 
 ErrorHandler::register();
 ExceptionHandler::register($debug);

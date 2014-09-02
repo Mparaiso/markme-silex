@@ -50,7 +50,13 @@ inspired by bookmark.ly : http://bookmarkly.com/
     + in the repository folder , install composer packages : 
         php /path-to-composer/composer.phar install
 
-+ create the database , the database schema is Database/schema.sql
++ once,the environment variables are configured, in a console ,in the root folder of the app, 
+    
+    php console.php  orm:schema-tool:create --force
+
+to create the database.
+
++ create an account and login !
 
 ###### Why
 
