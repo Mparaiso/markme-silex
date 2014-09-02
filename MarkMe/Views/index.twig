@@ -27,15 +27,15 @@
                         <legend>Register, it's fast and free !</legend>
                         {%include 'include/form.twig'%}
                         <div class="form-group">
-                                <input class="btn btn-default" type="reset" />
-                                <input class='btn btn-success'
-                                       type="submit">
+                            <input class="btn btn-default" type="reset" />
+                            <input class='btn btn-success'
+                                   type="submit">
                         </div>
                     </fieldset>
                 </form>
             </div>
             <div class="col-md-4">
-                <img class='thumbnail pull-right' data-ng-src='/markme/img/abime.jpg' src="http://placehold.it/320x240"
+                <img class='thumbnail pull-right' src='/markme/img/abime.jpg' 
                      alt="">
             </div>
         </main>
@@ -45,4 +45,5 @@
     </div>
 {% endblock %}
 {% block bottom_scripts %}
+    {{parent()}}
 {% endblock %}
