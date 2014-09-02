@@ -22,5 +22,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "*"
+    },
+    "provide": {
+        "ext-intl": "*"
     }
 }
