@@ -43,14 +43,14 @@ inspired by bookmark.ly : http://bookmarkly.com/
     + MARKME_SALT a salt for password encryption ( a sentence , whatever )
     + MARKME_ENVIRONMENT production or development
 
-+ the webroot is the www folder
++ the webroot is the `web` folder
 
 + get composer
     + http://getcomposer.org/
     + in the repository folder , install composer packages : 
         php /path-to-composer/composer.phar install
 
-+ once,the environment variables are configured, in a console ,in the root folder of the app, 
++ once,the environment variables are configured, in a console ,in the repo folder 
     
         php console.php  orm:schema-tool:create --force
 
