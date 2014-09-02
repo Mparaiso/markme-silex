@@ -52,7 +52,7 @@ inspired by bookmark.ly : http://bookmarkly.com/
 
 + once,the environment variables are configured, in a console ,in the root folder of the app, 
     
-    php console.php  orm:schema-tool:create --force
+        php console.php  orm:schema-tool:create --force
 
 to create the database.
 
