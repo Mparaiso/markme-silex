@@ -23,5 +23,9 @@
     "require-dev": {
         "phpunit/phpunit": "*",
         "heroku/heroku-buildpack-php": "*"
+    },
+    "provide": {
+        "ext-intl": "*",
+        "lib-icu": "*"
     }
 }
