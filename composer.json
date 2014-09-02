@@ -5,7 +5,7 @@
         "twig/twig": "1.*",
         "doctrine/orm": "2.*",
         "symfony/monolog-bridge": "~2.3",
-        "mparaiso/doctrineormserviceprovider": "0.0.*@dev",
+        "mparaiso/doctrineormserviceprovider": "0.0.*",
         "symfony/security": "~2.3",
         "symfony/validator": "2.3.*",
         "symfony/serializer": "~2.3",
