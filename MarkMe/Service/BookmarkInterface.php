@@ -19,11 +19,13 @@ namespace MarkMe\Service {
 
         public function findByTag($tagName, UserEntity $user, $limit, $offset);
 
-        function getAll( UserEntity $user,$limit,$offset);
+        function getAll(UserEntity $user, $limit, $offset);
 
-        function searchTags($tags, UserEntity $user, $limit ,$offset);
+        function searchTags($tags, UserEntity $user, $limit, $offset);
 
         function getAllTags(UserEntity $user, $limit = 30);
+
+        function setValidator($validator);
     }
 
 }

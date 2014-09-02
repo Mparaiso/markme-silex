@@ -8,6 +8,8 @@ use MarkMe\Entity\User as UserEntity;
 use MarkMe\Entity\Bookmark as BookmarkEntity;
 use \MarkMe\Entity\BookmarkImportCollection;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Validator\Validator;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
  * Bookmark
@@ -17,6 +19,12 @@ use Symfony\Component\DomCrawler\Crawler;
  */
 class Bookmark extends EntityRepository implements BookmarkInterface {
 
+    /**
+     *
+     * @var Validator 
+     */
+    private $validator;
+
     public function count(UserEntity $user) {
         return $this->createQueryBuilder('b')->select('count(b.id)')
                         ->where('b.user', $user)
@@ -24,23 +32,22 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
     }
 
     public function create(BookmarkEntity $bookmark, $flush = true) {
+        $this->validate($bookmark);
         $this->getEntityManager()->persist($bookmark);
-        if ($flush == TRUE)
-            $this->getEntityManager()->flush($bookmark);
+        $flush == TRUE AND $this->getEntityManager()->flush($bookmark);
         return $bookmark;
     }
 
     public function update(\MarkMe\Entity\Bookmark $bookmark, $flush = true) {
+        $this->validate($bookmark);
         $this->getEntityManager()->persist($bookmark);
-        if ($flush == TRUE)
-            $this->getEntityManager()->flush($bookmark);
+        $flush == TRUE AND $this->getEntityManager()->flush($bookmark);
         return $bookmark;
     }
 
     public function delete(\MarkMe\Entity\Bookmark $bookmark, $flush = true) {
         $this->getEntityManager()->remove($bookmark);
-        if ($flush == TRUE)
-            $this->getEntityManager()->flush($bookmark);
+        $flush == TRUE AND $this->getEntityManager()->flush($bookmark);
         return $bookmark;
     }
 
@@ -64,7 +71,7 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
             $bookmark->setUrl($bookmarkImport['url']);
             $bookmark->setPrivate(true);
             $bookmark->setUser($user);
-            $this->getEntityManager()->persist($bookmark);
+            $this->create($bookmark, FALSE);
         }
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
@@ -198,6 +205,17 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
         }
         $cache AND $cache->save($url, $result);
         return $result;
+    }
+
+    function setValidator($validator) {
+        $this->validator = $validator;
+    }
+
+    protected function validate($object) {
+        $errors = $this->validator->validate($bookmark);
+        if (count($errors) > 0) {
+            throw new ValidatorException($errors[0]->getMessage());
+        }
     }
 
 }

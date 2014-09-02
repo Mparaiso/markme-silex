@@ -32,7 +32,7 @@ angular.module("markme",
             editBookmarkModalId: 'bookmark-edit',
             bookmarksPerPage: 25,
             maxSizeUpload: '5M',
-            importLimit: 300,
+            importLimit: 400,
             autoCompleteParse: function(data) {
                 var rows = [];
                 if (data && data.tags) {

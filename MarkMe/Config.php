@@ -177,17 +177,18 @@ class Config implements \Silex\ServiceProviderInterface {
         });
         $app["bookmarks"] = $app->share(function (App $app) {
             /* @var \MarkMe\App $app */
-            return $app->entityManager->getRepository('\MarkMe\Entity\Bookmark');
+            $bookmarks = $app->entityManager->getRepository('\MarkMe\Entity\Bookmark');
+            $bookmarks->setValidator($app['validator']);
+            return $bookmarks;
         });
 
-        $app['tags'] = $app->share(function (App $app) {
-            return $app->entityManager->getRepository('\MarkMe\Entity\Tag');
-        });
+
 
         $app['users'] = $app->share(function (App $app) {
             $users = $app->entityManager->getRepository('\MarkMe\Entity\User');
             /* @var \MarkMe\Service\User $users */
             $users->setEncoderFactory($app['security.encoder_factory']);
+            $users->setValidator($app['validator']);
             return $users;
         });
 
