@@ -24,6 +24,7 @@
         "phpunit/phpunit": "*"
     },
     "provide": {
-        "ext-intl": "*"
+        "ext-intl": "*",
+        "lib-icu": "*"
     }
 }
