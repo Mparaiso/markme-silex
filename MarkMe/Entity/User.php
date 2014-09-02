@@ -1,11 +1,11 @@
 <?php
-
+/**
+ * @copyrights 2014 mparaiso <mparaiso@online.fr>
+ * @All rights reserved
+ */
 namespace MarkMe\Entity {
 
-    #use  MarkMe\Entity\Role as RoleEntity;
-
     use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-    #use Symfony\Component\Security\Core\Role\Role;
     use Symfony\Component\Security\Core\User\UserInterface;
     use Symfony\Component\Validator\Constraints\Email;
     use Symfony\Component\Validator\Constraints\Length;
