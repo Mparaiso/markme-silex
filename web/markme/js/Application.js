@@ -43,7 +43,7 @@ angular.module("markme",
                 }
                 return rows;
             }})
-        .controller("MainCtrl", function($scope, Users, Bookmarks, Alert, mpModalService, Thumbnails, Config) {
+        .controller("MainCtrl", function($scope, Users, Bookmarks, Alert, mpModalService, Thumbnails, $timeout, Config) {
             // initialization
             Thumbnails.setService(Thumbnails.services.ROBOTHUMB);
             $scope.Config = Config;
@@ -66,14 +66,17 @@ angular.module("markme",
                 mpModalService.showModal(Config.editBookmarkModalId);
             };
         })
-        .controller("BookmarkCtrl", function BookmarkCtrl($scope, mpModalService, $location, $routeParams, Alert, Bookmarks, Config, Thumbnails) {
+        .controller("BookmarkCtrl", function BookmarkCtrl($scope, mpModalService, $timeout, $routeParams, Alert, Bookmarks, Config, Thumbnails) {
             $scope.getThumbnail = Thumbnails.getThumbnail;
             $scope.Bookmarks = Bookmarks;
             Bookmarks.bookmarks = [];
             $scope.edit = function(bookmark) {
-                Bookmarks.current = angular.copy(bookmark);
-                Bookmarks.current.tags = Bookmarks.current.tags || [];
-                mpModalService.showModal(Config.editBookmarkModalId);
+                $timeout(function() {
+                    Bookmarks.current = angular.copy(bookmark);
+                    Bookmarks.current.tags = Bookmarks.current.tags || [""];
+                    Bookmarks.current.timestamp = Date.now();
+                    mpModalService.showModal(Config.editBookmarkModalId);
+                });
             };
             $scope.remove = function(bookmark) {
                 Alert.info("Deleting %s ...".replace("%s", bookmark.title));

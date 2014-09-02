@@ -4,7 +4,7 @@
         <small>{{Bookmarks.current.title}}</small>
     </h5>
     <h5 data-ng-show="!Bookmarks.current.id">Add bookmark</h5>
-
+    <!-- TITLE -->
     <div class="form-group">
         <label for="bookmark_title">Title :</label>
         <input type="text" placeholder="title"
@@ -15,7 +15,7 @@
                id="bookmark_title" required>
     </div>
 
-
+    <!-- URL -->
     <div class="form-group">
         <label for="bookmark_url">Url :</label>
         <input type="url" placeholder="http://exemple.com" autocomplete="on"
@@ -25,7 +25,7 @@
                data-ng-model="Bookmarks.current.url"
                id="bookmark_url" required>
     </div>
-
+    <!-- DESCRIPTION -->
     <div class="form-group">
         <label for="bookmark_description">Description :</label>
 
@@ -35,7 +35,7 @@
                data-ng-model="Bookmarks.current.description"
                required>
     </div>
-
+    <!-- TAGS -->
     <div class="form-group"  data-ng-if='Bookmarks.current.tags != null'>
         <label class='control-label' for="bookmark_tags">Tags :</label> 
         <div class="help-block">
@@ -46,18 +46,21 @@
         <input placeholder='sport, music, software' 
                name="bookmark_tags"
 
-               data-ng-model="Bookmarks.current.tags"
                class="form-control" 
                data-auto-complete-url="/json/autocomplete"
                data-auto-complete-parse="Config.autoCompleteParse"
                data-width="auto"
+               data-ng-model="Bookmarks.current.tags"
                data-tags-input="Bookmarks.current.tags"/>
     </div>
+    <!-- ID -->
     <input type="hidden" data-ng-model="Bookmarks.current.id" name="bookmark_id">
-
+    <!-- TIMESTAMP -->
+    <input type="hidden" data-ng-model="Bookmarks.current.timestamp" name="bookmark_timestamp"/>
     <div class='form-group '>
+        <!-- SUBMIT -->
         <input data-ng-click="save(Bookmarks.current)" 
-               data-ng-disabled="!bookmark_form.$valid || bookmark_form.$pristine" 
+               data-ng-disabled="bookmark_form.$invalid || bookmark_form.$pristine" 
                class="btn btn-success"
                type="submit" data-dismiss="modal">
         <input class="btn btn-default" type="reset" value="Reset">

@@ -157,6 +157,8 @@ angular.module("ApplicationServices", [])
                         return $http.put('/json/bookmark/' + bookmark.id, bookmark)
                                 .then(function(result) {
                                     var bookmark = result.data.bookmark;
+                                    // force the view to consider this bookmark as a new object.
+                                    bookmark.timestamp = Date.now();
                                     this.bookmarks.splice(this.bookmarks.indexOf(this.bookmarks.filter(function(b) {
                                         return b.id == bookmark.id;
                                     })[0]), 1, bookmark);
@@ -167,6 +169,7 @@ angular.module("ApplicationServices", [])
                         return $http.post('/json/bookmark', bookmark)
                                 .then(function(result) {
                                     var bookmark = result.data.bookmark;
+                                    bookmark.timestamp = Date.now();
                                     this.bookmarks.unshift(bookmark);
                                     return bookmark;
                                 }.bind(this));

@@ -53,22 +53,24 @@
                     });
                 };
             })
-            .directive("preloadImage", function() {
-                return function(scope, element, attrs) {
-                    var imageToload = scope.$eval(attrs['preloadImage']);
-                    var lowSrc = attrs["lowSrc"];
-                    element.attr("src", lowSrc);
-                    var image = new Image();
-                    image.onload = function() {
-                        element.hide();
-                        element.attr("src", image.src);
-                        element.fadeIn(300);
-                    };
-                    image.onerror = function(error) {
-                        console.log("error", error);
-                    };
-                    image.src = imageToload;
-                };
+            .directive("preloadImage", function preloadImage(){
+                return {
+                    scope: {
+                        onError: '&',
+                    },
+                    link: function(scope, element, attrs) {
+                        var imageToload = scope.$eval(attrs['preloadImage']);
+                        var lowSrc = attrs["lowSrc"];
+                        element.attr("src", lowSrc);
+                        var image = new Image();
+                        image.onload = function() {
+                            element.hide();
+                            element.attr("src", image.src);
+                            element.fadeIn(300);
+                        };
+                        image.onerror = scope.onError;
+                        image.src = imageToload;
+                    }}
             })
             .directive("bstTooltip", ["$timeout", function($timeout) {
                     return function(scope, element, attrs) {
@@ -85,29 +87,36 @@
                         autoCompleteUrl: '@',
                         onChange: '&',
                         width: '@',
-                        autoCompleteParse: '&'
+                        autoCompleteParse: '&',
+                        class: '@'
                     },
                     require: 'ngModel',
                     link: function($scope, element, attrs, ctrl) {
                         var update = function() {
-                            ctrl.$setViewValue(element.val().split(','));
-                            $scope.$apply();
+                            $timeout(function() {
+                                ctrl.$setViewValue(element.val().split(','));
+                            })
                         };
 
                         $timeout(function() {
                             element.tagsInput({
+                                class: $scope.class,
                                 width: $scope.width || undefined,
                                 onAddTag: update, onRemoveTag: update,
                                 autocomplete_url: $scope.autoCompleteUrl || undefined,
-                                onChange: $scope.onChange() || undefined,
+                                onChange: $scope.onChange,
                                 autocomplete: {selectFirst: true, width: "auto", autoFill: true, highlight: false,
                                     dataType: "json",
                                     parse: $scope.autoCompleteParse()
                                 }
                             });
                             ctrl.$render = function(value) {
-                                element.importTags(ctrl.$viewValue.join(','));
-                            }
+                                element.importTags('');
+                                var tags = ctrl.$viewValue || [];
+                                tags.forEach(function(t) {
+                                    element.addTag(t);
+                                });
+                            };
                         });
                     }
                 };
@@ -118,17 +127,22 @@
                         itemSelector: '@',
                         transitionDuration: '@',
                         gutter: '@',
-                        masonry: "="
+                        masonry: "=",
+                        layoutComplete: '&',
+                        removeComplete: '&'
                     },
                     link: function($scope, element, attrs, ctrl) {
                         $timeout(function() {
-                            var container,
-                                    update = function() {
-                                        $timeout(function() {
-                                            container.masonry('reloadItems');
-                                            container.masonry();
-                                        }, 5);
-                                    }, getOptions = function() {
+                            var container = undefined
+                                    , update = function(newValue, oldValue) {
+                                        if (!angular.equals(newValue, oldValue)) {
+                                            $timeout(function() {
+                                                container.masonry('reloadItems');
+                                                container.masonry();
+                                            }, 10);
+                                        }
+                                    }
+                            , getOptions = function() {
                                 return {columnWidth: parseInt($scope.columnWidth, 10) || 200,
                                     itemSelector: $scope.itemSelector || ">*",
                                     gutter: parseInt($scope.gutter, 10) || 10,
@@ -137,6 +151,8 @@
                             };
                             container = element.masonry(getOptions());
                             container.masonry();
+                            container.masonry('on', 'layoutComplete', $scope.layoutComplete);
+                            container.masonry('on', 'removeComplete', $scope.removeComplete);
                             $scope.$watch('masonry', update, true);
                             /*clean up */
                             $scope.$on('$destroy', function() {
@@ -213,11 +229,13 @@
                 return {
                     restrict: 'EAC',
                     transclude: true,
-                    template: '<div class="modal-dialog">' +
+                    template: '<div class="modal-dialog" ng-if="shown==true">' +
                             '	   		<div class="modal-content" ng-transclude></div>' +
                             '		</div><!-- /.modal-dialog -->',
                     scope: {
-                        modalId: '@'
+                        modalId: '@',
+                        onShow: '&',
+                        onHide: '&'
                     },
                     controller: function($scope, $element) {
                         this.modalId = $scope.modalId;
@@ -235,10 +253,21 @@
                         });
                         element.addClass('fade');
                         element.addClass('modal');
+                        element.on('show.bs.modal', function() {
+                            $scope.shown = true;
+
+                        });
+                        element.on('show.bs.modal', $scope.onShow);
+                        element.on('hide.bs.modal', function() {
+                            $scope.shown = false;
+                        });
+                        element.on('hide.bs.modal', $scope.onHide);
                         $timeout(function() {
                             mpModalService.register($scope.modalId, element);
                             $scope.$on('$destroy', function() {
                                 mpModalService.unregister($scope.modalId);
+                                element.off('hide.bs.modal');
+                                element.off('show.bs.modal');
                             });
                         });
                     }
