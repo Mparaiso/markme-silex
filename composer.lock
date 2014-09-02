@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "34d4944e75cfc08c2240f6fcb0fb5e39",
+    "hash": "26f31f26523a4ddfd3ed0b859a2513ce",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -707,48 +707,6 @@
                 "silex"
             ],
             "time": "2013-04-26 14:59:43"
-        },
-        {
-            "name": "mparaiso/silex-simplerest",
-            "version": "0.2.13",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Mparaiso/silex-simplerest.git",
-                "reference": "3afeb6d67e026a8c3e77c9090dbe8dde90638cd2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Mparaiso/silex-simplerest/zipball/3afeb6d67e026a8c3e77c9090dbe8dde90638cd2",
-                "reference": "3afeb6d67e026a8c3e77c9090dbe8dde90638cd2",
-                "shasum": ""
-            },
-            "require-dev": {
-                "mparaiso/consoleserviceprovider": "*",
-                "phpunit/phpunit": "*",
-                "silex/silex": "1.*",
-                "symfony/browser-kit": "2.*",
-                "symfony/css-selector": "2.*",
-                "symfony/serializer": "2.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Mparaiso": "lib"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL"
-            ],
-            "description": "Restfull controller for silex",
-            "homepage": "https://github.com/Mparaiso/silex-simplerest",
-            "keywords": [
-                "extensions",
-                "rest",
-                "restfull",
-                "silex"
-            ],
-            "time": "2014-08-17 16:30:14"
         },
         {
             "name": "pimple/pimple",
