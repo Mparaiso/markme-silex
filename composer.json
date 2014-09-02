@@ -23,5 +23,5 @@
     "require-dev": {
         "phpunit/phpunit": "*",
         "heroku/heroku-buildpack-php": "*"
-    },
+    }
 }
