@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "26f31f26523a4ddfd3ed0b859a2513ce",
+    "hash": "f48329df8f6f37c8c58e9d637e74078b",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -664,16 +664,16 @@
         },
         {
             "name": "mparaiso/doctrineormserviceprovider",
-            "version": "0.0.19",
+            "version": "0.0.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Mparaiso/doctrineormserviceprovider.git",
-                "reference": "6ffcd63b0dfc3276fde94636dc9359bafcbeb7ef"
+                "reference": "cc8511bb7978735d0860e22663b294f71b4118eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Mparaiso/doctrineormserviceprovider/zipball/6ffcd63b0dfc3276fde94636dc9359bafcbeb7ef",
-                "reference": "6ffcd63b0dfc3276fde94636dc9359bafcbeb7ef",
+                "url": "https://api.github.com/repos/Mparaiso/doctrineormserviceprovider/zipball/cc8511bb7978735d0860e22663b294f71b4118eb",
+                "reference": "cc8511bb7978735d0860e22663b294f71b4118eb",
                 "shasum": ""
             },
             "require": {
@@ -706,7 +706,7 @@
                 "orm",
                 "silex"
             ],
-            "time": "2013-04-26 14:59:43"
+            "time": "2014-09-02 05:48:42"
         },
         {
             "name": "pimple/pimple",
@@ -3036,9 +3036,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
+    "stability-flags": {
+        "mparaiso/doctrineormserviceprovider": 20
+    },
     "prefer-stable": false,
     "platform": [
 
