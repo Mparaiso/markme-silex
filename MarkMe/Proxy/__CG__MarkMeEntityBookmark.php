@@ -42,10 +42,16 @@ class Bookmark extends \MarkMe\Entity\Bookmark implements \Doctrine\ORM\Proxy\Pr
     }
 
     
-    public function __construc()
+    public function addTag($tag)
     {
         $this->__load();
-        return parent::__construc();
+        return parent::addTag($tag);
+    }
+
+    public function removeTag($tag)
+    {
+        $this->__load();
+        return parent::removeTag($tag);
     }
 
     public function setCreatedAt($createdAt)
@@ -159,10 +165,23 @@ class Bookmark extends \MarkMe\Entity\Bookmark implements \Doctrine\ORM\Proxy\Pr
         return parent::getUser();
     }
 
+    public function prePersist()
+    {
+        $this->__load();
+        return parent::prePersist();
+    }
+
+    public function normalize(\Symfony\Component\Serializer\Normalizer\NormalizerInterface $normalizer, $format = NULL, array $context = array (
+))
+    {
+        $this->__load();
+        return parent::normalize($normalizer, $format, $context);
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'description', 'url', 'title', 'createdAt', 'updatedAt', 'private', 'user', 'tags');
+        return array('__isInitialized__', 'id', 'description', 'url', 'title', 'createdAt', 'updatedAt', 'tags', 'private', 'user');
     }
 
     public function __clone()
