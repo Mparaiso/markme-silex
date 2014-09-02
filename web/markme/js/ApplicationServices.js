@@ -45,7 +45,7 @@ angular.module("ApplicationServices", [])
             };
         })
         .factory("Tags", function Tags($http) {
-            var config = {cache: true};
+            var config = {cache: false};
             return {
                 tags: [],
                 get: function() {
@@ -94,7 +94,7 @@ angular.module("ApplicationServices", [])
                     offset = offset || 0;
                     limit = limit || 25;
                     return $http.get('/json/bookmark/search', {
-                        cache: true,
+                        cache: false,
                         params: {q: search, offset: offset, limit: limit}
                     })
                             .then(function(result) {
@@ -121,7 +121,7 @@ angular.module("ApplicationServices", [])
                 list: function(offset, limit) {
                     offset = offset || 0;
                     limit = limit || 25;
-                    return $http.get('/json/bookmark', {cache: true, params: {offset: offset, limit: limit}})
+                    return $http.get('/json/bookmark', {cache: false, params: {offset: offset, limit: limit}})
                             .then(function(result) {
                                 if (offset === 0) {
                                     this.bookmarks = result.data.bookmarks.slice();
@@ -136,7 +136,7 @@ angular.module("ApplicationServices", [])
                 searchByTag: function(tag, offset, limit) {
                     offset = offset || 0;
                     limit = limit || 25;
-                    return $http.get('/json/tag/' + tag, {cache: true, params: {offset: offset, limit: limit}})
+                    return $http.get('/json/tag/' + tag, {cache: false, params: {offset: offset, limit: limit}})
                             .then(function(result) {
                                 var bookmarks = result.data.bookmarks || [];
                                 if (offset == 0) {

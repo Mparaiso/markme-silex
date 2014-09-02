@@ -1,22 +1,3 @@
-Array.prototype.getIndexOf = Array.prototype.getIndexOf || function(callback) {
-    for (var i = 0; i < this.length; i++) {
-        if (callback(this[i]) === true) {
-            return i;
-        }
-    }
-    return -1;
-};
-
-Array.prototype.append = Array.prototype.append || function(arr) {
-    if (!arr instanceof Array) {
-        throw arr + " must be an instance of Array";
-    }
-    for (var i = 0; i < arr.length; i++) {
-        this.push(arr[i]);
-    }
-    return this;
-};
-
 /**
  * EN : main module
  * FR : module principal.
@@ -51,7 +32,7 @@ angular.module("markme",
             editBookmarkModalId: 'bookmark-edit',
             bookmarksPerPage: 25,
             maxSizeUpload: '5M',
-            importLimit: 500,
+            importLimit: 300,
             autoCompleteParse: function(data) {
                 var rows = [];
                 if (data && data.tags) {
