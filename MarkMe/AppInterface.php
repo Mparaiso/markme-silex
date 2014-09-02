@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyrights 2014 mparaiso <mparaiso@online.fr>
- * @license GPL
+ * @All rights reserved
  */
 
 namespace MarkMe;

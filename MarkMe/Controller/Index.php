@@ -1,7 +1,7 @@
 <?php
-
 /**
- * @author M.paraiso
+ * @copyrights 2014 mparaiso <mparaiso@online.fr>
+ * @All rights reserved
  */
 
 namespace MarkMe\Controller {
