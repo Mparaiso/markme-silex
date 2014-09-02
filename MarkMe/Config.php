@@ -98,9 +98,8 @@ class Config implements \Silex\ServiceProviderInterface {
             "monolog.name" => "markme",
         ));
         $app['monolog'] = $app->share($app->extend('monolog', function($monolog, $app) {
-                    if ($app['debug'] == TRUE) {
-                        $monolog->pushHandler(new StreamHandler('php://stdout', \Monolog\Logger::DEBUG));
-                    }
+                    $logLevel = $app['debug'] == TRUE ? \Monolog\Logger::DEBUG : \Monolog\Logger::WARNING;
+                    $monolog->pushHandler(new StreamHandler('php://stdout', $logLevel));
                     return $monolog;
                 })
         );
