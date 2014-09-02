@@ -75,7 +75,7 @@ namespace MarkMe\Entity {
         private $last_login;
 
         /**
-         * @OneToMany(targetEntity="\MarkMe\Entity\Bookmark",mappedBy="user")
+         * @OneToMany(targetEntity="\MarkMe\Entity\Bookmark",mappedBy="user",cascade={"remove"})
          * @var Bookmark[]
          */
         private $bookmarks;
@@ -143,8 +143,6 @@ namespace MarkMe\Entity {
          * the plain-text password is stored on this object.
          */
         public function eraseCredentials() {
-            $this->password = null;
-            $this->salt = null;
         }
 
         /**
