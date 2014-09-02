@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyrights 2014 mparaiso <mparaiso@online.fr>
  * @All rights reserved
@@ -21,6 +22,7 @@ use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\SecurityServiceProvider;
+use Silex\Provider\HttpCacheServiceProvider;
 use Silex\Provider\SerializerServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\SessionServiceProvider;
@@ -157,7 +159,11 @@ class Config implements \Silex\ServiceProviderInterface {
         );
         $app->register(new SerializerServiceProvider());
         $app->register(new ServiceControllerServiceProvider());
-
+        $app->register(new HttpCacheServiceProvider(), array(
+            'http_cache.cache_dir' => __DIR__ . '/../temp/http/',
+            'http_cache.options' => array('debug' => $app['debug'], 'defaut.ttl' => 5),
+            'http_cache.esi' => null,
+        ));
         # custom services
         $app["upload_dir"] = __DIR__ . "/../upload";
         $app["max_size_upload"] = ini_get("upload_max_filesize");
@@ -240,7 +246,14 @@ class Config implements \Silex\ServiceProviderInterface {
         $json->value('_format', 'json');
         $json->assert('_format', 'json|xml');
 
+
         $app->mount('/json', $json);
+        $app->after(function(Request $req, Response $res) {
+            if ($req->getMethod() == 'GET') {
+                $res->setMaxAge(5);
+                $res->setTtl(10);
+            }
+        });
     }
 
 }

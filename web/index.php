@@ -3,7 +3,7 @@
 use MarkMe\App;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\Debug\ExceptionHandler;
-
+use Symfony\Component\HttpFoundation\Request;
 date_default_timezone_set('Europe/Paris');
 
 $autoload = require_once __DIR__ . '/../vendor/autoload.php';
@@ -22,4 +22,4 @@ ErrorHandler::register();
 ExceptionHandler::register($debug);
 
 $app = new App(array('debug' => $debug));
-$app->run();
+$app['http_cache']->run();

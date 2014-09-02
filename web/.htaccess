@@ -2,3 +2,9 @@ Options -MultiViews
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [L]
+
+<filesMatch "\.(css|js|ico|pdf|flv|jpg|jpeg|png|gif|swf|mp3|mp4)$">
+    ExpiresActive On
+    ExpiresDefault A31536000
+    Header append Cache-Control "public"
+ </filesMatch>
