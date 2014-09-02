@@ -2,3 +2,7 @@ Options -MultiViews
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [L]
+# php ini settings
+php_value upload_max_filesize 15M
+php_value post_max_size 15M
+php_value max_execution_time 120
