@@ -36,12 +36,16 @@
                required>
     </div>
 
-    <div class="form-group">
-        <label class='control-label' for="bookmark_tags">Tags :<br/> <i class="text-muted mute">press enter after each
-                tag.</i></label>
+    <div class="form-group"  data-ng-if='Bookmarks.current.tags != null'>
+        <label class='control-label' for="bookmark_tags">Tags :</label> 
+        <div class="help-block">
+            Press enter after each
+            tag. Click on the text area to dismiss the dropdown list of suggestions.
+        </div>
 
         <input placeholder='sport, music, software' 
                name="bookmark_tags"
+
                data-ng-model="Bookmarks.current.tags"
                class="form-control" 
                data-auto-complete-url="/json/autocomplete"
@@ -52,9 +56,16 @@
     <input type="hidden" data-ng-model="Bookmarks.current.id" name="bookmark_id">
 
     <div class='form-group '>
-        <input data-ng-click="save(Bookmarks.current)" data-ng-disabled="bookmark_form.$invalid" class="btn btn-primary"
-               type="submit" value="Save" data-dismiss="modal">
-        <input class="btn" type="reset" value="Reset">
-        <input class='btn' type="button" value="Cancel" data-dismiss="modal">
+        <input data-ng-click="save(Bookmarks.current)" 
+               data-ng-disabled="!bookmark_form.$valid || bookmark_form.$pristine" 
+               class="btn btn-success"
+               type="submit" data-dismiss="modal">
+        <input class="btn btn-default" type="reset" value="Reset">
+        <input class='btn btn-default' type="button" value="Cancel" data-dismiss="modal">
+        <button
+            ng-disabled="Bookmarks.suggesting || !bookmark_form.bookmark_url.$valid"
+            ng-click="suggest(Bookmarks.current.url)"
+            class="btn btn-info" 
+            >Suggest the title,tags and description from url</button>
     </div>
 </form>

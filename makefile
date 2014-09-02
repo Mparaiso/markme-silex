@@ -10,7 +10,9 @@ deploy:
 	@git push heroku master
 test-angular:
 	@karma start
+tail:
+	@tail -f temp/access* &
 # start php server
 start:
 	@php -S localhost:3000 -t web web/index.php &
-.PHONY: commit deploy test-angular push test start
+.PHONY: commit deploy test-angular push test start tail

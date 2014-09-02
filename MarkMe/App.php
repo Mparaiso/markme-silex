@@ -1,8 +1,10 @@
 <?php
+
 /**
  * @copyrights 2014 mparaiso <mparaiso@online.fr>
  * @license GPL
  */
+
 namespace MarkMe;
 
 use Doctrine\ORM\EntityManager;
@@ -15,6 +17,7 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager;
 use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Validator\Validator;
 
 /**
  * Class App
@@ -31,11 +34,11 @@ use Symfony\Component\Serializer\Serializer;
  * @property UrlGenerator url_generator
  * @property FormFactory formFactory
  * @property EntityManager entityManager
+ * @property Validator validator
  */
-class App extends Application implements AppInterface
-{
-    function __construct(array $params = array())
-    {
+class App extends Application implements AppInterface {
+
+    function __construct(array $params = array()) {
         parent::__construct($params);
         $this->register(new Config());
     }
@@ -44,19 +47,16 @@ class App extends Application implements AppInterface
      * @param string $property
      * @return Void|mixed
      */
-    function __get($property)
-    {
-        if($property=="entityManager"){
+    function __get($property) {
+        if ($property == "entityManager") {
             return $this->offsetGet('orm.em');
         }
-        if($property=="formFactory"){
+        if ($property == "formFactory") {
             return $this->offsetGet('form.factory');
         }
         if ($this->offsetExists($property)) {
             return $this->offsetGet($property);
         }
     }
-    
-    function foo(){}
 
 }

@@ -6,6 +6,8 @@ use Doctrine\ORM\EntityRepository;
 use MarkMe\Entity\Tag;
 use MarkMe\Entity\User as UserEntity;
 use MarkMe\Entity\Bookmark as BookmarkEntity;
+use \MarkMe\Entity\BookmarkImportCollection;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Bookmark
@@ -42,22 +44,61 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
         return $bookmark;
     }
 
-    public function search($query, UserEntity $user, $limit, $offset) {
-        return $this->createQueryBuilder('b')
-                        ->where("b.user = :user ")
-                        ->andWhere("b.title LIKE :title")
-                        ->orWhere("b.description LIKE :description")
-                        ->orWhere("b.url LIKE :url")
-                        ->orderBy("b.createdAt ", "DESC")
-                        ->getQuery()
-                        ->setMaxResults($limit)
+    public function search($keywords, UserEntity $user, $limit = 25, $offset = 0) {
+        //$query = $this->createQueryBuilder('b');
+        return $this->getEntityManager()->createQuery(" SELECT b FROM "
+                                . "\MarkMe\Entity\Bookmark b "
+                                . "JOIN  b.user u "
+                                . "WHERE ( b.description LIKE :query OR b.title LIKE :query OR b.url LIKE :query OR b.tags LIKE :query) "
+                                . "AND  u = :user  ORDER BY b.createdAt DESC")
                         ->setFirstResult($offset)
-                        ->execute(array(
-                            "user" => $user,
-                            "title" => "%$query%",
-                            "description" => "%$query%",
-                            "url" => "%$query%"
-        ));
+                        ->setMaxResults($limit)
+                        ->execute(array('user' => $user, 'query' => "%$keywords%"));
+    }
+
+    public function import(BookmarkImportCollection $bookmarkImports, UserEntity $user) {
+        foreach ($bookmarkImports->getBookmarks() as $bookmarkImport) {
+            $bookmark = new BookmarkEntity();
+            $bookmark->setTitle($bookmarkImport['title']);
+            $bookmark->setDescription($bookmarkImport['title']);
+            $bookmark->setUrl($bookmarkImport['url']);
+            $bookmark->setPrivate(true);
+            $bookmark->setUser($user);
+            $this->getEntityManager()->persist($bookmark);
+        }
+        $this->getEntityManager()->flush();
+        $this->getEntityManager()->clear();
+    }
+
+    /**
+     * 
+     * @param \MarkMe\Entity\User $user
+     */
+    public function export(UserEntity $user, $limit = 5000) {
+        $bookmarks = $this->getEntityManager()->createQuery('SELECT b.title,b.url,b.createdAt FROM ' . $this->getClassName() . ' b JOIN b.user  u WHERE u = :user')
+                ->setMaxResults($limit)
+                ->execute(array('user' => $user));
+        ob_start();
+        ?>
+        <!DOCTYPE NETSCAPE-Bookmark-file-1>
+        <META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'>
+        <TITLE>Bookmarks</TITLE>
+        <H1>Bookmarks</H1>
+        <DL>
+            <p>
+            <DT><H3 ADD_DATE="<?= time(); ?>" LAST_MODIFIED='<?= time(); ?>' PERSONAL_TOOLBAR_FOLDER='true'>Bookmarks</H3>
+            <DL><p>
+                    <?php foreach ($bookmarks as $bookmark): ?>
+                    <DT><A HREF="<?= $bookmark['url']; ?>" ADD_DATE="<?= $bookmark['createdAt']->getTimestamp(); ?>" ><?= $bookmark['title']; ?></A></DT>
+                <?php endforeach; ?>
+                </p>
+            </DL>
+            </DT>
+        </p>
+        </DL>
+        <?php
+        $string = ob_get_clean();
+        return $string;
     }
 
     /**
@@ -73,39 +114,46 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
                         ->getQuery()
                         ->setMaxResults($limit)
                         ->setFirstResult($offset)
-                        ->execute(array('tags' => "%$tags%", 'user' => $user));
+                        ->execute(array
+                            ('tags' => "%$tags%", 'user' => $user));
     }
 
     function getAll(UserEntity $user, $limit = 100, $offset = 0) {
-        return $this->findBy(array("user" => $user), array('created_at' => "DESC", $limit, $offset * $limit));
+        return $this->findBy(array(
+                    "user" => $user), array('created_at' => "DESC", $limit, $offset * $limit));
     }
 
-    function searchTags($tags, UserEntity $user, $limit = 10) {
+    function searchTags($query, UserEntity $user, $limit = 10, $offset = 0) {
         $bookmarks = $this->createQueryBuilder('b')
                 ->select('b.tags')
                 ->where('b.tags LIKE :tags')
                 ->andWhere('b.user = :user')
                 ->getQuery()
                 ->setMaxResults($limit)
-                ->execute(array('tags' => "%$tags%", 'user' => $user));
+                ->execute(array('tags' => "%$query%", 'user' => $user));
 
         $tags = array();
 
         foreach ($bookmarks as $bookmark) {
             foreach ($bookmark['tags'] as $tag) {
-                if (!in_array($tag, $tags)) {
+                if (!in_array($tag, $tags) && preg_match("#$query#", $tag)) {
                     $tags[] = $tag;
                 }
             }
         }
+        $sort = function ($a, $b) {
+            return \strlen($a) - \strlen($b);
+        };
+        \usort($tags, $sort);
+
         return $tags;
     }
 
-    function getAllTags(UserEntity $user, $limit = 50) {
+    function getAllTags(UserEntity $user, $limit = 200) {
         $bookmarks = $this->createQueryBuilder('b')
                 ->select('b.tags')
-                ->where('b.user = :user')
-                ->andWhere(' LENGTH(b.tags) > 0 ')
+                ->where('b.user = :user')->andWhere(' LENGTH(b.tags) > 0 ')
+                ->orderBy('b.updatedAt', 'DESC')
                 ->getQuery()
                 ->setMaxResults($limit)
                 ->execute(array('user' => $user));
@@ -118,7 +166,38 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
                 }
             }
         }
+        sort($tags, SORT_FLAG_CASE | SORT_NATURAL);
         return $tags;
+    }
+
+    /**
+     * EN : extract title,description and tags from url
+     * @param type $url
+     * @return array
+     */
+    function suggest($url) {
+        $cache = $this->getEntityManager()->getConfiguration()->getResultCacheImpl();
+        if ($cache && $cache->contains($url)) {
+            return $cache->fetch($url);
+        }
+        $result = array();
+        $html = file_get_contents($url, false, null, 0, 2000);
+        if ($html) {
+            $crawler = new Crawler($html);
+            $head = $crawler->filter('head');
+            $title = $head->filter('title');
+            $title->count() > 0 AND $title = $title->text()
+                    OR $title = null;
+            $description = $head->filter('meta[name=description]');
+            $description->count() > 0 AND $description = $description->attr('content')
+                    OR $description = null;
+            $keywords = $head->filter('meta[name=keywords]');
+            $keywords->count() > 0 AND $keywords = $keywords->extract('content')
+                    AND $tags = array_map('trim', array_filter(explode(',', array_pop($keywords)))) OR $tags = array();
+            $result = array('tags' => $tags, 'title' => $title, 'description' => $description, 'url' => $url);
+        }
+        $cache AND $cache->save($url, $result);
+        return $result;
     }
 
 }

@@ -1,6 +1,6 @@
 body {
     background: #F9F9F9;
-     font-family: 'Noto Sans', serif;
+    font-family: 'Noto Sans', serif;
 }
 
 .brand, .sans {
@@ -44,10 +44,11 @@ input.ng-valid.ng-dirty {
     padding:5px;
     padding-bottom: 3px;
     margin-top:10px;
+    display:inline-block;
 }
 
 .bookmark-image-wrapper{
-        width: 100%;
+    width: 100%;
     height: 150px;
     display:inline-block;
     overflow-y: hidden;

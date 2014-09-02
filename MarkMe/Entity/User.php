@@ -273,10 +273,19 @@ namespace MarkMe\Entity {
             $metadata->addPropertyConstraint('username', new Length(array('min' => 5, 'max' => 100)));
             $metadata->addPropertyConstraint('email', new Length(array('min' => 8, 'max' => 100)));
             $metadata->addPropertyConstraint('email', new Email());
+            $metadata->addPropertyConstraint('password', new Length(array('min' => 5, 'max' => 100)));
         }
 
         public function normalize(NormalizerInterface $normalizer, $format = null, array $context = array()) {
-            return get_object_vars($this);
+            return array(
+                'id' => $this->getId(),
+                'created_at' => $this->getCreatedAt(),
+                'updated_at' => $this->getUpdatedAt(),
+                'email' => $this->getEmail(),
+                'username' => $this->getUsername(),
+                'last_login' => $this->getLastLogin(),
+                'bookmarks' => array()
+            );
         }
 
     }

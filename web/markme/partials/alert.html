@@ -1,0 +1,6 @@
+<section  ng-repeat="(type,message) in Alert.message">
+    <div  class="alert alert-{{type}}" ng-if="message" >
+        <button type="button" class="close" data-ng-click="Alert.reset()">&times;</button>
+        {{message}}
+    </div>
+</section>

@@ -1,35 +1,50 @@
-//service concernant la gestion d'un utilisateur
-
+/*global angular*/
 angular.module("ApplicationServices", [])
-        .factory("Url", function() {
-            return{
-                getBase: function() {
-                    return ($("meta[name=base_url]").attr("content")) || "";
-                }
-            };
+        .constant('ApiEndpoints', {
+            BOOKMARK_IMPORT: '/json/bookmark/import',
+            BOOKMARK_EXPORT: '/json/bookmark/export',
+            BOOKMARK_SUGGEST: '/json/bookmark/suggest',
         })
-        .factory("UserService", function UserService($http, Url) {
-            var config = {cache: true};
-            var baseUrl = Url.getBase();
+        .factory('Alert', function() {
+            var Alert = {
+                message: {},
+                info: function(message) {
+                    this.reset();
+                    this.message.info = message;
+                },
+                success: function(message) {
+                    this.reset();
+                    this.message.success = message;
+                },
+                warning: function(message) {
+                    this.reset();
+                    this.message.warning = message;
+                },
+                danger: function(message) {
+                    this.reset();
+                    this.message.danger = message;
+                },
+                reset: function() {
+                    this.message.info = '';
+                    this.message.danger = '';
+                    this.message.success = '';
+                    this.message.warning = '';
+                }};
+            Object.seal(Alert);
+            return Alert;
+        })
+        .factory("Users", function Users($http) {
             return {
-                getCurrentUser: function(success, error) {
-                    $http.get(baseUrl + "/json/user").success(success).error(error || function() {
-                    });
-                },
-                isLogged: function() {
-                },
-                register: function(user, success, error) {
-                    $http.post(baseUrl + "/json/register", user).success(success).error(error);
-                },
-                login: function(user, success, error) {
-                    $http.post(baseUrl + "/json/login", user).success(success).error(error);
-                },
-                logout: function(success, error) {
-                    $http.post(baseUrl + "/json/logout").success(success).error(error);
+                getCurrent: function() {
+                    return $http.get("/json/user")
+                            .then(function(result) {
+                                this.current = result.data.user;
+                                return this.current;
+                            }.bind(this));
                 }
             };
         })
-        .factory("Tags", function TagService($http) {
+        .factory("Tags", function Tags($http) {
             var config = {cache: true};
             return {
                 tags: [],
@@ -42,7 +57,7 @@ angular.module("ApplicationServices", [])
                 }
             };
         })
-        .factory("ThumbnailService", function() {
+        .factory("Thumbnails", function() {
             return {
                 setService: function(serviceCallback) {
                     this.getThumbnail = function() {
@@ -69,14 +84,7 @@ angular.module("ApplicationServices", [])
                 }
             };
         })
-        .factory("AlertManager", function() {
-            return{
-                info: "",
-                error: "",
-                success: ""
-            };
-        })
-        .factory("Bookmarks", function Bookmarks($http) {
+        .factory("Bookmarks", function Bookmarks($http, $q, ApiEndpoints, Config) {
             return {
                 bookmarks: [],
                 offset: 0,
@@ -86,12 +94,13 @@ angular.module("ApplicationServices", [])
                     offset = offset || 0;
                     limit = limit || 25;
                     return $http.get('/json/bookmark/search', {
+                        cache: true,
                         params: {q: search, offset: offset, limit: limit}
                     })
                             .then(function(result) {
                                 var bookmarks = result.data.bookmarks || [];
                                 if (offset == 0) {
-                                    this.bookmarks = bookmarks;
+                                    this.bookmarks = bookmarks.slice();
                                 } else {
                                     bookmarks.forEach(function(b) {
                                         this.bookmarks.push(b);
@@ -112,10 +121,10 @@ angular.module("ApplicationServices", [])
                 list: function(offset, limit) {
                     offset = offset || 0;
                     limit = limit || 25;
-                    return $http.get('/json/bookmark', {params: {offset: offset, limit: limit}})
+                    return $http.get('/json/bookmark', {cache: true, params: {offset: offset, limit: limit}})
                             .then(function(result) {
                                 if (offset === 0) {
-                                    this.bookmarks = result.data.bookmarks;
+                                    this.bookmarks = result.data.bookmarks.slice();
                                 } else {
                                     result.data.bookmarks.forEach(function(bookmark) {
                                         this.bookmarks.push(bookmark);
@@ -131,7 +140,7 @@ angular.module("ApplicationServices", [])
                             .then(function(result) {
                                 var bookmarks = result.data.bookmarks || [];
                                 if (offset == 0) {
-                                    this.bookmarks = bookmarks;
+                                    this.bookmarks = bookmarks.slice();
                                 } else {
                                     bookmarks.forEach(function(b) {
                                         this.bookmarks.push(b);
@@ -142,6 +151,7 @@ angular.module("ApplicationServices", [])
 
                 },
                 save: function(bookmark) {
+                    bookmark.tags = bookmark.tags || [];
                     if (bookmark.id) {
                         //edit
                         return $http.put('/json/bookmark/' + bookmark.id, bookmark)
@@ -154,13 +164,49 @@ angular.module("ApplicationServices", [])
                                 }.bind(this));
                     } else {
                         //create
-                        return $http.post('/json/bookmark/', bookmark)
+                        return $http.post('/json/bookmark', bookmark)
                                 .then(function(result) {
                                     var bookmark = result.data.bookmark;
-                                    this.bookmarks.push(bookmark);
+                                    this.bookmarks.unshift(bookmark);
                                     return bookmark;
                                 }.bind(this));
                     }
+                },
+                import: function(file) {
+                    var fileReader = new FileReader
+                            , domParser = new DOMParser
+                            , deferred = $q.defer();
+                    fileReader.onloadend = function(ev) {
+                        try {
+                            var links = [].slice.call(
+                                    domParser.parseFromString(fileReader.result, "text/html")
+                                    .getElementsByTagName('A'))
+                                    .map(function(link) {
+                                        return {url: link.getAttribute('HREF'), title: link.textContent};
+                                    }).slice(0, Config.importLimit);
+                            deferred.resolve($http.post(ApiEndpoints.BOOKMARK_IMPORT, {bookmarks: links}));
+                        } catch (error) {
+                            deferred.reject(error);
+                        }
+                    };
+                    fileReader.onerror = function(ev) {
+                        console.log('error');
+                        deferred.reject(fileReader.error);
+                    };
+                    fileReader.readAsText(file);
+                    return deferred.promise;
+                },
+                export: function() {
+                    return $http.get(ApiEndpoints.BOOKMARK_EXPORT)
+                            .then(function(result) {
+                                return result.data.export;
+                            });
+                },
+                suggest: function(url) {
+                    return $http.get(ApiEndpoints.BOOKMARK_SUGGEST, {params: {url: url}})
+                            .then(function(result) {
+                                return result.data;
+                            });
                 }
             };
         });

@@ -1,6 +1,6 @@
 <div class="col-md-6">
     <form name="account_form" class="form-horizontal">
-        <fieldset>
+        <fieldset disabled>
             <legend>Account</legend>
             <div class="form-group">
                 <label for="user_email" class="control-label col-sm-3">Email :</label>
@@ -20,8 +20,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="" class="control-label col-sm-3"></label>
-
+                <label  class="control-label col-sm-3"></label>
                 <div class="col-sm-9">
                     <input class="btn btn-success" type="button" value="Save" name="save"
                            data-ng-disabled="account_form.$invalid">
@@ -77,26 +76,33 @@
 </div>
 <div class="col-md-6">
 
-    <form name="import_form" enctype="multipart/form-data" method="POST" action="{{baseUrl}}/json/bookmark/import">
+    <form name="import_form" data-ng-submit="import()" enctype="multipart/form-data" >
         <fieldset>
             <legend>Import bookmarks</legend>
             <p>Import bookmarks from a html file</p>
-            <label for="imported_file">Maximum html file size : {{maxSizeUpload}} .</label>
-            <input accept="text/html" type="file" class="btn btn-default" name="imported_file" id="imported_file">
-            <label for="save"></label>
-            <input class="btn btn-success" type="submit" name="save" value="Import file"
-                   data-ng-disabled="import_form.$invalid">
+            <label>Maximum html file size : {{Config.maxSizeUpload}} .</label>
+            <input accept="text/html" 
+                   required 
+                   ng-model="importForm.files"
+                   name="files"
+                   mp-file
+                   type="file" >
+            <h6>&nbsp;</h6>
+            <button class="btn btn-success"
+                    type="submit"
+                    data-ng-disabled="!import_form.$valid || importing == true">
+                Import file
+            </button>
             <input class="btn " type="reset" value="Reset">
         </fieldset>
-
     </form>
     <hr>
 
-    <form action="{{baseUrl}}/json/bookmark/export" method="POST">
+    <form data-ng-submit="export()">
         <fieldset>
             <legend>Export bookmarks</legend>
             <p>Save bookmarks as html file</p>
-            <input type="submit" value="Export bookmarks" class='btn btn-info'>
+            <input type="submit" value="Export bookmarks" data-ng-disabled="Bookmark.exporting || importing == true"  class='btn btn-info'>
 
         </fieldset>
     </form>

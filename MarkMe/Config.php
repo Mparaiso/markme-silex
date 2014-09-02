@@ -32,6 +32,8 @@ use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
+use Doctrine\ORM\Configuration;
+use \Monolog\Handler\StreamHandler;
 
 class Config implements \Silex\ServiceProviderInterface {
 
@@ -41,6 +43,7 @@ class Config implements \Silex\ServiceProviderInterface {
     public function register(Application $app) {
         /* @var App $app */
 
+        # doctrine dbal
         $app->register(new DoctrineServiceProvider(), array("db.options" => array(
                 "driver" => getenv("MARKME_DB_DRIVER"),
                 "dbname" => getenv("MARKME_DB_DATABASE_NAME"),
@@ -50,6 +53,8 @@ class Config implements \Silex\ServiceProviderInterface {
                 "memory" => true,
         )));
 
+
+        # doctrine orm
         $app->register(new DoctrineORMServiceProvider(), array(
             "orm.proxy_dir" => __DIR__ . '/Proxy',
             "orm.logger" => $app->share(function ($app) {
@@ -63,6 +68,21 @@ class Config implements \Silex\ServiceProviderInterface {
                 )
             )
         ));
+        #doctrine cache
+        $app['doctrine.orm.cache_driver'] = $app->share(function($app) {
+            return new \Doctrine\Common\Cache\FilesystemCache(__DIR__ . '/../temp/doctrine');
+        });
+
+        $app['bookmarkMetadataCache'] = $app->share(function($app) {
+            return $app['doctrine.orm.cache_driver'];
+        });
+
+        $app["orm.config"] = $app->share($app->extend('orm.config', function(Configuration $config, $app) {
+                    $config->setQueryCacheImpl($app['doctrine.orm.cache_driver']);
+                    $config->setResultCacheImpl($app['doctrine.orm.cache_driver']);
+                    $config->setMetadataCacheImpl($app['doctrine.orm.cache_driver']);
+                    return $config;
+                }));
 
         #twig templates
         $app->register(new TwigServiceProvider(), array(
@@ -74,10 +94,16 @@ class Config implements \Silex\ServiceProviderInterface {
 
         # logging service
         $app->register(new MonologServiceProvider(), array(
-            "monolog.logfile" => __DIR__ . "/../temp/access.log",
+            "monolog.logfile" => __DIR__ . "/../temp/access-" . \date('Y-m-d') . ".log",
             "monolog.name" => "markme",
         ));
-
+        $app['monolog'] = $app->share($app->extend('monolog', function($monolog, $app) {
+                    if ($app['debug'] == TRUE) {
+                        $monolog->pushHandler(new StreamHandler('php://stdout', \Monolog\Logger::DEBUG));
+                    }
+                    return $monolog;
+                })
+        );
         # session management
         $app->register(new SessionServiceProvider(), array(
             "session.storage.options" => array(
@@ -179,26 +205,6 @@ class Config implements \Silex\ServiceProviderInterface {
         $app['controller.tag'] = $app->share(function () {
             return new Tag();
         });
-
-        # middlewares
-
-        $app['middleware.jsonToFormData'] = $app->protect(function (Request $req) use ($app) {
-            if ($req->getMethod() == "POST") {
-                if (0 === strpos($req->headers->get('Content-Type'), 'application/json')) {
-                    $data = json_decode($req->getContent(), true);
-                    $req->request->replace(is_array($data) ? $data : array());
-                }
-            }
-        });
-
-        $app['middleware.mustBeValidJSON'] = $app->protect(function (Request $request) use ($app) {
-            if ("POST" == $request->getMethod()) {
-                $data = json_decode($request->getContent(), true);
-                if (!isset($data)) {
-                    $app->abort("403", "must be valid json : " . $request->getContent());
-                }
-            }
-        });
     }
 
     /**
@@ -215,28 +221,26 @@ class Config implements \Silex\ServiceProviderInterface {
         # ajax apis
         /* @var ControllerCollection|Controller $json */
         $json = $app['controllers_factory'];
-        $json->before($app['middleware.mustBeValidJSON']);
-        $json->before($app['middleware.jsonToFormData']);
-
         # user 
-        $json->get('/user', 'controller.user:getCurrent')->bind('user_get_current');
-        $json->put('/user', 'controller.user:updateUser')->bind('user_update_current');
-
+        $json->get('/user.{_format}', 'controller.user:getCurrent')->bind('user_get_current');
+        $json->put('/user.{_format}', 'controller.user:updateUser')->bind('user_update_current');
         #bookmarks
-        $json->get('/bookmark', 'controller.bookmark:index')->bind('bookmark_index');
-        $json->post('/bookmark', 'controller.bookmark:create')->bind('create_bookmark');
-        $json->get('/bookmark/search', 'controller.bookmark:search')->bind('bookmark_search');
-        $json->post('/bookmark/count', 'controller.bookmark:count')->bind('bookmark.count');
-        $json->post('/bookmark/export', 'controller.bookmark:export')->bind('bookmark.export');
-        $json->post('/bookmark/import', 'controller.bookmark:import')->bind('bookmark.import');
-        $json->put('/bookmark/{id}', 'controller.bookmark:update')->bind('update_bookmark');
-        $json->delete('/bookmark/{id}', 'controller.bookmark:delete')->bind('delete_bookmark');
-        $json->get('/bookmark/{id}', 'controller.bookmark:read')->bind('bookmark_read');
-        $json->get('/tag/{tags}', 'controller.bookmark:findByTags')->bind('bookmark_findByTags');
-
+        $json->get('/bookmark.{_format}', 'controller.bookmark:index')->bind('bookmark_index');
+        $json->post('/bookmark.{_format}', 'controller.bookmark:create')->bind('create_bookmark');
+        $json->get('/bookmark/search.{_format}', 'controller.bookmark:search')->bind('bookmark_search');
+        $json->get('/bookmark/export.{_format}', 'controller.bookmark:export')->bind('bookmark.export');
+        $json->post('/bookmark/import.{_format}', 'controller.bookmark:import')->bind('bookmark.import');
+        $json->get('/bookmark/suggest', 'controller.bookmark:suggestBookmarkData')->bind('bookmark.suggest');
+        $json->put('/bookmark/{id}.{_format}', 'controller.bookmark:update')->bind('update_bookmark');
+        $json->delete('/bookmark/{id}.{_format}', 'controller.bookmark:delete')->bind('delete_bookmark');
+        $json->get('/bookmark/{id}.{_format}', 'controller.bookmark:read')->bind('bookmark_read');
+        $json->get('/tag/{tags}.{_format}', 'controller.bookmark:findByTags')->bind('tag_search');
         # tags 
-        $json->get('autocomplete', 'controller.tag:search')->bind('search_tag');
-        $json->get('tag', 'controller.tag:index')->bind('get_tags');
+        $json->get('autocomplete.{_format}', 'controller.tag:search')->bind('tag_autocomplete');
+        $json->get('tag.{_format}', 'controller.tag:index')->bind('tag_list');
+
+        $json->value('_format', 'json');
+        $json->assert('_format', 'json|xml');
 
         $app->mount('/json', $json);
     }

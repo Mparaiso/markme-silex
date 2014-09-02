@@ -1,10 +1,9 @@
 <div class='container'>
     <ul class='navbar-nav navbar-right nav'>
-        <li data-ng-show="user.username"><a class='sans disabled disable'>Welcome {{user.username}}</a></li>
+        <li data-ng-show="Users.current"><a class='sans disabled disable'>Welcome back, {{Users.current.username}}</a></li>
         <li><a href="#/bookmark">Bookmarks</a></li>
         <li><a href="#/tag">Tags</a></li>
-        <li><a href="javascript:void 0;" ng-click="create()" >Add a
-                Bookmark</a></li>
+        <li><a href="javascript:void 0;" ng-click="create()" >New Bookmark</a></li>
         <li><a href="#/account">Settings</a></li>
         <li><a href="/logout">Logout</a></li>
     </ul>
@@ -22,9 +21,6 @@
     </form>
     <div class="navbar-header">
         <a class='navbar-brand brand' href='/'>Mark.me</a>
-        <div
-            data-ng-include="'/static/js/app/partials/modal.html'" >
-        </div>
     </div>
 </div>
-<span data-ng-include="baseUrl + '/static/js/app/partials/modal.html'"></span>
+<span data-ng-include="'/markme/partials/modal.html'"></span>

@@ -21,7 +21,7 @@ namespace MarkMe\Service {
 
         function getAll( UserEntity $user,$limit,$offset);
 
-        function searchTags($tags, UserEntity $user, $limit = 10);
+        function searchTags($tags, UserEntity $user, $limit ,$offset);
 
         function getAllTags(UserEntity $user, $limit = 30);
     }

@@ -3,28 +3,29 @@ bookmarks.html
 EN : display a list of bookmarks
 FR : affiche la liste des marques pages
 -->
-<section ng-if="Bookmarks.bookmarks.length > 0"
-         data-masonry="Bookmarks.bookmarks"  
-         data-gutter="30px" data-column-width='200px' 
-         data-item-selector="div.bookmark">
+<section
+    data-masonry="Bookmarks.bookmarks"  
+    data-gutter="30px" data-column-width='200px' 
+    data-item-selector="div.bookmark">
     <div class='bookmark' data-ng-repeat="bookmark in Bookmarks.bookmarks">
-        <div class="pull-right">
-            <i  data-ng-click="edit(bookmark)" class="glyphicon glyphicon-pencil link"></i>
-            <i data-ng-click="remove(bookmark)" class="glyphicon glyphicon-remove link"></i>
+        <div title="edit" class="pull-left ">
+            <i  data-ng-click="edit(bookmark)" class="text-muted glyphicon glyphicon-pencil link"></i>
+        </div>
+        <div title="delete" class="pull-right text-muted">
+            <i data-ng-click="remove(bookmark)" class="text-muted  glyphicon glyphicon-remove link"></i>
         </div>
         <div>
             <a href='{{bookmark.url}}' title='{{bookmark.url}}' class="bookmark-image-wrapper" target="_blank">
-                <img class='bookmark-image'  data-ng-src="/static/img/placeholder.gif" 
+                <img class='bookmark-image'  data-ng-src="/markme/img/placeholder.gif" 
                      title="{{bookmark.description}}" data-bst-tooltip data-placement="bottom"
                      alt="{{bookmark.url}}" src=""   data-preload-image="getThumbnail(bookmark.url)" /></a> 
             <h4 class="ellipsis" >
-                <a href="{{bookmark.url}}" target='_blank' >{{ bookmark.title|capitalize  }}</a>
+                <a title="Open {{bookmark.url}}" href="{{bookmark.url}}" target='_blank' >{{ bookmark.title|capitalize  }}</a>
             </h4>
             <div ng-if="bookmark.tags.length > 0">
-                <span data-ng-repeat="tag in bookmark.tags">
-                    <a class="label label-info link"  href="#/bookmark/tag/{{tag.name}}" >{{tag}}</a>
-                    &nbsp;
-                </span>
+                <h6 data-ng-repeat="tag in bookmark.tags" ng-if="tag" class="inline">
+                    <a class="label label-info link"  href="#/tag/{{tag}}" >{{tag}}</a>&nbsp;
+                </h6>
             </div>
         </div>
     </div>
