@@ -21,8 +21,7 @@
         "symfony/css-selector": "2.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "*",
-        "heroku/heroku-buildpack-php": "*"
+        "phpunit/phpunit": "*"
     },
     "provide": {
         "ext-intl": "*",
