@@ -53,15 +53,15 @@
                     });
                 };
             })
-            .directive("preloadImage", function preloadImage(){
+            .directive("preloadImage", function preloadImage() {
                 return {
                     scope: {
                         onError: '&',
+                        preloadImage: '@',
+                        lowSrc: '@'
                     },
                     link: function(scope, element, attrs) {
-                        var imageToload = scope.$eval(attrs['preloadImage']);
-                        var lowSrc = attrs["lowSrc"];
-                        element.attr("src", lowSrc);
+                        element.attr("src", scope.lowSrc);
                         var image = new Image();
                         image.onload = function() {
                             element.hide();
@@ -69,7 +69,7 @@
                             element.fadeIn(300);
                         };
                         image.onerror = scope.onError;
-                        image.src = imageToload;
+                        image.src = scope.preloadImage;
                     }}
             })
             .directive("bstTooltip", ["$timeout", function($timeout) {
