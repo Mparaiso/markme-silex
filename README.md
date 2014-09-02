@@ -10,6 +10,8 @@ Online bookmark manager
 
 ## author : M.Paraiso
 
+### mparaiso@online.fr
+
 inspired by bookmark.ly : http://bookmarkly.com/
 
 ## LIVE DEMO : https://markme.herokuapp.com/
