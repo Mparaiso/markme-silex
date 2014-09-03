@@ -85,7 +85,6 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
                 'updated_at' => Type::DATETIME,
             ));
         }
-        $connection->
     }
 
     /**
