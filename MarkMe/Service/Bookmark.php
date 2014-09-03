@@ -10,6 +10,7 @@ use \MarkMe\Entity\BookmarkImportCollection;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Validator\Validator;
 use Symfony\Component\Validator\Exception\ValidatorException;
+use Doctrine\DBAL\Types\Type;
 
 /**
  * Bookmark
@@ -69,8 +70,9 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
      * @param \MarkMe\Entity\User $user
      */
     public function import(BookmarkImportCollection $bookmarkImports, UserEntity $user) {
+        $connection = $this->getEntityManager()->getConnection();
         foreach ($bookmarkImports->getBookmarks() as $bookmarkImport) {
-            $this->getEntityManager()->getConnection()->insert($this->getClassMetadata()->getTableName(), array(
+            $connection->insert($this->getClassMetadata()->getTableName(), array(
                 'title' => $bookmarkImport['title'],
                 'description' => $bookmarkImport['title'],
                 'url' => $bookmarkImport['url'],
@@ -78,8 +80,12 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
                 'private' => true,
                 'created_at' => new \Datetime(),
                 'updated_at' => new \Datetime()
+                    ), array(
+                'created_at' => Type::DATETIME,
+                'updated_at' => Type::DATETIME,
             ));
         }
+        $connection->
     }
 
     /**
@@ -101,9 +107,9 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
             <p>
             <DT><H3 ADD_DATE="<?= time(); ?>" LAST_MODIFIED='<?= time(); ?>' PERSONAL_TOOLBAR_FOLDER='true'>Bookmarks</H3>
             <DL><p>
-                    <?php foreach ($bookmarks as $bookmark): ?>
+                <?php foreach ($bookmarks as $bookmark): ?>
                     <DT><A HREF="<?= $bookmark['url']; ?>" ADD_DATE="<?= $bookmark['createdAt']->getTimestamp(); ?>" ><?= $bookmark['title']; ?></A></DT>
-                <?php endforeach; ?>
+        <?php endforeach; ?>
                 </p>
             </DL>
             </DT>
