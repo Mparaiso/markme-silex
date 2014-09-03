@@ -32,7 +32,7 @@ angular.module("markme",
             editBookmarkModalId: 'bookmark-edit',
             bookmarksPerPage: 25,
             maxSizeUpload: '10M',
-            importLimit: 1000,
+            importLimit: 2000,
             autoCompleteParse: function(data) {
                 var rows = [];
                 if (data && data.tags) {
@@ -186,14 +186,18 @@ angular.module("markme",
                     .finally(function() {
                     });
         })
-        .controller("AccountCtrl", function AccountCtrl($scope, $window, Alert, $cacheFactory, $location, Bookmarks, Users, Config) {
+        .controller("AccountCtrl", function AccountCtrl($scope, $interval, $window, Alert, $cacheFactory, $location, Bookmarks, Users, Config) {
             $scope.Users = Users;
             $scope.Config = Config;
             $scope.importForm = {};
             $scope.importing = false;
             $scope.import = function() {
                 $scope.importing = true;
-                Alert.info('Importing bookmarks from "' + $scope.importForm.files[0].name + '".');
+                var i = 0;
+                var div = 10;
+                var interval = $interval(function() {
+                    Alert.info('Importing bookmarks from "' + $scope.importForm.files[0].name + '"' + '..........'.slice(0, i++ % div));
+                }, 1000);
                 Bookmarks.import($scope.importForm.files[0])
                         .then(function() {
                             Alert.success('Bookmarks successfully imported !');
@@ -207,6 +211,7 @@ angular.module("markme",
                         })
                         .finally(function() {
                             $scope.importing = false;
+                            $interval.cancel(interval);
                         });
             };
             $scope.export = function() {
@@ -215,7 +220,9 @@ angular.module("markme",
                 var createObjectURL = $window.URL.createObjectURL || $window.URL.webkitCreateObjectURL;
                 Bookmarks.export()
                         .then(function(bookmarks) {
-                            $window.open(createObjectURL(new $window.Blob(bookmarks.match(/.{1,200}/mg))));
+                            var blob = new $window.Blob(bookmarks.match(/.{1,200}/mg), {type: 'text/html'});
+                            var d = new Date();
+                            $window.open(createObjectURL(blob), 'Bookmark-export-' + (d.toLocaleDateString('en', {weekday: 'short', month: 'short', year: 'numeric'})).replace(' ', '-') + '-.html',"menubar=1");
                             Alert.success('Bookmark exported ,please save the page opened in a new window.');
                         })
                         .catch(function(err) {

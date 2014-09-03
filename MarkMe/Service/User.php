@@ -111,7 +111,7 @@ class User extends EntityRepository implements UserProviderInterface, UserServic
     }
 
     protected function validate($object) {
-        $errors = $this->validator->validate($bookmark);
+        $errors = $this->validator->validate($object);
         if (count($errors) > 0) {
             throw new ValidatorException($errors[0]->getMessage());
         }

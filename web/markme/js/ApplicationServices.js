@@ -139,7 +139,8 @@ angular.module("ApplicationServices", [])
                     return $http.get('/json/tag/' + tag, {cache: false, params: {offset: offset, limit: limit}})
                             .then(function(result) {
                                 var bookmarks = result.data.bookmarks || [];
-                                if (offset == 0) {
+                                if (offset === 0) {
+                                    // first page 
                                     this.bookmarks = bookmarks.slice();
                                 } else {
                                     bookmarks.forEach(function(b) {
@@ -187,17 +188,26 @@ angular.module("ApplicationServices", [])
                                     .map(function(link) {
                                         return {url: link.getAttribute('HREF'), title: link.textContent};
                                     }).slice(0, Config.importLimit);
-                            deferred.resolve($http.post(ApiEndpoints.BOOKMARK_IMPORT, {bookmarks: links}));
+                            deferred.resolve(this._doImport(links));
                         } catch (error) {
                             deferred.reject(error);
                         }
-                    };
+                    }.bind(this);
                     fileReader.onerror = function(ev) {
                         console.log('error');
                         deferred.reject(fileReader.error);
                     };
                     fileReader.readAsText(file);
                     return deferred.promise;
+                },
+                _doImport: function(links) {
+                    return $http.post(ApiEndpoints.BOOKMARK_IMPORT, {bookmarks: links.splice(0, 100)})
+                            .then(function() {
+                                console.log('done',links.length,'to go');
+                                if (links.length > 0) {
+                                    return this._doImport(links);
+                                }
+                            }.bind(this));
                 },
                 export: function() {
                     return $http.get(ApiEndpoints.BOOKMARK_EXPORT)

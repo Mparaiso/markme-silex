@@ -62,7 +62,7 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
                         ->setMaxResults($limit)
                         ->execute(array('user' => $user, 'query' => "%$keywords%"));
     }
-    
+
     /**
      * 
      * @param \MarkMe\Entity\BookmarkImportCollection $bookmarkImports
@@ -75,24 +75,25 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
                 'description' => $bookmarkImport['title'],
                 'url' => $bookmarkImport['url'],
                 'user_id' => $user->getId(),
-                'private' => true
+                'private' => true,
+                'created_at' => new \Datetime(),
+                'updated_at' => new \Datetime()
             ));
         }
     }
 
-   /**
-    * 
-    * @param \MarkMe\Entity\User $user
-    * @param integer $limit
-    * @return string
-    */
+    /**
+     * 
+     * @param \MarkMe\Entity\User $user
+     * @param integer $limit
+     * @return string
+     */
     public function export(UserEntity $user, $limit = 5000) {
         $bookmarks = $this->getEntityManager()->createQuery('SELECT b.title,b.url,b.createdAt FROM ' . $this->getClassName() . ' b JOIN b.user  u WHERE u = :user')
                 ->setMaxResults($limit)
                 ->execute(array('user' => $user));
         ob_start();
-        ?>
-        <!DOCTYPE NETSCAPE-Bookmark-file-1>
+        ?><!DOCTYPE NETSCAPE-Bookmark-file-1>
         <META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'>
         <TITLE>Bookmarks</TITLE>
         <H1>Bookmarks</H1>
@@ -217,7 +218,7 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
     }
 
     protected function validate($object) {
-        $errors = $this->validator->validate($bookmark);
+        $errors = $this->validator->validate($object);
         if (count($errors) > 0) {
             throw new ValidatorException($errors[0]->getMessage());
         }
