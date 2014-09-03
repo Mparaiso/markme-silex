@@ -62,25 +62,30 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
                         ->setMaxResults($limit)
                         ->execute(array('user' => $user, 'query' => "%$keywords%"));
     }
-
-    public function import(BookmarkImportCollection $bookmarkImports, UserEntity $user) {
-        foreach ($bookmarkImports->getBookmarks() as $bookmarkImport) {
-            $bookmark = new BookmarkEntity();
-            $bookmark->setTitle($bookmarkImport['title']);
-            $bookmark->setDescription($bookmarkImport['title']);
-            $bookmark->setUrl($bookmarkImport['url']);
-            $bookmark->setPrivate(true);
-            $bookmark->setUser($user);
-            $this->create($bookmark, FALSE);
-        }
-        $this->getEntityManager()->flush();
-        $this->getEntityManager()->clear();
-    }
-
+    
     /**
      * 
+     * @param \MarkMe\Entity\BookmarkImportCollection $bookmarkImports
      * @param \MarkMe\Entity\User $user
      */
+    public function import(BookmarkImportCollection $bookmarkImports, UserEntity $user) {
+        foreach ($bookmarkImports->getBookmarks() as $bookmarkImport) {
+            $this->getEntityManager()->getConnection()->insert($this->getClassMetadata()->getTableName(), array(
+                'title' => $bookmarkImport['title'],
+                'description' => $bookmarkImport['title'],
+                'url' => $bookmarkImport['url'],
+                'user_id' => $user->getId(),
+                'private' => true
+            ));
+        }
+    }
+
+   /**
+    * 
+    * @param \MarkMe\Entity\User $user
+    * @param integer $limit
+    * @return string
+    */
     public function export(UserEntity $user, $limit = 5000) {
         $bookmarks = $this->getEntityManager()->createQuery('SELECT b.title,b.url,b.createdAt FROM ' . $this->getClassName() . ' b JOIN b.user  u WHERE u = :user')
                 ->setMaxResults($limit)

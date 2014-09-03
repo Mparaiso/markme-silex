@@ -31,8 +31,8 @@ angular.module("markme",
         .value('Config', {
             editBookmarkModalId: 'bookmark-edit',
             bookmarksPerPage: 25,
-            maxSizeUpload: '5M',
-            importLimit: 400,
+            maxSizeUpload: '10M',
+            importLimit: 1000,
             autoCompleteParse: function(data) {
                 var rows = [];
                 if (data && data.tags) {
@@ -163,7 +163,6 @@ angular.module("markme",
                 Bookmarks.suggesting = true;
                 Bookmarks.suggest(url)
                         .then(function(data) {
-                            console.log('success!', data);
                             Bookmarks.current.title = data.title || Bookmarks.current.title;
                             Bookmarks.current.description = data.description || Bookmarks.current.description;
                             if (data.tags && data.tags.length > 0) {
@@ -174,7 +173,6 @@ angular.module("markme",
                             console.log(err);
                         })
                         .finally(function() {
-                            console.log('finaly');
                             Bookmarks.suggesting = false;
                         });
             };

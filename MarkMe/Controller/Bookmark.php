@@ -59,10 +59,6 @@ class Bookmark {
         $bookmark->setUser($app->security->getToken()->getUser());
         $bookmark->setPrivate(true);
         $bookmark->setCreatedAt(new \DateTime());
-        $errors = $app->validator->validate($bookmark);
-        if (count($errors) > 0) {
-            throw new \Symfony\Component\Validator\Exception\ValidatorException($errors);
-        }
         $app->bookmarks->create($bookmark);
         return $app->serializer->serialize(array('status' => 200, 'bookmark' => $bookmark), 'json');
     }
@@ -86,10 +82,6 @@ class Bookmark {
         $bookmark->setDescription($candidate->getDescription());
         $bookmark->setUrl($candidate->getUrl());
         $bookmark->setTags($candidate->getTags());
-        $errors = $app->validator->validate($bookmark);
-        if (count($errors) > 0) {
-            throw new \Symfony\Component\Validator\Exception\ValidatorException($errors);
-        }
         $app->bookmarks->update($bookmark);
         return $app->serializer->serialize(array('status' => 200, 'bookmark' => $bookmark), 'json');
     }

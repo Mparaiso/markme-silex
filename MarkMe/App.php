@@ -19,27 +19,26 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Validator;
 
 /**
- * Class App
- * @package MarkMe
- * @property \MarkMe\Service\User users
- * @property \MarkMe\Service\Bookmark bookmarks
- * @property \MarkMe\Service\Tag tags
- * @property \Twig_Environment twig
- * @property LoggerInterface logger
- * @property SecurityContext security
- * @property Session session
- * @property Request request
- * @property Serializer serializer
- * @property UrlGenerator url_generator
- * @property FormFactory formFactory
- * @property EntityManager entityManager
- * @property Validator validator
+ * @property \MarkMe\Service\User $users
+ * @property \MarkMe\Service\Bookmark $bookmarks
+ * @property \MarkMe\Service\Tag $tags
+ * @property \Twig_Environment $twig
+ * @property LoggerInterface $logger
+ * @property SecurityContext $security
+ * @property Session $session
+ * @property Request $request
+ * @property Serializer $serializer
+ * @property UrlGenerator $url_generator
+ * @property FormFactory $formFactory
+ * @property EntityManager $entityManager
+ * @property \Symfony\Component\Validator\Validator $validator
  */
 class App extends Application implements AppInterface {
 
     function __construct(array $params = array()) {
         parent::__construct($params);
         $this->register(new Config());
+       
     }
 
     /**

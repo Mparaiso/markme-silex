@@ -42,8 +42,7 @@ class Config implements \Silex\ServiceProviderInterface {
      * @inheritdoc
      */
     public function register(Application $app) {
-        /* @var App $app */
-
+        /* @var $app App */
         # doctrine dbal
         $app->register(new DoctrineServiceProvider(), array("db.options" => array(
                 "driver" => getenv("MARKME_DB_DRIVER"),
