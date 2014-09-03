@@ -81,8 +81,13 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
                 'created_at' => new \Datetime(),
                 'updated_at' => new \Datetime()
                     ), array(
-                'created_at' => Type::DATETIME,
-                'updated_at' => Type::DATETIME,
+                \PDO::PARAM_STR,
+                \PDO::PARAM_STR,
+                \PDO::PARAM_STR,
+                \PDO::PARAM_INT,
+                Type::BOOLEAN,
+                Type::DATETIME,
+                Type::DATETIME,
             ));
         }
     }
@@ -106,9 +111,9 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
             <p>
             <DT><H3 ADD_DATE="<?= time(); ?>" LAST_MODIFIED='<?= time(); ?>' PERSONAL_TOOLBAR_FOLDER='true'>Bookmarks</H3>
             <DL><p>
-                <?php foreach ($bookmarks as $bookmark): ?>
+                    <?php foreach ($bookmarks as $bookmark): ?>
                     <DT><A HREF="<?= $bookmark['url']; ?>" ADD_DATE="<?= $bookmark['createdAt']->getTimestamp(); ?>" ><?= $bookmark['title']; ?></A></DT>
-        <?php endforeach; ?>
+                <?php endforeach; ?>
                 </p>
             </DL>
             </DT>
