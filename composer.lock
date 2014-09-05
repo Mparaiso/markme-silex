@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7ce47bf34a840792a5d5ba8d259a1961",
+    "hash": "91263033aa4b4a1e728920192488ade2",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -556,57 +556,6 @@
                 "orm"
             ],
             "time": "2014-07-11 03:05:53"
-        },
-        {
-            "name": "memcachier/php-memcache-sasl",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/memcachier/PHPMemcacheSASL.git",
-                "reference": "44ae92ace0dbf89c003f8b1774ff1694c6eed514"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/memcachier/PHPMemcacheSASL/zipball/44ae92ace0dbf89c003f8b1774ff1694c6eed514",
-                "reference": "44ae92ace0dbf89c003f8b1774ff1694c6eed514",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "MemCachier\\": "src/MemCachier"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ronny Wang",
-                    "email": "ronnywang@gmail.com",
-                    "homepage": "http://ronnywang.pixnet.net/blog",
-                    "role": "Creator"
-                },
-                {
-                    "name": "MemCachier Inc",
-                    "email": "code@memcachier.com",
-                    "homepage": "https://www.memcachier.com/",
-                    "role": "Contributor"
-                }
-            ],
-            "description": "A PHP Memcache client with binary protocol and SASL support",
-            "homepage": "https://github.com/memcachier/PHPMemcacheSASL",
-            "keywords": [
-                "binary",
-                "cache",
-                "memcache",
-                "sasl"
-            ],
-            "time": "2014-04-22 19:34:07"
         },
         {
             "name": "monolog/monolog",
@@ -2335,8 +2284,7 @@
     "prefer-stable": false,
     "platform": {
         "ext-intl": "*",
-        "lib-icu": "*",
-        "ext-memcache": "*"
+        "lib-icu": "*"
     },
     "platform-dev": [
 
