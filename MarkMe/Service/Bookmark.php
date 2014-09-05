@@ -11,6 +11,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Validator\Validator;
 use Symfony\Component\Validator\Exception\ValidatorException;
 use Doctrine\DBAL\Types\Type;
+use PDO;
 
 /**
  * Bookmark
@@ -81,10 +82,10 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
                 'created_at' => new \Datetime(),
                 'updated_at' => new \Datetime()
                     ), array(
-                \PDO::PARAM_STR,
-                \PDO::PARAM_STR,
-                \PDO::PARAM_STR,
-                \PDO::PARAM_INT,
+                Type::STRING,
+                Type::STRING,
+                Type::STRING,
+                Type::INTEGER,
                 Type::BOOLEAN,
                 Type::DATETIME,
                 Type::DATETIME,
@@ -217,7 +218,7 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
             $keywords = $head->filter('meta[name=keywords]');
             $keywords->count() > 0 AND $keywords = $keywords->extract('content')
                     AND $tags = array_map('trim', array_filter(explode(',', array_pop($keywords)))) OR $tags = array();
-            $result = array('tags' => $tags, 'title' => $title, 'description' => $description, 'url' => $url);
+            $result = array('tags' => $tags, 'title' => trim($title), 'description' => trim($description) OR $title, 'url' => $url);
         }
         $cache AND $cache->save($url, $result);
         return $result;

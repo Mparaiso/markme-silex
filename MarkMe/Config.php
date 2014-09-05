@@ -34,7 +34,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Doctrine\ORM\Configuration;
-use \Monolog\Handler\StreamHandler;
+use Monolog\Handler\StreamHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
 
 class Config implements \Silex\ServiceProviderInterface {
 
@@ -110,7 +111,15 @@ class Config implements \Silex\ServiceProviderInterface {
                 "id" => "markme"
             ),
         ));
-
+        $app['session.storage.handler'] = $app->share($app->extend('session.storage.handler',function($handler) {
+                    if (class_exists('Memcached')) {
+                        ini_set('session.save_handler', 'memcached');
+                        return new MemcachedSessionHandler(new \Memcached());
+                    } else {
+                        return $handler; //return default handler
+                    }
+                })
+        );
         # url generator
         $app->register(new UrlGeneratorServiceProvider());
         $app->register(new ConsoleServiceProvider());
@@ -163,7 +172,11 @@ class Config implements \Silex\ServiceProviderInterface {
             'http_cache.options' => array('debug' => $app['debug'], 'defaut.ttl' => 5),
             'http_cache.esi' => null,
         ));
+
+
+
         # custom services
+
         $app["upload_dir"] = __DIR__ . "/../upload";
         $app["max_size_upload"] = ini_get("upload_max_filesize");
         $app["current_date"] = $app->share(function () {
