@@ -114,6 +114,10 @@ class Config implements \Silex\ServiceProviderInterface {
         $app['session.storage.handler'] = $app->share($app->extend('session.storage.handler', function($handler) {
                     if (class_exists('Memcached')) {
                         ini_set('session.save_handler', 'memcached');
+                        ini_set('memcached.sess_binary', 1);
+                        ini_set('session.save_path', 'PERSISTENT=markme_session ' . getenv('MARKME_MEMCACHED_SERVERS'));
+                        ini_set('memcached.sess_sasl_username', getenv('MARKME_MEMCACHED_USERNAME'));
+                        ini_set('memcached.sess_sasl_password', getenv('MARKME_MEMCACHED_PASSWORD'));
                         return new MemcachedSessionHandler(new \Memcached());
                     } else {
                         return $handler; //return default handler
