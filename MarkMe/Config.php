@@ -111,13 +111,13 @@ class Config implements \Silex\ServiceProviderInterface {
                 "id" => "markme"
             ),
         ));
-        $app['session.storage.handler'] = $app->share($app->extend('session.storage.handler',function($handler) {
-                   // if (class_exists('Memcached')) {
+        $app['session.storage.handler'] = $app->share($app->extend('session.storage.handler', function($handler) {
+                    if (class_exists('Memcached')) {
                         ini_set('session.save_handler', 'memcached');
                         return new MemcachedSessionHandler(new \Memcached());
-                   // } else {
-                    //    return $handler; //return default handler
-                    //}
+                    } else {
+                        return $handler; //return default handler
+                    }
                 })
         );
         # url generator
