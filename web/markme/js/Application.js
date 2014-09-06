@@ -82,7 +82,7 @@ angular.module("markme",
                 mpModalService.showModal(Config.editBookmarkModalId);
             };
         })
-        .controller('BookmarkRowCtrl', function BookmarkRowCtrl($timeout,$scope, Bookmarks, Alert, mpModalService) {
+        .controller('BookmarkRowCtrl', function BookmarkRowCtrl($timeout,$scope,Config, Bookmarks, Alert, mpModalService) {
             $scope.toggleFavorite = function(bookmark) {
                 Bookmarks.toggleFavorite(bookmark)
                 bookmark.favorite = !bookmark.favorite;

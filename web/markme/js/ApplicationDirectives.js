@@ -139,7 +139,7 @@
                                             $timeout(function() {
                                                 container.masonry('reloadItems');
                                                 container.masonry();
-                                            }, 10);
+                                            });
                                         }
                                     }
                             , getOptions = function() {
