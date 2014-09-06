@@ -34,7 +34,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Doctrine\ORM\Configuration;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Doctrine\HttpFoundation\DbalSessionHandler;
-use \Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class Config implements \Silex\ServiceProviderInterface {
 
