@@ -16,8 +16,6 @@ use MarkMe\Logging\MonologSQLLogger;
 use Mparaiso\Provider\ConsoleServiceProvider;
 use Mparaiso\Provider\DoctrineORMServiceProvider;
 use Silex\Application;
-use Silex\Controller;
-use Silex\ControllerCollection;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\MonologServiceProvider;
@@ -35,7 +33,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Doctrine\ORM\Configuration;
 use Monolog\Handler\StreamHandler;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
+use Symfony\Bridge\Doctrine\HttpFoundation\DbalSessionHandler;
+use \Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class Config implements \Silex\ServiceProviderInterface {
 
@@ -111,25 +110,17 @@ class Config implements \Silex\ServiceProviderInterface {
                 "id" => "markme"
             ),
         ));
-        $app['session.storage.handler'] = $app->share($app->extend('session.storage.handler', function($handler) {
-                    if (class_exists('Memcached')) {
-                        ini_set('session.save_handler', 'memcached');
-                        ini_set('memcached.sess_binary', 1);
-                        ini_set('session.save_path', 'PERSISTENT=markme_session ' . getenv('MARKME_MEMCACHED_SERVERS'));
-                        ini_set('memcached.sess_sasl_username', getenv('MARKME_MEMCACHED_USERNAME'));
-                        ini_set('memcached.sess_sasl_password', getenv('MARKME_MEMCACHED_PASSWORD'));
-                        return new MemcachedSessionHandler(new \Memcached());
-                    } else {
-                        return $handler; //return default handler
-                    }
-                })
-        );
+        $app['session.storage.handler'] = $app->share(function(App $app) {
+            $connection = $app->entityManager->getConnection();
+            return new DbalSessionHandler($connection, 'sessions');
+        });
         # url generator
         $app->register(new UrlGeneratorServiceProvider());
         $app->register(new ConsoleServiceProvider());
         $app->register(new ValidatorServiceProvider());
         $app->register(new FormServiceProvider());
         $app->register(new TranslationServiceProvider());
+
         # Security
         $app->register(new SecurityServiceProvider(), array(
             'security.firewalls' => array(
@@ -165,10 +156,13 @@ class Config implements \Silex\ServiceProviderInterface {
                 array('/', AuthenticatedVoter::IS_AUTHENTICATED_ANONYMOUSLY),
             ),
             'security.role_hierarchy' => array(
-                Role::ROLE_USER => array()
-            )
+                Role::ROLE_USER => array())
                 )
         );
+
+
+
+
         $app->register(new SerializerServiceProvider());
         $app->register(new ServiceControllerServiceProvider());
         $app->register(new HttpCacheServiceProvider(), array(
@@ -226,12 +220,26 @@ class Config implements \Silex\ServiceProviderInterface {
         $app['controller.tag'] = $app->share(function () {
             return new Tag();
         });
+        /**
+         * EXCEPTION HANDLERS
+         */
+        $app->error(function(AccessDeniedException $exception, $code)use ($app) {
+            /**
+             * when request format is JSON OR XML do not redirect on request failure
+             * but send a serialized response
+             */
+            if (in_array($app->request->getRequestFormat(), array('json', 'xml'))) {
+                $app->logger->error($exception->getMessage());
+                return new Response($exception->getMessage(), 403, array('X-Status-Code' => 403));
+            }
+        }, 100);
     }
 
     /**
      * @inheritdoc
      */
     public function boot(Application $app) {
+        /* @var $app App */
         # routing 
         # transform the body of a JSON request to a form encoded request
         $app->match('/', 'controller.index:index')->method('GET|POST')->bind('index');
@@ -251,7 +259,7 @@ class Config implements \Silex\ServiceProviderInterface {
         $json->get('/bookmark/search.{_format}', 'controller.bookmark:search')->bind('bookmark_search');
         $json->get('/bookmark/export.{_format}', 'controller.bookmark:export')->bind('bookmark.export');
         $json->post('/bookmark/import.{_format}', 'controller.bookmark:import')->bind('bookmark.import');
-        $json->get('/bookmark/suggest', 'controller.bookmark:suggestBookmarkData')->bind('bookmark.suggest');
+        $json->get('/bookmark/suggest.{_format}', 'controller.bookmark:suggestBookmarkData')->bind('bookmark.suggest');
         $json->put('/bookmark/{id}.{_format}', 'controller.bookmark:update')->bind('update_bookmark');
         $json->delete('/bookmark/{id}.{_format}', 'controller.bookmark:delete')->bind('delete_bookmark');
         $json->get('/bookmark/{id}.{_format}', 'controller.bookmark:read')->bind('bookmark_read');
@@ -262,6 +270,7 @@ class Config implements \Silex\ServiceProviderInterface {
 
         $json->value('_format', 'json');
         $json->assert('_format', 'json|xml');
+
 
 
         $app->mount('/json', $json);

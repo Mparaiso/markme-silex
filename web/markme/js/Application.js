@@ -4,7 +4,7 @@
  */
 angular.module("markme",
         ["ApplicationDirectives", "ApplicationServices", "ApplicationFilters", 'ngRoute'],
-        function($routeProvider) {
+        function($routeProvider, $httpProvider) {
 
             $routeProvider.when("/tag/:tag", {
                 templateUrl: "/markme/partials/bookmarks.html",
@@ -27,6 +27,18 @@ angular.module("markme",
                         controller: "AccountCtrl"
                     })
                     .otherwise({redirectTo: "/bookmark"});
+
+            $httpProvider.interceptors.push('accessDeniedInterceptor');
+        })
+        .factory('accessDeniedInterceptor', function($q, $window) {
+            return {
+                responseError: function(rejection) {
+                    if (rejection.status === 403) {
+                        return $window.location = "/";
+                    }
+                    return $q.reject(rejection);
+                }
+            }
         })
         .value('Config', {
             editBookmarkModalId: 'bookmark-edit',
@@ -222,7 +234,7 @@ angular.module("markme",
                         .then(function(bookmarks) {
                             var blob = new $window.Blob(bookmarks.match(/.{1,200}/mg), {type: 'text/html'});
                             var d = new Date();
-                            $window.open(createObjectURL(blob), 'Bookmark-export-' + (d.toLocaleDateString('en', {weekday: 'short', month: 'short', year: 'numeric'})).replace(' ', '-') + '-.html',"menubar=1");
+                            $window.open(createObjectURL(blob), 'Bookmark-export-' + (d.toLocaleDateString('en', {weekday: 'short', month: 'short', year: 'numeric'})).replace(' ', '-') + '-.html', "menubar=1");
                             Alert.success('Bookmark exported ,please save the page opened in a new window.');
                         })
                         .catch(function(err) {

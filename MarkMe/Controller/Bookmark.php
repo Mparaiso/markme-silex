@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyrights 2014 mparaiso <mparaiso@online.fr>
  * @All rights reserved
@@ -36,7 +37,7 @@ class Bookmark {
         $limit = $req->query->get("limit", 100);
         $offset = $req->query->get("offset", 0);
         $bookmarks = $app->bookmarks->findByTag($tags, $user, $limit, $offset * $limit);
-        return $app->serializer->serialize(array('status' => 200, 'bookmarks' => $bookmarks), 'json');
+        return $app->serializer->serialize(array('status' => 200, 'bookmarks' => $bookmarks),  $_format);
     }
 
     /**
@@ -49,18 +50,18 @@ class Bookmark {
         $limit = $request->query->get('limit', 100);
         $offset = $request->query->get('offset', 0);
         $bookmarks = $app->bookmarks->search($request->get('q'), $user, $limit, $offset * $limit);
-        return $app->serializer->serialize(array('status' => 200, 'bookmarks' => $bookmarks), 'json');
+        return $app->serializer->serialize(array('status' => 200, 'bookmarks' => $bookmarks),  $_format);
     }
 
     function create(Application $app, Request $req, $_format) {
         /* @var \MarkMe\App $app */
-        $bookmark = $app->serializer->deserialize($req->getContent(), '\MarkMe\Entity\Bookmark', 'json');
+        $bookmark = $app->serializer->deserialize($req->getContent(), '\MarkMe\Entity\Bookmark',  $_format);
         /* @var \MarkMe\Entity\Bookmark $bookmark */
         $bookmark->setUser($app->security->getToken()->getUser());
         $bookmark->setPrivate(true);
         $bookmark->setCreatedAt(new \DateTime());
         $app->bookmarks->create($bookmark);
-        return $app->serializer->serialize(array('status' => 200, 'bookmark' => $bookmark), 'json');
+        return $app->serializer->serialize(array('status' => 200, 'bookmark' => $bookmark),  $_format);
     }
 
     function read(Application $app, $id, $_format) {
@@ -75,15 +76,15 @@ class Bookmark {
         /* @var \MarkMe\Entity\Bookmark $bookmark */
         $bookmark = $app->bookmarks->findOneBy(array('id' => $app->request->get('id'), 'user' => $user));
         if ($bookmark == NULL) {
-            return new Response($app->serializer->serialize(array('status' => 404, 'message' => 'not found'), 'json'), 404);
+            return new Response($app->serializer->serialize(array('status' => 404, 'message' => 'not found'),  $_format), 404);
         }
-        $candidate = $app->serializer->deserialize($req->getContent(), '\MarkMe\Entity\Bookmark', 'json');
+        $candidate = $app->serializer->deserialize($req->getContent(), '\MarkMe\Entity\Bookmark',  $_format);
         $bookmark->setTitle($candidate->getTitle());
         $bookmark->setDescription($candidate->getDescription());
         $bookmark->setUrl($candidate->getUrl());
         $bookmark->setTags($candidate->getTags());
         $app->bookmarks->update($bookmark);
-        return $app->serializer->serialize(array('status' => 200, 'bookmark' => $bookmark), 'json');
+        return $app->serializer->serialize(array('status' => 200, 'bookmark' => $bookmark), $_format);
     }
 
     function delete(Application $app, $id, $_format) {
@@ -91,10 +92,10 @@ class Bookmark {
         $user = $app->security->getToken()->getUser();
         $bookmark = $app->bookmarks->findOneBy(array('id' => $id, 'user' => $user));
         if (NULL == $bookmark) {
-            return new Response($app->serializer->serialize(array('status' => 404, 'message' => 'bookmark not found'), 'json'), 404);
+            return new Response($app->serializer->serialize(array('status' => 404, 'message' => 'bookmark not found'),  $_format), 404);
         }
         $app->bookmarks->delete($bookmark);
-        return $app->serializer->serialize(array('status' => 200), 'json');
+        return $app->serializer->serialize(array('status' => 200), $_format);
     }
 
     function export(Request $req, Application $app, $_format) {

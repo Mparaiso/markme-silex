@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyrights 2014 mparaiso <mparaiso@online.fr>
  * @All rights reserved
@@ -9,21 +10,19 @@ namespace MarkMe\Controller {
     use MarkMe\App as Application;
     use MarkMe\Form\Register;
     use Symfony\Component\HttpFoundation\Response;
-    use  MarkMe\Entity\User as UserEntity;
+    use MarkMe\Entity\User as UserEntity;
     use Symfony\Component\HttpFoundation\Request;
     use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
     use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 
-    class Index
-    {
+    class Index {
 
         /**
          * homepage
          * @param \Silex\Application $app
          * @return Response
          */
-        function index(Request $req, Application $app)
-        {
+        function index(Request $req, Application $app) {
             /** @var \MarkMe\App $app */
             if ($app->security->isGranted(AuthenticatedVoter::IS_AUTHENTICATED_FULLY)) {
                 return $app->redirect($app->url_generator->generate('application'));
@@ -37,7 +36,7 @@ namespace MarkMe\Controller {
                 return $app->redirect($app->url_generator->generate('application'));
             }
             return $app->twig->render("index.twig", array(
-                'form' => $form->createView()
+                        'form' => $form->createView()
             ));
         }
 
@@ -45,8 +44,7 @@ namespace MarkMe\Controller {
          * application
          * @param \Silex\Application $app
          */
-        function application(Application $app)
-        {
+        function application(Application $app) {
             return $app->twig->render("application.twig");
         }
 

@@ -218,7 +218,7 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
             $keywords = $head->filter('meta[name=keywords]');
             $keywords->count() > 0 AND $keywords = $keywords->extract('content')
                     AND $tags = array_map('trim', array_filter(explode(',', array_pop($keywords)))) OR $tags = array();
-            $result = array('tags' => $tags, 'title' => trim($title), 'description' => trim($description) OR $title, 'url' => $url);
+            $result = array('tags' => $tags, 'title' => trim($title), 'description' => trim($description) ? trim($description) : $title, 'url' => $url);
         }
         $cache AND $cache->save($url, $result);
         return $result;
