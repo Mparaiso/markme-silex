@@ -16,7 +16,7 @@ date_default_timezone_get() == NULL AND date_default_timezone_set('Europe/Paris'
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $debug = getenv('MARKME_ENVIRONMENT') == "production" ? FALSE : TRUE;
-//ErrorHandler::register();
-//ExceptionHandler::register($debug);
+ErrorHandler::register();
+ExceptionHandler::register($debug);
 $app = new App(array('debug' => $debug));
 $app['http_cache']->run();
