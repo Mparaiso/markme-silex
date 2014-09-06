@@ -69,7 +69,7 @@ class Config implements \Silex\ServiceProviderInterface {
             )
         ));
         #doctrine cache
-        $app['doctrine.orm.cache_driver'] = $app->share(function($app) {
+        $app['doctrine.orm.cache_driver'] = $app->share(function() {
             return new \Doctrine\Common\Cache\FilesystemCache(__DIR__ . '/../temp/doctrine');
         });
 
@@ -175,8 +175,6 @@ class Config implements \Silex\ServiceProviderInterface {
 
         # custom services
 
-        $app["upload_dir"] = __DIR__ . "/../upload";
-        $app["max_size_upload"] = ini_get("upload_max_filesize");
         $app["current_date"] = $app->share(function () {
             return new \DateTime();
         });
@@ -223,7 +221,7 @@ class Config implements \Silex\ServiceProviderInterface {
         /**
          * EXCEPTION HANDLERS
          */
-        $app->error(function(AccessDeniedException $exception, $code)use ($app) {
+        $app->error(function(AccessDeniedException $exception)use ($app) {
             /**
              * when request format is JSON OR XML do not redirect on request failure
              * but send a serialized response
