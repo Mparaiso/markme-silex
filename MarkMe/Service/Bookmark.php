@@ -224,6 +224,16 @@ class Bookmark extends EntityRepository implements BookmarkInterface {
         return $result;
     }
 
+    function toggleFavorite($id, $user) {
+        $bookmark = $this->findOneBy(array('id' => $id, 'user' => $user));
+        if ($bookmark) {
+            $bookmark->setFavorite(!$bookmark->getFavorite());
+        }
+        $this->getEntityManager()->persist($bookmark);
+        $this->getEntityManager()->flush();
+        return $bookmark;
+    }
+
     function setValidator($validator) {
         $this->validator = $validator;
     }

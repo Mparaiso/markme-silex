@@ -7,9 +7,12 @@ FR : affiche la liste des marques pages
     data-masonry="Bookmarks.bookmarks"  
     data-gutter="30px" data-column-width='200px' 
     data-item-selector="div.bookmark">
-    <div class='bookmark' data-ng-repeat="bookmark in Bookmarks.bookmarks">
+    <div class='bookmark' ng-class="{favorite:bookmark.favorite}" ng-controller='BookmarkRowCtrl' data-ng-repeat="bookmark in Bookmarks.bookmarks">
         <div title="edit" class="pull-left ">
             <i  data-ng-click="edit(bookmark)" class="text-muted glyphicon glyphicon-pencil link"></i>
+            <i  data-ng-click="toggleFavorite(bookmark)"  ng-class="{'glyphicon-star':bookmark.favorite,'glyphicon-star-empty':!bookmark.favorite}" class="text-muted glyphicon  link"></i>
+
+
         </div>
         <div title="delete" class="pull-right text-muted">
             <i data-ng-click="remove(bookmark)" class="text-muted  glyphicon glyphicon-remove link"></i>
@@ -18,7 +21,7 @@ FR : affiche la liste des marques pages
             <a href='{{bookmark.url}}' title='{{bookmark.url}}' class="bookmark-image-wrapper" target="_blank">
                 <img class='bookmark-image'  data-ng-src="/markme/img/placeholder.gif" 
                      title="{{bookmark.description}}" data-bst-tooltip data-placement="bottom"
-                     alt="{{bookmark.url}}" src=""   data-preload-image="{{getThumbnail(bookmark.url)}}" /></a> 
+                     alt="{{bookmark.url}}" src=""   data-preload-image="{{Thumbnails.getThumbnail(bookmark.url)}}" /></a> 
             <h4 class="ellipsis" >
                 <a title="Open {{bookmark.url}}" href="{{bookmark.url}}" target='_blank' >{{ bookmark.title|capitalize  }}</a>
             </h4>

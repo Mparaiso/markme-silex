@@ -64,10 +64,10 @@ class Bookmark extends \MarkMe\Entity\Bookmark implements \Doctrine\ORM\Proxy\Pr
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'id', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'user', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'description', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'url', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'title', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'createdAt', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'updatedAt', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'tags', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'private');
+            return array('__isInitialized__', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'id', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'user', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'description', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'url', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'title', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'createdAt', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'updatedAt', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'tags', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'private', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'favorite');
         }
 
-        return array('__isInitialized__', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'id', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'user', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'description', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'url', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'title', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'createdAt', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'updatedAt', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'tags', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'private');
+        return array('__isInitialized__', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'id', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'user', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'description', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'url', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'title', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'createdAt', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'updatedAt', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'tags', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'private', '' . "\0" . 'MarkMe\\Entity\\Bookmark' . "\0" . 'favorite');
     }
 
     /**
@@ -395,6 +395,28 @@ class Bookmark extends \MarkMe\Entity\Bookmark implements \Doctrine\ORM\Proxy\Pr
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array());
 
         return parent::getUser();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFavorite()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFavorite', array());
+
+        return parent::getFavorite();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setFavorite($favorite)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFavorite', array($favorite));
+
+        return parent::setFavorite($favorite);
     }
 
     /**

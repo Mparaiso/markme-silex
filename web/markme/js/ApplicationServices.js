@@ -4,6 +4,8 @@ angular.module("ApplicationServices", [])
             BOOKMARK_IMPORT: '/json/bookmark/import',
             BOOKMARK_EXPORT: '/json/bookmark/export',
             BOOKMARK_SUGGEST: '/json/bookmark/suggest',
+            BOOKMARK_FAVORITES: '/json/bookmark/favorites',
+            BOOKMARK_TOGGLE_FAVORITE: '/json/bookmark/:id/favorite'
         })
         .factory('Alert', function() {
             var Alert = {
@@ -203,7 +205,7 @@ angular.module("ApplicationServices", [])
                 _doImport: function(links) {
                     return $http.post(ApiEndpoints.BOOKMARK_IMPORT, {bookmarks: links.splice(0, 100)})
                             .then(function() {
-                                console.log('done',links.length,'to go');
+                                console.log('done', links.length, 'to go');
                                 if (links.length > 0) {
                                     return this._doImport(links);
                                 }
@@ -220,6 +222,24 @@ angular.module("ApplicationServices", [])
                             .then(function(result) {
                                 return result.data;
                             });
+                },
+                toggleFavorite: function(bookmark) {
+                    return $http.post(ApiEndpoints.BOOKMARK_TOGGLE_FAVORITE.replace(':id', bookmark.id));
+                },
+                getFavorites: function(offset, limit) {
+                    offset = offset || 0;
+                    limit = limit || 25;
+                    return $http.get(ApiEndpoints.BOOKMARK_FAVORITES, {cache: false, params: {offset: offset, limit: limit}})
+                            .then(function(result) {
+                                if (offset === 0) {
+                                    this.bookmarks = result.data.bookmarks.slice();
+                                } else {
+                                    result.data.bookmarks.forEach(function(bookmark) {
+                                        this.bookmarks.push(bookmark);
+                                    }.bind(this));
+                                }
+                                return result.data.bookmarks;
+                            }.bind(this));
                 }
             };
         });

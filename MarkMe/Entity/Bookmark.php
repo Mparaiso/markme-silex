@@ -1,8 +1,10 @@
 <?php
+
 /**
  * @copyrights 2014 mparaiso <mparaiso@online.fr>
  * @All rights reserved
  */
+
 namespace MarkMe\Entity;
 
 use \Symfony\Component\Serializer\Normalizer\NormalizableInterface;
@@ -74,6 +76,12 @@ class Bookmark implements NormalizableInterface {
      * @var boolean
      */
     private $private;
+
+    /**
+     * @Column(type="boolean",nullable=true)
+     * @var boolean
+     */
+    private $favorite;
 
     public function __construct() {
         $this->tags = array();
@@ -216,6 +224,14 @@ class Bookmark implements NormalizableInterface {
         return $this->user;
     }
 
+    function getFavorite() {
+        return $this->favorite;
+    }
+
+    function setFavorite($favorite) {
+        $this->favorite = $favorite;
+    }
+
     /**
      * @PrePersist @PreUpdate
      */
@@ -245,7 +261,8 @@ class Bookmark implements NormalizableInterface {
             'title' => $this->title,
             'updatedAt' => $this->updatedAt,
             'url' => $this->url,
-            'user' => $this->user
+            'user' => $this->user,
+            'favorite'=>$this->favorite
         );
     }
 

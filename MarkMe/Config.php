@@ -69,20 +69,9 @@ class Config implements \Silex\ServiceProviderInterface {
             )
         ));
         #doctrine cache
-        $app['doctrine.orm.cache_driver'] = $app->share(function() {
+        $app['orm.cache'] = $app->share(function($app) {
             return new \Doctrine\Common\Cache\FilesystemCache(__DIR__ . '/../temp/doctrine');
         });
-
-        $app['bookmarkMetadataCache'] = $app->share(function($app) {
-            return $app['doctrine.orm.cache_driver'];
-        });
-
-        $app["orm.config"] = $app->share($app->extend('orm.config', function(Configuration $config, $app) {
-                    $config->setQueryCacheImpl($app['doctrine.orm.cache_driver']);
-                    $config->setResultCacheImpl($app['doctrine.orm.cache_driver']);
-                    $config->setMetadataCacheImpl($app['doctrine.orm.cache_driver']);
-                    return $config;
-                }));
 
         #twig templates
         $app->register(new TwigServiceProvider(), array(
@@ -226,11 +215,19 @@ class Config implements \Silex\ServiceProviderInterface {
              * when request format is JSON OR XML do not redirect on request failure
              * but send a serialized response
              */
-            if (in_array($app->request->getRequestFormat(), array('json', 'xml'))) {
-                $app->logger->error($exception->getMessage());
-                return new Response($exception->getMessage(), 403, array('X-Status-Code' => 403));
+            if (in_array($format = $app->request->getRequestFormat(), array('json', 'xml'))) {
+                $app->logger->error($exception);
+                $errorMessage = $app['debug'] ? $exception->getMessage() : "Server Error";
+                return new Response($app->serializer->serialize($errorMessage, $format), 403, array('X-Status-Code' => 403));
             }
         }, 100);
+        $app->error(function(\Exception $exception, $code)use($app) {
+            if (in_array($format = $app->request->getRequestFormat(), array('json', 'xmi'))) {
+                $app->logger->error($exception);
+                $errorMessage = $app['debug'] ? $exception->getMessage() : "Server Error";
+                return new Response($app->serializer->serialize($errorMessage, $format), $code);
+            }
+        });
     }
 
     /**
@@ -255,12 +252,14 @@ class Config implements \Silex\ServiceProviderInterface {
         $json->get('/bookmark.{_format}', 'controller.bookmark:index')->bind('bookmark_index');
         $json->post('/bookmark.{_format}', 'controller.bookmark:create')->bind('create_bookmark');
         $json->get('/bookmark/search.{_format}', 'controller.bookmark:search')->bind('bookmark_search');
+        $json->get('/bookmark/favorites.{_format}', 'controller.bookmark:findFavorites')->bind('bookmark_favorite_find');
         $json->get('/bookmark/export.{_format}', 'controller.bookmark:export')->bind('bookmark.export');
         $json->post('/bookmark/import.{_format}', 'controller.bookmark:import')->bind('bookmark.import');
         $json->get('/bookmark/suggest.{_format}', 'controller.bookmark:suggestBookmarkData')->bind('bookmark.suggest');
         $json->put('/bookmark/{id}.{_format}', 'controller.bookmark:update')->bind('update_bookmark');
         $json->delete('/bookmark/{id}.{_format}', 'controller.bookmark:delete')->bind('delete_bookmark');
         $json->get('/bookmark/{id}.{_format}', 'controller.bookmark:read')->bind('bookmark_read');
+        $json->post('/bookmark/{id}/favorite.{_format}', 'controller.bookmark:toggleFavorite')->bind('bookmark_favorite_toggle');
         $json->get('/tag/{tags}.{_format}', 'controller.bookmark:findByTags')->bind('tag_search');
         # tags 
         $json->get('autocomplete.{_format}', 'controller.tag:search')->bind('tag_autocomplete');

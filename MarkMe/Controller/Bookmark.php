@@ -31,13 +31,33 @@ class Bookmark {
                         ), $_format);
     }
 
+    function toggleFavorite(Application $app, Request $req, $id, $_format) {
+        /* @var \MarkMe\App $app */
+        $user = $app->security->getToken()->getUser();
+        $bookmark = $app->bookmarks->toggleFavorite($id, $user);
+        if (!$bookmark) {
+            return new Response("Bookmark with id $id not found", 404);
+        }
+        return $app->serializer->serialize(array('bookmark' => $bookmark, 'status' => 200), $_format);
+    }
+
+    function findFavorites(Request $req, Application $app, $_format) {
+        $user = $app->security->getToken()->getUser();
+        $limit = $req->query->getInt('limit');
+        $offset = $req->query->getInt('offset', 0) * $limit;
+        $bookmarks = $app->bookmarks->findBy(
+                array('user' => $user, 'favorite' => true), array('createdAt' => 'DESC'), $limit, $offset
+        );
+        return $app->serializer->serialize(array('bookmarks' => $bookmarks, 'offset' => $offset, 'limit' => $limit), $_format);
+    }
+
     function findByTags(Application $app, Request $req, $tags, $_format) {
         /* @var \MarkMe\App $app */
         $user = $app->security->getToken()->getUser();
         $limit = $req->query->get("limit", 100);
         $offset = $req->query->get("offset", 0);
         $bookmarks = $app->bookmarks->findByTag($tags, $user, $limit, $offset * $limit);
-        return $app->serializer->serialize(array('status' => 200, 'bookmarks' => $bookmarks),  $_format);
+        return $app->serializer->serialize(array('status' => 200, 'bookmarks' => $bookmarks), $_format);
     }
 
     /**
@@ -50,18 +70,18 @@ class Bookmark {
         $limit = $request->query->get('limit', 100);
         $offset = $request->query->get('offset', 0);
         $bookmarks = $app->bookmarks->search($request->get('q'), $user, $limit, $offset * $limit);
-        return $app->serializer->serialize(array('status' => 200, 'bookmarks' => $bookmarks),  $_format);
+        return $app->serializer->serialize(array('status' => 200, 'bookmarks' => $bookmarks), $_format);
     }
 
     function create(Application $app, Request $req, $_format) {
         /* @var \MarkMe\App $app */
-        $bookmark = $app->serializer->deserialize($req->getContent(), '\MarkMe\Entity\Bookmark',  $_format);
+        $bookmark = $app->serializer->deserialize($req->getContent(), '\MarkMe\Entity\Bookmark', $_format);
         /* @var \MarkMe\Entity\Bookmark $bookmark */
         $bookmark->setUser($app->security->getToken()->getUser());
         $bookmark->setPrivate(true);
         $bookmark->setCreatedAt(new \DateTime());
         $app->bookmarks->create($bookmark);
-        return $app->serializer->serialize(array('status' => 200, 'bookmark' => $bookmark),  $_format);
+        return $app->serializer->serialize(array('status' => 200, 'bookmark' => $bookmark), $_format);
     }
 
     function read(Application $app, $id, $_format) {
@@ -76,9 +96,9 @@ class Bookmark {
         /* @var \MarkMe\Entity\Bookmark $bookmark */
         $bookmark = $app->bookmarks->findOneBy(array('id' => $app->request->get('id'), 'user' => $user));
         if ($bookmark == NULL) {
-            return new Response($app->serializer->serialize(array('status' => 404, 'message' => 'not found'),  $_format), 404);
+            return new Response($app->serializer->serialize(array('status' => 404, 'message' => 'not found'), $_format), 404);
         }
-        $candidate = $app->serializer->deserialize($req->getContent(), '\MarkMe\Entity\Bookmark',  $_format);
+        $candidate = $app->serializer->deserialize($req->getContent(), '\MarkMe\Entity\Bookmark', $_format);
         $bookmark->setTitle($candidate->getTitle());
         $bookmark->setDescription($candidate->getDescription());
         $bookmark->setUrl($candidate->getUrl());
@@ -92,7 +112,7 @@ class Bookmark {
         $user = $app->security->getToken()->getUser();
         $bookmark = $app->bookmarks->findOneBy(array('id' => $id, 'user' => $user));
         if (NULL == $bookmark) {
-            return new Response($app->serializer->serialize(array('status' => 404, 'message' => 'bookmark not found'),  $_format), 404);
+            return new Response($app->serializer->serialize(array('status' => 404, 'message' => 'bookmark not found'), $_format), 404);
         }
         $app->bookmarks->delete($bookmark);
         return $app->serializer->serialize(array('status' => 200), $_format);

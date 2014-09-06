@@ -10,6 +10,10 @@ angular.module("markme",
                 templateUrl: "/markme/partials/bookmarks.html",
                 controller: "BookmarkCtrl"
             })
+                    .when('/favorites', {
+                        templateUrl: '/markme/partials/bookmarks.html',
+                        controller: 'FavoritesCtrl'
+                    })
                     .when("/bookmark/search/:search", {
                         templateUrl: "/markme/partials/bookmarks.html",
                         controller: "BookmarkCtrl"
@@ -55,7 +59,7 @@ angular.module("markme",
                 }
                 return rows;
             }})
-        .controller("MainCtrl", function($scope, Users, Bookmarks, Alert, mpModalService, Thumbnails, $timeout, Config) {
+        .controller("MainCtrl", function($scope, Users, Bookmarks, Alert, Thumbnails, Config) {
             // initialization
             Thumbnails.setService(Thumbnails.services.ROBOTHUMB);
             $scope.Config = Config;
@@ -78,10 +82,11 @@ angular.module("markme",
                 mpModalService.showModal(Config.editBookmarkModalId);
             };
         })
-        .controller("BookmarkCtrl", function BookmarkCtrl($scope, mpModalService, $timeout, $routeParams, Alert, Bookmarks, Config, Thumbnails) {
-            $scope.getThumbnail = Thumbnails.getThumbnail;
-            $scope.Bookmarks = Bookmarks;
-            Bookmarks.bookmarks = [];
+        .controller('BookmarkRowCtrl', function BookmarkRowCtrl($timeout,$scope, Bookmarks, Alert, mpModalService) {
+            $scope.toggleFavorite = function(bookmark) {
+                Bookmarks.toggleFavorite(bookmark)
+                bookmark.favorite = !bookmark.favorite;
+            };
             $scope.edit = function(bookmark) {
                 $timeout(function() {
                     Bookmarks.current = angular.copy(bookmark);
@@ -100,6 +105,12 @@ angular.module("markme",
                             Alert.danger("Error removing bookmark %s .".replace("%s", bookmark.title));
                         });
             };
+        })
+        .controller("BookmarkCtrl", function BookmarkCtrl($scope, mpModalService, $timeout, $routeParams, Alert, Bookmarks, Config, Thumbnails) {
+            $scope.Thumbnails = Thumbnails;
+            $scope.Bookmarks = Bookmarks;
+            Bookmarks.bookmarks = [];
+
             $scope.nextBookmarkPage = function() {
                 if ($scope.search) {
                     return $scope.searchBookmarks($scope.search, ++$scope.offset, $scope.limit);
@@ -153,7 +164,38 @@ angular.module("markme",
                 Alert.danger("Error fetching bookmarks.");
             }
         })
-        .controller('BookmarkFormCtrl', function($scope, Bookmarks, Alert, $rootScope, mpModalService, Config) {
+        .controller('FavoritesCtrl', function FavoritesCtrl($scope, Bookmarks, Thumbnails, $routeParams, Config, Alert) {
+            $scope.Bookmarks = Bookmarks;
+            $scope.Thumbnails = Thumbnails;
+            Bookmarks.bookmarks = [];
+            $scope.Config = Config;
+            $scope.Alert = Alert;
+            $scope.limit = Config.bookmarksPerPage;
+            $scope.fetchingBookmarks = true;
+            $scope.offset = $routeParams.offset || 0;
+            $scope.limit = Config.bookmarksPerPage;
+            $scope.nextBookmarkPage = function() {
+                return  getFavorites(++$scope.offset, $scope.limit);
+            };
+            function getFavorites(offset, limit) {
+                return   Bookmarks.getFavorites(offset, limit)
+                        .then(onBookmarkResponseOk)
+                        .catch(onBookmarkResponseError)
+                        .finally(onBookmarkResponseEnd);
+            }
+            ;
+            getFavorites($scope.offset, $scope.limit);
+            function onBookmarkResponseOk(lastBookmarkBatch) {
+                $scope.lastBookmarkBatch = lastBookmarkBatch;
+            }
+            function onBookmarkResponseEnd() {
+                $scope.fetchingBookmarks = false;
+            }
+            function onBookmarkResponseError(err) {
+                Alert.danger("Error fetching bookmarks.");
+            }
+        })
+        .controller('BookmarkFormCtrl', function BookmarkFormCtrl($scope, Bookmarks, Alert, $rootScope, mpModalService, Config) {
             $scope.Bookmarks = Bookmarks;
             $scope.Config = Config;
             $scope.save = function(bookmark) {
