@@ -8,3 +8,6 @@ RewriteRule ^ index.php [L]
     ExpiresDefault A31536000
     Header append Cache-Control "public"
  </filesMatch>
+
+AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+
