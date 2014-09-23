@@ -112,10 +112,10 @@ angular.module("ApplicationServices", [])
                                     }.bind(this));
                                 }
                                 return bookmarks;
-                            }.bind(this))
+                            }.bind(this));
                 },
                 remove: function(bookmark) {
-                    return $http.delete('/json/bookmark/' + bookmark.id)
+                    return $http['delete']('/json/bookmark/' + bookmark.id)
                             .then(function(result) {
                                 this.bookmarks.splice(this.bookmarks.indexOf(this.bookmarks.filter(function(_bookmark) {
                                     return _bookmark.id === bookmark.id

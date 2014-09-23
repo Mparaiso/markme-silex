@@ -1,4 +1,4 @@
-/**
+    /**
  * EN : main module
  * FR : module principal.
  * @copyrights 2014 mparaiso <mparaiso@online.fr>
@@ -102,7 +102,7 @@ angular.module("markme",
                         .then(function() {
                             Alert.info("Bookmark %s removed.".replace("%s", bookmark.title));
                         })
-                        .catch(function() {
+                        ['catch'](function() {
                             Alert.danger("Error removing bookmark %s .".replace("%s", bookmark.title));
                         });
             };

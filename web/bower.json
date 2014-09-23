@@ -1,0 +1,34 @@
+{
+  "name": "markme",
+  "version": "2.0.1",
+  "homepage": "https://github.com/Mparaiso/silex-bookmarkly",
+  "authors": [
+    "mparaiso <aikah@free.fr>"
+  ],
+  "description": "markme",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "markme"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-route": "~1.2.21",
+    "angular": "~1.2.21",
+    "bootstrap": "~3.2.0",
+    "jquery-masonry": "~3.1.5",
+    "jquery.autocomplete": "*",
+    "jquery.tagsinput": "~1.3.2",
+    "jquery": "1",
+    "lodash": "~2.4.1"
+  }
+}
