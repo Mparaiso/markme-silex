@@ -1,27 +1,38 @@
 <div class='container'>
-    <ul class='navbar-nav navbar-right nav'>
-        <li data-ng-show="Users.current"><a class='sans disabled disable'>Welcome back, {{Users.current.username}}</a></li>
-        <li><a href="#/bookmark">Bookmarks</a></li>
-        <li><a href="#/favorites">Favorites</a></li>
-        <li><a href="#/tag">Tags</a></li>
-        <li><a href="javascript:void 0;" ng-click="create()" >New Bookmark</a></li>
-        <li><a href="#/account">Settings</a></li>
-        <li><a href="/logout">Logout</a></li>
-    </ul>
-    <form class="navbar-form navbar-right">
-        <div class="input-group">
-            <input name="search" type="text" data-ng-model="search" placeholder="search a word" class=" form-control">
-
-            <div class="input-group-btn">
-                <button type="submit" ng-click="find(search)" class="btn btn-default muted"><i
-                        class="glyphicon glyphicon-search"></i>
-                </button>
-            </div>
-
-        </div>
-    </form>
     <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
         <a class='navbar-brand brand' href='/'>Mark.me</a>
+    </div>
+    <div class="collapse navbar-collapse" id="menu">
+        <ul class='navbar-nav navbar-right nav'>
+            <li data-ng-show="Users.current"><a class='sans disabled disable'>Welcome back,
+                {{Users.current.username}}</a>
+            </li>
+            <li><a href="#/bookmark">Bookmarks</a></li>
+            <li><a href="#/favorites">Favorites</a></li>
+            <li><a href="#/tag">Tags</a></li>
+            <li><a href="javascript:void 0;" ng-click="create()">New Bookmark</a></li>
+            <li><a href="#/account">Settings</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+        <form class="navbar-form navbar-right">
+            <div class="input-group">
+                <input name="search" type="text" data-ng-model="search" placeholder="search a word"
+                       class=" form-control">
+
+                <div class="input-group-btn">
+                    <button type="submit" ng-click="find(search)" class="btn btn-default muted"><i
+                            class="glyphicon glyphicon-search"></i>
+                    </button>
+                </div>
+
+            </div>
+        </form>
     </div>
 </div>
 <span data-ng-include="'/markme/partials/modal.html'"></span>

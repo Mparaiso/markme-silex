@@ -4,12 +4,20 @@
 <div class="navbar navbar-default">
     <div class="container">
         <div class='navbar-header'>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
             <a class='navbar-brand brand' href='/'>Mark.me</a>
         </div>
-        <ul class="navbar-nav navbar-right nav">
-            <li>
-                <a href="{{ app.url_generator.generate('login') }}">Login</a>
-            </li>
-        </ul>
+        <div class="collapse navbar-collapse" id="menu">
+            <ul class="navbar-nav navbar-right nav">
+                <li>
+                    <a href="{{ app.url_generator.generate('login') }}">Login</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
