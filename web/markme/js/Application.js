@@ -131,21 +131,21 @@
                 return $scope.Bookmarks.list(offset, limit)
                     .then(onBookmarkResponseOk)
                     ['catch'](onBookmarkResponseError)
-                    .finally(onBookmarkResponseEnd);
+                    ['finally'](onBookmarkResponseEnd);
             };
             $scope.searchBookmarks = function (search, offset, limit) {
                 $scope.fetchingBookmarks = true;
                 return Bookmarks.search(search, offset, limit)
                     .then(onBookmarkResponseOk)
                     ['catch'](onBookmarkResponseError)
-                    .finally(onBookmarkResponseEnd);
+                    ['finally'](onBookmarkResponseEnd);
             };
             $scope.searchBookmarksByTag = function (tag, offset, limit) {
                 $scope.fetchingBookmarks = true;
                 return Bookmarks.searchByTag(tag, offset, limit)
                     .then(onBookmarkResponseOk)
                     ['catch'](onBookmarkResponseError)
-                    .finally(onBookmarkResponseEnd);
+                    ['finally'](onBookmarkResponseEnd);
             };
             $scope.offset = $routeParams.offset || 0;
             $scope.limit = Config.bookmarksPerPage;
@@ -189,7 +189,7 @@
                 return   Bookmarks.getFavorites(offset, limit)
                     .then(onBookmarkResponseOk)
                     ['catch'](onBookmarkResponseError)
-                    .finally(onBookmarkResponseEnd);
+                    ['finally'](onBookmarkResponseEnd);
             }
 
             getFavorites($scope.offset, $scope.limit);
@@ -219,7 +219,7 @@
                     })
                     ['catch'](function () {
                         Alert.danger("Error saving bookmark");
-                    }).finally(function () {
+                    })['finally'](function () {
                         mpModalService.hideModal(Config.editBookmarkModalId);
                     });
             };
@@ -236,7 +236,7 @@
                     ['catch'](function (err) {
                         console.log(err);
                     })
-                    .finally(function () {
+                    ['finally'](function () {
                         Bookmarks.suggesting = false;
                     });
             };
@@ -247,7 +247,7 @@
                 ['catch'](function () {
                     Alert.danger("Error fetching tags.");
                 })
-                .finally(function () {
+                ['finally'](function () {
                 });
         })
         .controller("AccountCtrl", function AccountCtrl($scope, $interval, $window, Alert, $cacheFactory, $location, Bookmarks, Users, Config) {
@@ -273,7 +273,7 @@
                         Alert.danger('Bookmark import failed !');
                         console.log(err || err.data);
                     })
-                    .finally(function () {
+                    ['finally'](function () {
                         $scope.importing = false;
                         $interval.cancel(interval);
                     });
@@ -292,7 +292,7 @@
                     ['catch'](function (err) {
                         Alert.danger('Failed to export bookmarks.');
                     })
-                    .finally(function () {
+                    ['finally'](function () {
                         $scope.importing = false;
                     });
             };
