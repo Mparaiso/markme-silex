@@ -1,6 +1,7 @@
 /**
  * EN : main module
  * FR : module principal.
+ * @copyrights 2014 mparaiso <mparaiso@online.fr>
  */
 angular.module("markme",
         ["ApplicationDirectives", "ApplicationServices", "ApplicationFilters", 'ngRoute'],

@@ -1,4 +1,7 @@
 /*global angular*/
+/**
+ * @copyrights 2014 mparaiso <mparaiso@online.fr>
+ */
 angular.module("ApplicationServices", [])
         .constant('ApiEndpoints', {
             BOOKMARK_IMPORT: '/json/bookmark/import',

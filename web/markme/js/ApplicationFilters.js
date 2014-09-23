@@ -1,4 +1,6 @@
-
+/**
+ * @copyrights 2014 mparaiso <mparaiso@online.fr>
+ */
 angular.module("ApplicationFilters", [])
         .filter('capitalize', function() {
             /*

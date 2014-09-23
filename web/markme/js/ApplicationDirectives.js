@@ -1,3 +1,6 @@
+/**
+ * @copyrights 2014 mparaiso <mparaiso@online.fr>
+ */
 (function() {
     angular.module("ApplicationDirectives", ["ApplicationServices"])
             .directive('mpFile', function($timeout) {
