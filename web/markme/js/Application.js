@@ -64,9 +64,8 @@
                 }
                 return rows;
             }})
-        .controller("MainCtrl", function ($scope, Users, Bookmarks, Alert, Thumbnails, Config) {
+        .controller("MainCtrl", function ($scope, Users, Bookmarks, Alert, Config) {
             // initialization
-            Thumbnails.setService(Thumbnails.services.ROBOTHUMB);
             $scope.Config = Config;
             $scope.Bookmarks = Bookmarks;
             $scope.Alert = Alert;
@@ -218,10 +217,10 @@
                         }
                     })
                     ['catch'](function () {
-                        Alert.danger("Error saving bookmark");
-                    })['finally'](function () {
-                        mpModalService.hideModal(Config.editBookmarkModalId);
-                    });
+                    Alert.danger("Error saving bookmark");
+                })['finally'](function () {
+                    mpModalService.hideModal(Config.editBookmarkModalId);
+                });
             };
             $scope.suggest = function (url) {
                 Bookmarks.suggesting = true;
@@ -234,21 +233,21 @@
                         }
                     })
                     ['catch'](function (err) {
-                        console.log(err);
-                    })
+                    console.log(err);
+                })
                     ['finally'](function () {
-                        Bookmarks.suggesting = false;
-                    });
+                    Bookmarks.suggesting = false;
+                });
             };
         })
         .controller("TagCtrl", function TagCtrl($scope, Alert, Tags) {
             $scope.Tags = Tags;
             Tags.get()
                 ['catch'](function () {
-                    Alert.danger("Error fetching tags.");
-                })
+                Alert.danger("Error fetching tags.");
+            })
                 ['finally'](function () {
-                });
+            });
         })
         .controller("AccountCtrl", function AccountCtrl($scope, $interval, $window, Alert, $cacheFactory, $location, Bookmarks, Users, Config) {
             $scope.Users = Users;
@@ -269,14 +268,14 @@
                         console.log($cacheFactory.info());
                     })
                     ['catch'](function (err) {
-                        console.log(err);
-                        Alert.danger('Bookmark import failed !');
-                        console.log(err || err.data);
-                    })
+                    console.log(err);
+                    Alert.danger('Bookmark import failed !');
+                    console.log(err || err.data);
+                })
                     ['finally'](function () {
-                        $scope.importing = false;
-                        $interval.cancel(interval);
-                    });
+                    $scope.importing = false;
+                    $interval.cancel(interval);
+                });
             };
             $scope.export = function () {
                 $scope.importing = true;
@@ -290,11 +289,11 @@
                         Alert.success('Bookmark exported ,please save the page opened in a new window.');
                     })
                     ['catch'](function (err) {
-                        Alert.danger('Failed to export bookmarks.');
-                    })
+                    Alert.danger('Failed to export bookmarks.');
+                })
                     ['finally'](function () {
-                        $scope.importing = false;
-                    });
+                    $scope.importing = false;
+                });
             };
         })
         .run(function () {

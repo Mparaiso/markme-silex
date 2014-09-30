@@ -4,13 +4,17 @@ EN : display a list of bookmarks
 FR : affiche la liste des marques pages
 -->
 <section
-    data-masonry="Bookmarks.bookmarks"  
-    data-gutter="30px" data-column-width='200px' 
-    data-item-selector="div.bookmark">
-    <div class='bookmark' ng-class="{favorite:bookmark.favorite}" ng-controller='BookmarkRowCtrl' data-ng-repeat="bookmark in Bookmarks.bookmarks">
+        data-masonry="Bookmarks.bookmarks"
+        data-gutter="30px" data-column-width='200px'
+        data-item-selector="div.bookmark">
+    <!-- Bookmark Item -->
+    <div class='bookmark' data-ng-class="{favorite:bookmark.favorite}" data-ng-controller='BookmarkRowCtrl'
+         data-ng-repeat="bookmark in Bookmarks.bookmarks">
         <div title="edit" class="pull-left ">
-            <i  data-ng-click="edit(bookmark)" class="text-muted glyphicon glyphicon-pencil link"></i>
-            <i  data-ng-click="toggleFavorite(bookmark)"  ng-class="{'glyphicon-star':bookmark.favorite,'glyphicon-star-empty':!bookmark.favorite}" class="text-muted glyphicon  link"></i>
+            <i data-ng-click="edit(bookmark)" class="text-muted glyphicon glyphicon-pencil link"></i>
+            <i data-ng-click="toggleFavorite(bookmark)"
+               data-ng-class="{'glyphicon-star':bookmark.favorite,'glyphicon-star-empty':!bookmark.favorite}"
+               class="text-muted glyphicon  link"></i>
 
 
         </div>
@@ -19,30 +23,34 @@ FR : affiche la liste des marques pages
         </div>
         <div>
             <a href='{{bookmark.url}}' title='{{bookmark.url}}' class="bookmark-image-wrapper" target="_blank">
-                <img class='bookmark-image'  data-ng-src="/markme/img/placeholder.gif" 
+                <img class='bookmark-image' data-ng-src="/markme/img/placeholder.gif"
                      title="{{bookmark.description}}" data-bst-tooltip data-placement="bottom"
-                     alt="{{bookmark.url}}" src=""   data-preload-image="{{Thumbnails.getThumbnail(bookmark.url)}}" /></a> 
-            <h4 class="ellipsis" >
-                <a title="Open {{bookmark.url}}" href="{{bookmark.url}}" target='_blank' >{{ bookmark.title|capitalize  }}</a>
+                     alt="{{bookmark.url}}" src="" data-preload-image="{{Thumbnails.getThumbnail(bookmark.url)}}"/></a>
+            <h4 class="ellipsis">
+                <a title="Open {{bookmark.url}}" href="{{bookmark.url}}" target='_blank'>{{ bookmark.title|capitalize
+                    }}</a>
             </h4>
-            <div ng-if="bookmark.tags.length > 0">
-                <h6 data-ng-repeat="tag in bookmark.tags" ng-if="tag" class="inline">
-                    <a class="label label-info link"  href="#/tag/{{tag}}" >{{tag}}</a>&nbsp;
+
+            <div data-ng-if="bookmark.tags.length > 0">
+                <h6 data-ng-repeat="tag in bookmark.tags" data-ng-if="tag" class="inline">
+                    <a class="label label-info link" href="#/tag/{{tag}}">{{tag}}</a>&nbsp;
                 </h6>
             </div>
         </div>
     </div>
+    <!-- End Bookmark Item -->
 </section>
 <div data-ng-if="Bookmarks.bookmarks.length === 0">
-    <h1 class="muted centered span8 offset2 italic not-found">No Bookmark found , please add a new one , or import bookmarks with the account menu</h1>
-</div> 
+    <h1 class="muted centered span8 offset2 italic not-found">No Bookmark found , please add a new one , or import
+        bookmarks with the account menu</h1>
+</div>
 <section class="text-center">
-    <hr />
-    <button 
-        data-ng-show="Bookmarks.bookmarks.length > 0 && (lastBookmarkBatch.length % limit) === 0" 
-        class="btn btn-primary btn-lg" 
-        data-ng-disabled="fetchingBookmarks" 
-        data-ng-click="nextBookmarkPage()">Load more bookmarks.
+    <hr/>
+    <button
+            data-ng-show="Bookmarks.bookmarks.length > 0 && (lastBookmarkBatch.length % limit) === 0"
+            class="btn btn-primary btn-lg"
+            data-ng-disabled="fetchingBookmarks"
+            data-ng-click="nextBookmarkPage()">Load more bookmarks.
     </button>
 </section>
 <h1>&nbsp;</h1>
