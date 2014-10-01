@@ -74,7 +74,7 @@
                         return "http://www.robothumb.com/src/?url=" + url + "&size=" + width + "x" + height;
                     },
                     markme: function (url) {
-                        return "http://markme.alwaysdata.net/screencapture?url=" + url;
+                        return "https://markme-screenshot.herokuapp.com/?url=" + url;
                     },
                     wimg: function (url) {
                         return "http://wimg.ca/http://" + url;
